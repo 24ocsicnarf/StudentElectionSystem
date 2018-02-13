@@ -1,0 +1,13 @@
+﻿<syncfusion:RibbonWindow x:Class="LNHSVoting.Dialogs.PrintWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:syncfusion="http://schemas.syncfusion.com/wpf" 
+        xmlns:local="clr-namespace:LNHSVoting.Dialogs"
+        mc:Ignorable="d"
+        Title="Print" Height="540" Width="720" MinHeight="480" MinWidth="640" Loaded="RibbonWindow_Loaded">
+    <Grid>
+        <syncfusion:ReportViewer x:Name="viewer"/>
+    </Grid>
+</syncfusion:RibbonWindow>

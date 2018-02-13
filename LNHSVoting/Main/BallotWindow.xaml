@@ -1,0 +1,145 @@
+﻿<Window x:Class="LNHSVoting.Main.BallotWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LNHSVoting"
+        mc:Ignorable="d" Width="800" Height="600"
+        Title="Ballot" WindowStyle="None" ResizeMode="NoResize" Closing="Window_Closing" WindowStartupLocation="CenterScreen" FontFamily="Tahoma" FontSize="14.667" SizeChanged="Window_SizeChanged">
+    <Grid Background="Black">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="7*" MinWidth="640" MaxWidth="1280"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10*" MinHeight="480" MaxHeight="1440"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="Gray" BorderThickness="4" Background="White">
+            <Grid>
+                <DockPanel>
+                    <Grid x:Name="grdInfo" DockPanel.Dock="Top" Margin="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="8*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="5*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel x:Name="stkInstructions" Grid.Column="0" HorizontalAlignment="Stretch" Margin="2" >
+                            <Label Content="INSTRUCTIONS:"  VerticalAlignment="Center" FontWeight="Bold" FontSize="12" Padding="0.5,0,0,1.5" />
+                            <Label x:Name="lblInstruction1" Content="• To vote, click the candidate to blacken the oval next to their image."  VerticalAlignment="Center" Padding="0.5" FontSize="11.5">
+
+                            </Label>
+                            <Label x:Name="lblInstruction2" Content= "• To remove a vote, click the voted candidate or click 'RESET' to clear ALL the votes."  VerticalAlignment="Center" Padding="0.5" FontSize="11.5" >
+
+                            </Label>
+                            <Label x:Name="lblInstruction3" Content= "• When finished voting, click 'NEXT' and check your votes."  VerticalAlignment="Center" Padding="0.5" FontSize="11.5" >
+
+                            </Label>
+                        </StackPanel>
+                        <StackPanel  Grid.Column="2"  HorizontalAlignment="Stretch">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
+                                <Label DockPanel.Dock="Right" Content="Ballot Code:" Width="90" HorizontalAlignment="Right" HorizontalContentAlignment="Right"  VerticalAlignment="Center" Padding="4"  Visibility="Visible" />
+                                <Viewbox x:Name="vbBallotCode" Height="18" HorizontalAlignment="Left" Margin="4,0">
+                                    <TextBlock x:Name="tbkBallotCode" Text="W" VerticalAlignment="Center" Visibility="Visible" FontWeight="Bold" Padding="0" SizeChanged="tbkBallotCode_SizeChanged" >
+
+                                    </TextBlock>
+                                </Viewbox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Label DockPanel.Dock="Right" Content="Voter ID:" Width="90"  HorizontalAlignment="Right" HorizontalContentAlignment="Right" VerticalAlignment="Center" Padding="4,0"  Visibility="Visible" />
+                                <Viewbox x:Name="vbVoterID" Height="18" HorizontalAlignment="Left" Margin="4,0">
+                                    <TextBlock  x:Name="tbkVoterID"  Text="WWWWWWWWWWWWW" VerticalAlignment="Center" Visibility="Visible" FontWeight="Bold" Padding="0" SizeChanged="tbkVoterID_SizeChanged">
+
+                                    </TextBlock>
+                                </Viewbox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
+                                <Label DockPanel.Dock="Right" Visibility="Hidden" Content="Voter ID:" Width="90"  HorizontalAlignment="Right" VerticalAlignment="Center" Padding="0" />
+                                <Viewbox x:Name="vbFullName" Height="16"  HorizontalAlignment="Left" Margin="4,0">
+                                    <TextBlock x:Name="tbkFullName" Text="Name" VerticalAlignment="Center" Visibility="Collapsed" Padding="0" FontSize="12" Foreground="#CC000000" SizeChanged="tbkFullName_SizeChanged">
+
+                                    </TextBlock>
+                                </Viewbox>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    <DockPanel  DockPanel.Dock="Bottom" Background="#19000000" >
+                        <Button DockPanel.Dock="Left" x:Name="btnClose" Content="EXIT" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="8" FontSize="14.667" Click="btnClose_Click" Width="90">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Background" Value="#00000000"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4" />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#49000000"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button DockPanel.Dock="Right" x:Name="btnSubmit" Content="NEXT" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="8" FontSize="14.667" Click="btnSubmit_Click" Width="90">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Background" Value="#19000000"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4" />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#49000000"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button DockPanel.Dock="Right" x:Name="btnReset" Content="RESET" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="8" FontSize="14.667" Click="btnReset_Click" Width="90">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Background" Value="#00000000"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4" />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#49000000"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                    </DockPanel>
+                    <Grid >
+                        <ScrollViewer  x:Name="scvCandidates" Padding="0" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" VerticalScrollBarVisibility="Auto">
+                            <StackPanel x:Name="stkCandidates" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </DockPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

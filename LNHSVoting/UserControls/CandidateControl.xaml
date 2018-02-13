@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="LNHSVoting.CandidateControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LNHSVoting" 
+             mc:Ignorable="d" FontFamily="Tahoma" FontSize="14.667" Cursor="Hand" Margin="1,0" Loaded="UserControl_Loaded" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave" PreviewMouseLeftButtonUp="UserControl_PreviewMouseLeftButtonUp" >
+    <Grid Height="164" Width="106" >
+        <Border x:Name="bdrCandidate" BorderBrush="#00404040" BorderThickness="4" Margin="0" >
+            <Grid Background="White">
+                <Rectangle Height="122" Width="6" VerticalAlignment="Bottom" HorizontalAlignment="Left" Fill="Black" Margin="0,0,0,34" />
+                <Rectangle  x:Name="recCandidate" Height="122" Width="6" VerticalAlignment="Bottom" HorizontalAlignment="Left" Fill="{Binding Path=Party.ColorBrush}" Margin="0,0,0,34" />
+                <Border x:Name="bdrImage" Width="92" Height="122" HorizontalAlignment="Right" BorderThickness="1" BorderBrush="{Binding Path=Party.ColorBrush}" Margin="0,0,0,20" VerticalAlignment="Top">
+                    <Image x:Name="imgCandidate" Source="{Binding Path=PictureSource}" RenderOptions.BitmapScalingMode="Fant"/>
+                </Border>
+                <StackPanel x:Name="stkNamePosition" VerticalAlignment="Bottom" Background="Black" >
+                    <Grid Height="19"  >
+                        <Viewbox x:Name="vbName" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid>
+                                <TextBlock x:Name="tbkName" Text="{Binding Path=Alias}" LineStackingStrategy="BlockLineHeight" LineHeight="16" FontSize="13.333" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="tbkName_SizeChanged">
+                                    
+                                </TextBlock>
+                            </Grid>
+                        </Viewbox>
+                    </Grid>
+                    <Grid Height="15">
+                        <Viewbox x:Name="vbPosition" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid>
+                                <TextBlock x:Name="tbkPosition" Text="{Binding Path=Position}" LineStackingStrategy="BlockLineHeight" LineHeight="16" FontSize="13.333" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="tbkPosition_SizeChanged" >
+                                    
+                                </TextBlock>
+                            </Grid>
+                        </Viewbox>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

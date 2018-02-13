@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="LNHSVoting.VotedCandidateControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LNHSVoting"
+             mc:Ignorable="d" FontFamily="Tahoma" FontSize="14.667" Width="524" >
+    <UserControl.Resources>
+        <local:ToUpperValueConverter x:Key="toUpperValueConverter" />
+    </UserControl.Resources>
+    <Grid Width="520" Height="30" Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Viewbox Grid.Column="0" x:Name="vbPosition" HorizontalAlignment="Right" VerticalAlignment="Center" Height="16" Width="180" Margin="4,0">
+            <Grid>
+                <TextBlock x:Name="tbkPosition" Text="{Binding Path=Position.Title, Converter={StaticResource toUpperValueConverter}}" LineStackingStrategy="BlockLineHeight" LineHeight="16" FontSize="16" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="tbkPosition_SizeChanged">
+                    <TextBlock.ToolTip>
+                        <TextBlock Text="{Binding Path=Position.Title, Converter={StaticResource toUpperValueConverter}}" TextWrapping="Wrap" />
+                    </TextBlock.ToolTip>
+                </TextBlock>
+            </Grid>
+        </Viewbox>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" >
+            <Rectangle x:Name="recParty" Width="12" Fill="{Binding Path=Party.ColorBrush}" Margin="4,2" >
+                <Rectangle.ToolTip>
+                    <TextBlock Text="{Binding Path=Party.Title}" TextWrapping="Wrap" />
+                </Rectangle.ToolTip>
+            </Rectangle>
+            <Viewbox x:Name="vbName" HorizontalAlignment="Left" VerticalAlignment="Center" Height="16" Width="310">
+                <Grid>
+                    <TextBlock x:Name="tbkName" Text="{Binding Path=FullName}" LineStackingStrategy="BlockLineHeight" LineHeight="16" FontSize="16" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="tbkName_SizeChanged" DataContextChanged="tbkName_DataContextChanged" >
+                        <TextBlock.ToolTip>
+                            <TextBlock Text="{Binding Path=FullName}" TextWrapping="Wrap" />
+                        </TextBlock.ToolTip>
+                    </TextBlock>
+                </Grid>
+            </Viewbox>
+        </StackPanel>
+    </Grid>
+</UserControl>
