@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="dc5e4500a84a45049192fdc0af275bf0" Name="Diagram1">
+        <EntityTypeShape EntityType="StudentElectionModel.AuditLog" Width="1.5" PointX="10" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="StudentElectionModel.Ballot" Width="1.5" PointX="5.25" PointY="9.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="StudentElectionModel.Candidate" Width="1.5" PointX="5.25" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="StudentElectionModel.Election" Width="1.5" PointX="0.75" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="StudentElectionModel.Party" Width="1.5" PointX="3" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="StudentElectionModel.Position" Width="1.5" PointX="3" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="StudentElectionModel.User" Width="1.5" PointX="7.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="StudentElectionModel.Vote" Width="1.5" PointX="7.5" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="StudentElectionModel.Voter" Width="1.5" PointX="3" PointY="8.625" IsExpanded="true" />
+        <AssociationConnector Association="StudentElectionModel.AuditLog_User" ManuallyRouted="false" />
+        <AssociationConnector Association="StudentElectionModel.Ballot_Voter" ManuallyRouted="false" />
+        <AssociationConnector Association="StudentElectionModel.Vote_Ballot" ManuallyRouted="false" />
+        <AssociationConnector Association="StudentElectionModel.Candidate_Party" ManuallyRouted="false" />
+        <AssociationConnector Association="StudentElectionModel.Candidate_Position" ManuallyRouted="false" />
+        <AssociationConnector Association="StudentElectionModel.Vote_Candidate" ManuallyRouted="false" />
+        <AssociationConnector Association="StudentElectionModel.Party_Election" ManuallyRouted="false" />
+        <AssociationConnector Association="StudentElectionModel.Position_Election" ManuallyRouted="false" />
+        <AssociationConnector Association="StudentElectionModel.Voter_Election" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

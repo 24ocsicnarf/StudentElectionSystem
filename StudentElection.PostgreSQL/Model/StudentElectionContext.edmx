@@ -1,0 +1,708 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="StudentElectionModel.Store" Provider="Npgsql" ProviderManifestToken="11.0" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AuditLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TableName" Type="text" Nullable="false" />
+          <Property Name="Action" Type="int4" Nullable="false" />
+          <Property Name="OccuredAt" Type="timestamp" Nullable="false" />
+          <Property Name="RowData" Type="text" Nullable="false" />
+          <Property Name="ChangedFields" Type="text" Nullable="false" />
+          <Property Name="UserId" Type="int4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Ballot">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="text" Nullable="false" />
+          <Property Name="EnteredAt" Type="timestamp" Nullable="false" />
+          <Property Name="CastedAt" Type="timestamp" />
+          <Property Name="VoterId" Type="int4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Candidate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="text" Nullable="false" />
+          <Property Name="MiddleName" Type="text" />
+          <Property Name="LastName" Type="text" Nullable="false" />
+          <Property Name="Suffix" Type="text" />
+          <Property Name="Sex" Type="int4" Nullable="false" />
+          <Property Name="Birthdate" Type="date" />
+          <Property Name="YearLevel" Type="int4" Nullable="false" />
+          <Property Name="Section" Type="text" Nullable="false" />
+          <Property Name="Alias" Type="text" Nullable="false" />
+          <Property Name="PictureFileName" Type="text" />
+          <Property Name="PositionId" Type="int4" Nullable="false" />
+          <Property Name="PartyId" Type="int4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Election">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="text" Nullable="false" />
+          <Property Name="Description" Type="text" />
+          <Property Name="TookPlaceOn" Type="date" Nullable="false" />
+          <Property Name="CandidatesFinalizedAt" Type="timestamp" />
+          <Property Name="ClosedAt" Type="timestamp" />
+          <Property Name="Tag" Type="text" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Party">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="text" Nullable="false" />
+          <Property Name="ShortName" Type="text" Nullable="false" />
+          <Property Name="Argb" Type="int4" Nullable="false" />
+          <Property Name="ElectionId" Type="int4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Position">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="text" Nullable="false" />
+          <Property Name="WinnersCount" Type="int4" Nullable="false" />
+          <Property Name="Rank" Type="int4" Nullable="false" />
+          <Property Name="ElectionId" Type="int4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="text" Nullable="false" />
+          <Property Name="MiddleName" Type="text" />
+          <Property Name="LastName" Type="text" Nullable="false" />
+          <Property Name="Suffix" Type="text" />
+          <Property Name="Sex" Type="int4" Nullable="false" />
+          <Property Name="Type" Type="int4" Nullable="false" />
+          <Property Name="UserName" Type="text" Nullable="false" />
+          <Property Name="PasswordHash" Type="text" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Vote">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BallotId" Type="int4" Nullable="false" />
+          <Property Name="CandidateId" Type="int4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Voter">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int4" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="text" Nullable="false" />
+          <Property Name="MiddleName" Type="text" />
+          <Property Name="LastName" Type="text" Nullable="false" />
+          <Property Name="Suffix" Type="text" />
+          <Property Name="Sex" Type="int4" Nullable="false" />
+          <Property Name="Birthdate" Type="date" />
+          <Property Name="Vin" Type="text" Nullable="false" />
+          <Property Name="YearLevel" Type="int4" Nullable="false" />
+          <Property Name="Section" Type="text" Nullable="false" />
+          <Property Name="ElectionId" Type="int4" Nullable="false" />
+        </EntityType>
+        <Association Name="AuditLog_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="AuditLog" Type="Self.AuditLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AuditLog">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Ballot_Voter">
+          <End Role="Voter" Type="Self.Voter" Multiplicity="1" />
+          <End Role="Ballot" Type="Self.Ballot" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Voter">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Ballot">
+              <PropertyRef Name="VoterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Candidate_Party">
+          <End Role="Party" Type="Self.Party" Multiplicity="1" />
+          <End Role="Candidate" Type="Self.Candidate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Party">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Candidate">
+              <PropertyRef Name="PartyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Candidate_Position">
+          <End Role="Position" Type="Self.Position" Multiplicity="1" />
+          <End Role="Candidate" Type="Self.Candidate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Position">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Candidate">
+              <PropertyRef Name="PositionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Party_Election">
+          <End Role="Election" Type="Self.Election" Multiplicity="1" />
+          <End Role="Party" Type="Self.Party" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Election">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Party">
+              <PropertyRef Name="ElectionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Position_Election">
+          <End Role="Election" Type="Self.Election" Multiplicity="1" />
+          <End Role="Position" Type="Self.Position" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Election">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Position">
+              <PropertyRef Name="ElectionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Vote_Ballot">
+          <End Role="Ballot" Type="Self.Ballot" Multiplicity="1" />
+          <End Role="Vote" Type="Self.Vote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ballot">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Vote">
+              <PropertyRef Name="BallotId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Vote_Candidate">
+          <End Role="Candidate" Type="Self.Candidate" Multiplicity="1" />
+          <End Role="Vote" Type="Self.Vote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Candidate">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Vote">
+              <PropertyRef Name="CandidateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Voter_Election">
+          <End Role="Election" Type="Self.Election" Multiplicity="1" />
+          <End Role="Voter" Type="Self.Voter" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Election">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Voter">
+              <PropertyRef Name="ElectionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="StudentElectionModelStoreContainer">
+          <EntitySet Name="AuditLog" EntityType="Self.AuditLog" Schema="public" store:Type="Tables" />
+          <EntitySet Name="Ballot" EntityType="Self.Ballot" Schema="public" store:Type="Tables" />
+          <EntitySet Name="Candidate" EntityType="Self.Candidate" Schema="public" store:Type="Tables" />
+          <EntitySet Name="Election" EntityType="Self.Election" Schema="public" store:Type="Tables" />
+          <EntitySet Name="Party" EntityType="Self.Party" Schema="public" store:Type="Tables" />
+          <EntitySet Name="Position" EntityType="Self.Position" Schema="public" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="public" store:Type="Tables" />
+          <EntitySet Name="Vote" EntityType="Self.Vote" Schema="public" store:Type="Tables" />
+          <EntitySet Name="Voter" EntityType="Self.Voter" Schema="public" store:Type="Tables" />
+          <AssociationSet Name="AuditLog_User" Association="Self.AuditLog_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="AuditLog" EntitySet="AuditLog" />
+          </AssociationSet>
+          <AssociationSet Name="Ballot_Voter" Association="Self.Ballot_Voter">
+            <End Role="Voter" EntitySet="Voter" />
+            <End Role="Ballot" EntitySet="Ballot" />
+          </AssociationSet>
+          <AssociationSet Name="Candidate_Party" Association="Self.Candidate_Party">
+            <End Role="Party" EntitySet="Party" />
+            <End Role="Candidate" EntitySet="Candidate" />
+          </AssociationSet>
+          <AssociationSet Name="Candidate_Position" Association="Self.Candidate_Position">
+            <End Role="Position" EntitySet="Position" />
+            <End Role="Candidate" EntitySet="Candidate" />
+          </AssociationSet>
+          <AssociationSet Name="Party_Election" Association="Self.Party_Election">
+            <End Role="Election" EntitySet="Election" />
+            <End Role="Party" EntitySet="Party" />
+          </AssociationSet>
+          <AssociationSet Name="Position_Election" Association="Self.Position_Election">
+            <End Role="Election" EntitySet="Election" />
+            <End Role="Position" EntitySet="Position" />
+          </AssociationSet>
+          <AssociationSet Name="Vote_Ballot" Association="Self.Vote_Ballot">
+            <End Role="Ballot" EntitySet="Ballot" />
+            <End Role="Vote" EntitySet="Vote" />
+          </AssociationSet>
+          <AssociationSet Name="Vote_Candidate" Association="Self.Vote_Candidate">
+            <End Role="Candidate" EntitySet="Candidate" />
+            <End Role="Vote" EntitySet="Vote" />
+          </AssociationSet>
+          <AssociationSet Name="Voter_Election" Association="Self.Voter_Election">
+            <End Role="Election" EntitySet="Election" />
+            <End Role="Voter" EntitySet="Voter" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="StudentElectionModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AuditLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TableName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Action" Type="Int32" Nullable="false" />
+          <Property Name="OccuredAt" Type="DateTime" Precision="6" Nullable="false" />
+          <Property Name="RowData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ChangedFields" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="Self.AuditLog_User" FromRole="AuditLog" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Ballot">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EnteredAt" Type="DateTime" Precision="6" Nullable="false" />
+          <Property Name="CastedAt" Type="DateTime" Precision="6" />
+          <Property Name="VoterId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Voter" Relationship="Self.Ballot_Voter" FromRole="Ballot" ToRole="Voter" />
+          <NavigationProperty Name="Votes" Relationship="Self.Vote_Ballot" FromRole="Ballot" ToRole="Vote" />
+        </EntityType>
+        <EntityType Name="Candidate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Suffix" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Sex" Type="Int32" Nullable="false" />
+          <Property Name="Birthdate" Type="DateTime" Precision="0" />
+          <Property Name="YearLevel" Type="Int32" Nullable="false" />
+          <Property Name="Section" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Alias" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PictureFileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PositionId" Type="Int32" Nullable="false" />
+          <Property Name="PartyId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Party" Relationship="Self.Candidate_Party" FromRole="Candidate" ToRole="Party" />
+          <NavigationProperty Name="Position" Relationship="Self.Candidate_Position" FromRole="Candidate" ToRole="Position" />
+          <NavigationProperty Name="Votes" Relationship="Self.Vote_Candidate" FromRole="Candidate" ToRole="Vote" />
+        </EntityType>
+        <EntityType Name="Election">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TookPlaceOn" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="CandidatesFinalizedAt" Type="DateTime" Precision="6" />
+          <Property Name="ClosedAt" Type="DateTime" Precision="6" />
+          <Property Name="Tag" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Parties" Relationship="Self.Party_Election" FromRole="Election" ToRole="Party" />
+          <NavigationProperty Name="Positions" Relationship="Self.Position_Election" FromRole="Election" ToRole="Position" />
+          <NavigationProperty Name="Voters" Relationship="Self.Voter_Election" FromRole="Election" ToRole="Voter" />
+        </EntityType>
+        <EntityType Name="Party">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ShortName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Argb" Type="Int32" Nullable="false" />
+          <Property Name="ElectionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Candidates" Relationship="Self.Candidate_Party" FromRole="Party" ToRole="Candidate" />
+          <NavigationProperty Name="Election" Relationship="Self.Party_Election" FromRole="Party" ToRole="Election" />
+        </EntityType>
+        <EntityType Name="Position">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="WinnersCount" Type="Int32" Nullable="false" />
+          <Property Name="Rank" Type="Int32" Nullable="false" />
+          <Property Name="ElectionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Candidates" Relationship="Self.Candidate_Position" FromRole="Position" ToRole="Candidate" />
+          <NavigationProperty Name="Election" Relationship="Self.Position_Election" FromRole="Position" ToRole="Election" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Suffix" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Sex" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AuditLogs" Relationship="Self.AuditLog_User" FromRole="User" ToRole="AuditLog" />
+        </EntityType>
+        <EntityType Name="Vote">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BallotId" Type="Int32" Nullable="false" />
+          <Property Name="CandidateId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Ballot" Relationship="Self.Vote_Ballot" FromRole="Vote" ToRole="Ballot" />
+          <NavigationProperty Name="Candidate" Relationship="Self.Vote_Candidate" FromRole="Vote" ToRole="Candidate" />
+        </EntityType>
+        <EntityType Name="Voter">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Suffix" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Sex" Type="Int32" Nullable="false" />
+          <Property Name="Birthdate" Type="DateTime" Precision="0" />
+          <Property Name="Vin" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="YearLevel" Type="Int32" Nullable="false" />
+          <Property Name="Section" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ElectionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Ballots" Relationship="Self.Ballot_Voter" FromRole="Voter" ToRole="Ballot" />
+          <NavigationProperty Name="Election" Relationship="Self.Voter_Election" FromRole="Voter" ToRole="Election" />
+        </EntityType>
+        <Association Name="AuditLog_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="AuditLog" Type="Self.AuditLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AuditLog">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Ballot_Voter">
+          <End Role="Voter" Type="Self.Voter" Multiplicity="1" />
+          <End Role="Ballot" Type="Self.Ballot" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Voter">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Ballot">
+              <PropertyRef Name="VoterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Vote_Ballot">
+          <End Role="Ballot" Type="Self.Ballot" Multiplicity="1" />
+          <End Role="Vote" Type="Self.Vote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ballot">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Vote">
+              <PropertyRef Name="BallotId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Candidate_Party">
+          <End Role="Party" Type="Self.Party" Multiplicity="1" />
+          <End Role="Candidate" Type="Self.Candidate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Party">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Candidate">
+              <PropertyRef Name="PartyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Candidate_Position">
+          <End Role="Position" Type="Self.Position" Multiplicity="1" />
+          <End Role="Candidate" Type="Self.Candidate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Position">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Candidate">
+              <PropertyRef Name="PositionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Vote_Candidate">
+          <End Role="Candidate" Type="Self.Candidate" Multiplicity="1" />
+          <End Role="Vote" Type="Self.Vote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Candidate">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Vote">
+              <PropertyRef Name="CandidateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Party_Election">
+          <End Role="Election" Type="Self.Election" Multiplicity="1" />
+          <End Role="Party" Type="Self.Party" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Election">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Party">
+              <PropertyRef Name="ElectionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Position_Election">
+          <End Role="Election" Type="Self.Election" Multiplicity="1" />
+          <End Role="Position" Type="Self.Position" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Election">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Position">
+              <PropertyRef Name="ElectionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Voter_Election">
+          <End Role="Election" Type="Self.Election" Multiplicity="1" />
+          <End Role="Voter" Type="Self.Voter" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Election">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Voter">
+              <PropertyRef Name="ElectionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="StudentElectionContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AuditLogs" EntityType="Self.AuditLog" />
+          <EntitySet Name="Ballots" EntityType="Self.Ballot" />
+          <EntitySet Name="Candidates" EntityType="Self.Candidate" />
+          <EntitySet Name="Elections" EntityType="Self.Election" />
+          <EntitySet Name="Parties" EntityType="Self.Party" />
+          <EntitySet Name="Positions" EntityType="Self.Position" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="Votes" EntityType="Self.Vote" />
+          <EntitySet Name="Voters" EntityType="Self.Voter" />
+          <AssociationSet Name="AuditLog_User" Association="Self.AuditLog_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="AuditLog" EntitySet="AuditLogs" />
+          </AssociationSet>
+          <AssociationSet Name="Ballot_Voter" Association="Self.Ballot_Voter">
+            <End Role="Voter" EntitySet="Voters" />
+            <End Role="Ballot" EntitySet="Ballots" />
+          </AssociationSet>
+          <AssociationSet Name="Vote_Ballot" Association="Self.Vote_Ballot">
+            <End Role="Ballot" EntitySet="Ballots" />
+            <End Role="Vote" EntitySet="Votes" />
+          </AssociationSet>
+          <AssociationSet Name="Candidate_Party" Association="Self.Candidate_Party">
+            <End Role="Party" EntitySet="Parties" />
+            <End Role="Candidate" EntitySet="Candidates" />
+          </AssociationSet>
+          <AssociationSet Name="Candidate_Position" Association="Self.Candidate_Position">
+            <End Role="Position" EntitySet="Positions" />
+            <End Role="Candidate" EntitySet="Candidates" />
+          </AssociationSet>
+          <AssociationSet Name="Vote_Candidate" Association="Self.Vote_Candidate">
+            <End Role="Candidate" EntitySet="Candidates" />
+            <End Role="Vote" EntitySet="Votes" />
+          </AssociationSet>
+          <AssociationSet Name="Party_Election" Association="Self.Party_Election">
+            <End Role="Election" EntitySet="Elections" />
+            <End Role="Party" EntitySet="Parties" />
+          </AssociationSet>
+          <AssociationSet Name="Position_Election" Association="Self.Position_Election">
+            <End Role="Election" EntitySet="Elections" />
+            <End Role="Position" EntitySet="Positions" />
+          </AssociationSet>
+          <AssociationSet Name="Voter_Election" Association="Self.Voter_Election">
+            <End Role="Election" EntitySet="Elections" />
+            <End Role="Voter" EntitySet="Voters" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="StudentElectionModelStoreContainer" CdmEntityContainer="StudentElectionContext">
+          <EntitySetMapping Name="AuditLogs">
+            <EntityTypeMapping TypeName="StudentElectionModel.AuditLog">
+              <MappingFragment StoreEntitySet="AuditLog">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TableName" ColumnName="TableName" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="OccuredAt" ColumnName="OccuredAt" />
+                <ScalarProperty Name="RowData" ColumnName="RowData" />
+                <ScalarProperty Name="ChangedFields" ColumnName="ChangedFields" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Ballots">
+            <EntityTypeMapping TypeName="StudentElectionModel.Ballot">
+              <MappingFragment StoreEntitySet="Ballot">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="EnteredAt" ColumnName="EnteredAt" />
+                <ScalarProperty Name="CastedAt" ColumnName="CastedAt" />
+                <ScalarProperty Name="VoterId" ColumnName="VoterId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Candidates">
+            <EntityTypeMapping TypeName="StudentElectionModel.Candidate">
+              <MappingFragment StoreEntitySet="Candidate">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+                <ScalarProperty Name="Birthdate" ColumnName="Birthdate" />
+                <ScalarProperty Name="YearLevel" ColumnName="YearLevel" />
+                <ScalarProperty Name="Section" ColumnName="Section" />
+                <ScalarProperty Name="Alias" ColumnName="Alias" />
+                <ScalarProperty Name="PictureFileName" ColumnName="PictureFileName" />
+                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
+                <ScalarProperty Name="PartyId" ColumnName="PartyId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Elections">
+            <EntityTypeMapping TypeName="StudentElectionModel.Election">
+              <MappingFragment StoreEntitySet="Election">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="TookPlaceOn" ColumnName="TookPlaceOn" />
+                <ScalarProperty Name="CandidatesFinalizedAt" ColumnName="CandidatesFinalizedAt" />
+                <ScalarProperty Name="ClosedAt" ColumnName="ClosedAt" />
+                <ScalarProperty Name="Tag" ColumnName="Tag" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Parties">
+            <EntityTypeMapping TypeName="StudentElectionModel.Party">
+              <MappingFragment StoreEntitySet="Party">
+                <ScalarProperty Name="Argb" ColumnName="Argb" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ShortName" ColumnName="ShortName" />
+                <ScalarProperty Name="ElectionId" ColumnName="ElectionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Positions">
+            <EntityTypeMapping TypeName="StudentElectionModel.Position">
+              <MappingFragment StoreEntitySet="Position">
+                <ScalarProperty Name="WinnersCount" ColumnName="WinnersCount" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Rank" ColumnName="Rank" />
+                <ScalarProperty Name="ElectionId" ColumnName="ElectionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="StudentElectionModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Votes">
+            <EntityTypeMapping TypeName="StudentElectionModel.Vote">
+              <MappingFragment StoreEntitySet="Vote">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="BallotId" ColumnName="BallotId" />
+                <ScalarProperty Name="CandidateId" ColumnName="CandidateId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Voters">
+            <EntityTypeMapping TypeName="StudentElectionModel.Voter">
+              <MappingFragment StoreEntitySet="Voter">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+                <ScalarProperty Name="Birthdate" ColumnName="Birthdate" />
+                <ScalarProperty Name="Vin" ColumnName="Vin" />
+                <ScalarProperty Name="YearLevel" ColumnName="YearLevel" />
+                <ScalarProperty Name="Section" ColumnName="Section" />
+                <ScalarProperty Name="ElectionId" ColumnName="ElectionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

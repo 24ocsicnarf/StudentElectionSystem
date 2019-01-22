@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="StudentElection.UserControls.PositionItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StudentElection"
+             xmlns:Converters="clr-namespace:StudentElection.Converters"
+             FontFamily="Tahoma" SizeChanged="UserControl_SizeChanged" Loaded="UserControl_Loaded" Padding="2" SnapsToDevicePixels="True">
+    <UserControl.Resources>
+        <Converters:ToUpperValueConverter x:Key="toUpperValueConverter" />
+    </UserControl.Resources>
+    <Grid Background="#FFE0E0E0" Margin="0,4">
+        <Border x:Name="bdrPartyVoted" BorderThickness="4" BorderBrush="#FFB0B0B0">
+            <StackPanel>
+                <Grid Margin="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Name="cdfPosition" Width="*" />
+                        <ColumnDefinition Width="6" />
+                        <ColumnDefinition x:Name="cdfCandidate" Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <Rectangle x:Name="recColor" Width="12" Fill="#FFB0B0B0" HorizontalAlignment="Left" />
+                            <Grid>
+                                <Viewbox x:Name="vbPosition" HorizontalAlignment="Left" VerticalAlignment="Center" Height="24">
+                                    <TextBlock x:Name="tbkPosition" Text="{Binding Path=Title, Converter={StaticResource toUpperValueConverter}}" FontWeight="Bold" LineStackingStrategy="BlockLineHeight" LineHeight="24" FontSize="24" Foreground="#FF404040" Margin="8,2" VerticalAlignment="Center" HorizontalAlignment="Left" SizeChanged="tbkPosition_SizeChanged"/>
+                                </Viewbox>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Column="2" >
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Grid HorizontalAlignment="Right">
+                                <Viewbox x:Name="vbName" Height="22"  HorizontalAlignment="Right">
+                                    <Label x:Name="lblName" Padding="0" HorizontalContentAlignment="Right">
+                                        <TextBlock x:Name="tbkName" Text="Choose a candidate" TextTrimming="CharacterEllipsis" HorizontalAlignment="Right" LineStackingStrategy="BlockLineHeight" LineHeight="22" FontSize="22" Foreground="#FF404040" Margin="8,2" SizeChanged="tbkName_SizeChanged">
+                                            <TextBlock.ToolTip>
+                                                <TextBlock Text="{Binding Text, ElementName=tbkName}" TextWrapping="Wrap" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                    </Label>
+                                </Viewbox>
+                            </Grid>
+                            <Rectangle x:Name="recParty" Width="12" Fill="#FFB0B0B0" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Disabled" >
+                    <WrapPanel x:Name="wrpCandidate" Orientation="Horizontal" HorizontalAlignment="Left" Margin="2" Visibility="Collapsed">
+                        
+                    </WrapPanel>
+                </ScrollViewer>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
