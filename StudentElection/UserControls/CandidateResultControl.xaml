@@ -8,15 +8,15 @@
     <Grid Height="134" Background="#FFE0E0E0">
         <Border BorderBrush="#00404040">
             <StackPanel Orientation="Horizontal">
-                <Border x:Name="bdrImageInfo" BorderBrush="{Binding Path=Party.ColorBrush}" BorderThickness="2" Margin="4" Width="100" Height="124">
+                <Border x:Name="bdrImageInfo" BorderBrush="{Binding Path=PartyColorBrush}" BorderThickness="2" Margin="4" Width="100" Height="124">
                     <Grid >
                         <Rectangle Height="120" Width="5" VerticalAlignment="Bottom" HorizontalAlignment="Left" Fill="White"   />
-                        <Rectangle x:Name="recCandidate" Height="120" Width="5" VerticalAlignment="Bottom" HorizontalAlignment="Left" Fill="{Binding Path=Party.ColorBrush}" />
-                        <Border x:Name="bdrImage" Width="92" Height="122" HorizontalAlignment="Right" VerticalAlignment="Top" Background="White" BorderBrush="{Binding Path=Party.ColorBrush}" BorderThickness="1" Margin="-1,-1" >
-                            <Image x:Name="imgCandidate" Source="{Binding Path=PictureSource}"  RenderOptions.BitmapScalingMode="Fant" />
+                        <Rectangle x:Name="recCandidate" Height="120" Width="5" VerticalAlignment="Bottom" HorizontalAlignment="Left" Fill="{Binding Path=PartyColorBrush}" />
+                        <Border x:Name="bdrImage" Width="92" Height="122" HorizontalAlignment="Right" VerticalAlignment="Top" Background="White" BorderBrush="{Binding Path=PartyColorBrush}" BorderThickness="1" Margin="-1,-1" >
+                            <Image x:Name="imgCandidate"  RenderOptions.BitmapScalingMode="Fant" />
                         </Border>
-                        <Border Background="#DD000000" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="28">
-                            <TextBlock x:Name="tbkRank" Text="2" Padding="4 0" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Foreground="White" FontSize="20" TextAlignment="Center" LineHeight="20" LineStackingStrategy="BlockLineHeight"/>
+                        <Border Background="#CC000000" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="24">
+                            <TextBlock x:Name="tbkRank" Text="2" Padding="4 0" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Foreground="White" FontSize="18" TextAlignment="Center" LineHeight="20" LineStackingStrategy="BlockLineHeight"/>
                         </Border>
                     </Grid>
                 </Border>
@@ -24,9 +24,9 @@
                     <Grid DockPanel.Dock="Top" Margin="0,2,0,0" >
                         <Viewbox x:Name="vbName" HorizontalAlignment="Left" VerticalAlignment="Center" Stretch="Uniform" Height="20">
                             <Grid>
-                                <TextBlock x:Name="tbkName"  LineHeight="20" FontSize="20" LineStackingStrategy="BlockLineHeight" Text="{Binding Path=FullName}" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="tbkName_SizeChanged" >
+                                <TextBlock x:Name="tbkName"  LineHeight="20" FontSize="20" LineStackingStrategy="BlockLineHeight" Text="{Binding FullName}" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="tbkName_SizeChanged" >
                                     <TextBlock.ToolTip>
-                                        <TextBlock Text="{Binding Path=FullName}" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding FullName}" TextWrapping="Wrap" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
                             </Grid>
@@ -35,9 +35,9 @@
                     <Grid DockPanel.Dock="Top"  Margin="0,2,0,0">
                         <Viewbox x:Name="vbAlias" HorizontalAlignment="Left" VerticalAlignment="Center" Height="15">
                             <Grid>
-                                <TextBlock x:Name="tbkAlias" LineHeight="15" FontSize="15" LineStackingStrategy="BlockLineHeight" Text="{Binding Path=Alias}" Foreground="#FF404040" HorizontalAlignment="Left" VerticalAlignment="Center" SizeChanged="tbkAlias_SizeChanged">
+                                <TextBlock x:Name="tbkAlias" LineHeight="15" FontSize="15" LineStackingStrategy="BlockLineHeight" Text="{Binding Alias}" Foreground="#FF404040" HorizontalAlignment="Left" VerticalAlignment="Center" SizeChanged="tbkAlias_SizeChanged">
                                     <TextBlock.ToolTip>
-                                        <TextBlock Text="{Binding Path=Alias}" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding Alias}" TextWrapping="Wrap" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
                             </Grid>
@@ -46,16 +46,18 @@
                     <Grid DockPanel.Dock="Top" Margin="0,2,0,0">
                         <Viewbox x:Name="vbGradeStrand" HorizontalAlignment="Left" VerticalAlignment="Center" Height="15">
                             <Grid>
-                                <TextBlock x:Name="tbkGradeStrand" LineHeight="15" FontSize="15" LineStackingStrategy="BlockLineHeight"  Text="{Binding Path=GradeStrand}"  Foreground="#FF606060" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" />
+                                <TextBlock x:Name="tbkGradeStrand" LineHeight="15" FontSize="15" LineStackingStrategy="BlockLineHeight" Foreground="#FF606060" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0">
+                                    <Run Text="{Binding YearLevel}"/> <Run Text="{Binding Section}"/>
+                                </TextBlock>
                             </Grid>
                         </Viewbox>
                     </Grid>
                     <Grid DockPanel.Dock="Top" Margin="0,4,0,0" >
                         <Viewbox x:Name="vbParty" HorizontalAlignment="Left" VerticalAlignment="Center" Height="15">
                             <Grid>
-                                <TextBlock x:Name="tbkParty" LineHeight="15" FontSize="15" LineStackingStrategy="BlockLineHeight"  Text="{Binding Path=Party.Title}" Foreground="#FF404040" HorizontalAlignment="Left" VerticalAlignment="Center" SizeChanged="tbkParty_SizeChanged">
+                                <TextBlock x:Name="tbkParty" LineHeight="15" FontSize="15" LineStackingStrategy="BlockLineHeight"  Text="{Binding PartyTitle}" Foreground="#FF404040" HorizontalAlignment="Left" VerticalAlignment="Center" SizeChanged="tbkParty_SizeChanged">
                                     <TextBlock.ToolTip>
-                                        <TextBlock Text="{Binding Path=Party.Title}" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding PartyTitle}" TextWrapping="Wrap" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
                             </Grid>

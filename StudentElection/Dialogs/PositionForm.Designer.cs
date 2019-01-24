@@ -41,11 +41,11 @@
             this.txtNumberOfWinners = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.dgPositions = new System.Windows.Forms.DataGridView();
+            this.positionModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.titleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.winnerCountDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.WinnersCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rankDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.positionModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgPositions)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionModelBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -184,7 +184,7 @@
             this.dgPositions.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.idDataGridViewTextBoxColumn,
             this.titleDataGridViewTextBoxColumn,
-            this.winnerCountDataGridViewTextBoxColumn,
+            this.WinnersCount,
             this.rankDataGridViewTextBoxColumn});
             this.dgPositions.DataSource = this.positionModelBindingSource;
             this.dgPositions.Location = new System.Drawing.Point(12, 26);
@@ -198,6 +198,10 @@
             this.dgPositions.TabIndex = 13;
             this.dgPositions.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgPositions_CellDoubleClick);
             this.dgPositions.SelectionChanged += new System.EventHandler(this.dgPositions_SelectionChanged);
+            // 
+            // positionModelBindingSource
+            // 
+            this.positionModelBindingSource.DataSource = typeof(StudentElection.Repository.Models.PositionModel);
             // 
             // idDataGridViewTextBoxColumn
             // 
@@ -215,13 +219,13 @@
             this.titleDataGridViewTextBoxColumn.ReadOnly = true;
             this.titleDataGridViewTextBoxColumn.Width = 160;
             // 
-            // winnerCountDataGridViewTextBoxColumn
+            // WinnersCount
             // 
-            this.winnerCountDataGridViewTextBoxColumn.DataPropertyName = "WinnerCount";
-            this.winnerCountDataGridViewTextBoxColumn.HeaderText = "# of Winners";
-            this.winnerCountDataGridViewTextBoxColumn.Name = "winnerCountDataGridViewTextBoxColumn";
-            this.winnerCountDataGridViewTextBoxColumn.ReadOnly = true;
-            this.winnerCountDataGridViewTextBoxColumn.Width = 60;
+            this.WinnersCount.DataPropertyName = "WinnersCount";
+            this.WinnersCount.HeaderText = "No. of Winners";
+            this.WinnersCount.Name = "WinnersCount";
+            this.WinnersCount.ReadOnly = true;
+            this.WinnersCount.Width = 60;
             // 
             // rankDataGridViewTextBoxColumn
             // 
@@ -230,10 +234,6 @@
             this.rankDataGridViewTextBoxColumn.Name = "rankDataGridViewTextBoxColumn";
             this.rankDataGridViewTextBoxColumn.ReadOnly = true;
             this.rankDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // positionModelBindingSource
-            // 
-            this.positionModelBindingSource.DataSource = typeof(StudentElection.Repository.Models.PositionModel);
             // 
             // PositionForm
             // 
@@ -283,9 +283,10 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DataGridView dgPositions;
         private System.Windows.Forms.BindingSource positionModelBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn winnerCountDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn titleDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn winnerCountDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn WinnersCount;
         private System.Windows.Forms.DataGridViewTextBoxColumn rankDataGridViewTextBoxColumn;
     }
 }

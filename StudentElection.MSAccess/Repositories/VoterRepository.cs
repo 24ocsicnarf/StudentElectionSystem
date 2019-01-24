@@ -128,5 +128,57 @@ namespace StudentElection.MSAccess.Repositories
                 return model;
             }
         }
+
+        public async Task InsertVotersAsync(IEnumerable<VoterModel> voters)
+        {
+            await Task.CompletedTask;
+
+            using (var dataSet = new StudentElectionDataSet())
+            {
+                using (var manager = new TableAdapterManager())
+                {
+                    manager.VoterTableAdapter = new VoterTableAdapter();
+
+                    var id = -1;
+                    foreach (var voter in voters)
+                    {
+                        var newRow = dataSet.Voter.NewVoterRow();
+                        Mapper.Map(voter, newRow);
+
+                        newRow.ID = id;
+                        if (voter.Birthdate == null)
+                        {
+                            newRow.SetBirthdateNull();
+                        }
+
+                        dataSet.Voter.AddVoterRow(newRow);
+
+                        id--;
+                    }
+
+                    manager.UpdateAll(dataSet);
+                }
+            }
+        }
+
+        public async Task<int> CountVotersAsync(int electionId)
+        {
+            await Task.CompletedTask;
+
+            using (var tableAdapter = new VoterTableAdapter())
+            {
+                return tableAdapter.CountVotersQuery(electionId) ?? 0;
+            }
+        }
+
+        public async Task<int> CountVotedVotersAsync(int electionId)
+        {
+            await Task.CompletedTask;
+
+            using (var tableAdapter = new VoterTableAdapter())
+            {
+                return tableAdapter.CountVotedVotersQuery(electionId) ?? 0;
+            }
+        }
     }
 }

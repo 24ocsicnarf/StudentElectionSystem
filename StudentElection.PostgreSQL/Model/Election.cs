@@ -28,7 +28,7 @@ namespace StudentElection.PostgreSQL.Model
         public System.DateTime TookPlaceOn { get; set; }
         public Nullable<System.DateTime> CandidatesFinalizedAt { get; set; }
         public Nullable<System.DateTime> ClosedAt { get; set; }
-        public string Tag { get; set; }
+        public string ServerTag { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Party> Parties { get; set; }

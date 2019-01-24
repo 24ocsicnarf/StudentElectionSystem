@@ -33,6 +33,11 @@ namespace StudentElection.Services
             return await _positionRepository.GetPositionsCountAsync(electionId);
         }
 
+        public async Task<PositionModel> GetPositionByTitleAsync(int electionId, string positionTitle)
+        {
+            return await _positionRepository.GetPositionByTitleAsync(electionId, positionTitle);
+        }
+
         public async Task SavePositionAsync(PositionModel position)
         {
             if (position.Id == 0)

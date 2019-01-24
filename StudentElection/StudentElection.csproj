@@ -89,26 +89,6 @@
     <Reference Include="Liphsoft.Crypto.Argon2, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Liphsoft.Crypto.Argon2.1.0.5\lib\net35\x86\Liphsoft.Crypto.Argon2.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ReportViewer.Common, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Microsoft.ReportViewer.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.ReportViewer.DataVisualization, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Microsoft.ReportViewer.DataVisualization.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.ReportViewer.WinForms, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Microsoft.ReportViewer.WinForms.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dependencies\Microsoft.SqlServer.Types.dll</HintPath>
@@ -116,64 +96,6 @@
     </Reference>
     <Reference Include="Npgsql, Version=4.0.4.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <HintPath>..\packages\Npgsql.4.0.4\lib\net451\Npgsql.dll</HintPath>
-    </Reference>
-    <Reference Include="Portable.Licensing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Portable.Licensing.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Simplify.Windows.Forms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=76e7d56d397d79b9, processorArchitecture=MSIL">
-      <HintPath>..\packages\Simplify.Windows.Forms.1.0.0\lib\net40\Simplify.Windows.Forms.dll</HintPath>
-    </Reference>
-    <Reference Include="Syncfusion.Compression.Base, Version=15.4451.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Syncfusion.Compression.Base.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Syncfusion.Data.WPF, Version=15.4451.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Syncfusion.Data.WPF.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Syncfusion.Linq.Base, Version=15.4451.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Syncfusion.Linq.Base.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Syncfusion.Pdf.Base, Version=15.4451.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Syncfusion.Pdf.Base.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Syncfusion.SfGrid.WPF, Version=15.4451.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Syncfusion.SfGrid.WPF.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Syncfusion.SfGridConverter.WPF, Version=15.4451.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Syncfusion.SfGridConverter.WPF.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Syncfusion.Shared.Wpf, Version=15.4451.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Syncfusion.Shared.Wpf.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Syncfusion.Tools.Wpf, Version=15.4451.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Syncfusion.Tools.Wpf.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Syncfusion.XlsIO.Base, Version=15.4451.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Syncfusion.XlsIO.Base.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Syncfusion.XlsIO.Wpf, Version=15.4451.0.17, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Syncfusion.XlsIO.Wpf.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -215,22 +137,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Classes\Ballot.cs" />
-    <Compile Include="Classes\Candidate.cs" />
-    <Compile Include="Classes\DB.cs" />
-    <Compile Include="Classes\Machine.cs" />
-    <Compile Include="Classes\Party.cs" />
-    <Compile Include="Classes\Position.cs" />
-    <Compile Include="Classes\Staff.cs" />
-    <Compile Include="Classes\User.cs" />
-    <Compile Include="Classes\Voter.cs" />
     <Compile Include="Converters\ToUpperValueConverter.cs" />
-    <Compile Include="Dialogs\PrintForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Dialogs\ProgressWindow.xaml.cs">
+      <DependentUpon>ProgressWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\PrintForm.Designer.cs">
-      <DependentUpon>PrintForm.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Services\BallotService.cs" />
     <Compile Include="Services\CandidateService.cs" />
     <Compile Include="Services\ElectionService.cs" />
     <Compile Include="Services\PartyService.cs" />
@@ -259,9 +170,6 @@
       <DependentUpon>CandidateViewerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="G.cs" />
-    <Compile Include="StudentElectionDataSet.cs">
-      <DependentUpon>StudentElectionDataSet.xsd</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\PositionItemControl.xaml.cs">
       <DependentUpon>PositionItemControl.xaml</DependentUpon>
     </Compile>
@@ -289,12 +197,13 @@
     <Compile Include="UserControls\VotedCandidateControl.xaml.cs">
       <DependentUpon>VotedCandidateControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\VotersListWindow.xaml.cs">
-      <DependentUpon>VotersListWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\VoterWindow.xaml.cs">
       <DependentUpon>VoterWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Dialogs\ProgressWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Main\BallotWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -326,11 +235,6 @@
     <Compile Include="Main\BallotWindow.xaml.cs">
       <DependentUpon>BallotWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StudentElectionDataSet.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StudentElectionDataSet.xsd</DependentUpon>
-    </Compile>
     <Compile Include="Main\MaintenanceWindow.xaml.cs">
       <DependentUpon>MaintenanceWindow.xaml</DependentUpon>
     </Compile>
@@ -355,10 +259,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\VotedCandidateControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dialogs\VotersListWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -393,32 +293,19 @@
     <EmbeddedResource Include="Dialogs\PositionForm.resx">
       <DependentUpon>PositionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\PrintForm.resx">
-      <DependentUpon>PrintForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\VoteResultReport.rdlc" />
-    <None Include="StudentElection.Repository.Models.PositionModel.datasource" />
-    <None Include="StudentElectionDataSet.xsc">
-      <DependentUpon>StudentElectionDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="StudentElectionDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>StudentElectionDataSet.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="StudentElectionDataSet.xss">
-      <DependentUpon>StudentElectionDataSet.xsd</DependentUpon>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="StudentElection.Repository.Models.ElectionModel.datasource" />
+    <None Include="StudentElection.Repository.Models.VoteResultModel.datasource" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -475,9 +362,7 @@
     <None Include="Dependencies\Syncfusion.Tools.Wpf.dll" />
     <None Include="Dependencies\Syncfusion.XlsIO.Base.dll" />
     <None Include="Dependencies\Syncfusion.XlsIO.Wpf.dll" />
-    <Content Include="StudentElection.mdb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="Resources\import.png" />
     <None Include="Resources\lnhs_logo.jpg" />
     <None Include="Resources\lnhs_ssg_logo.jpg" />
     <None Include="Resources\school_default.png" />

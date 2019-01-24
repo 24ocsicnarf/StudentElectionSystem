@@ -55,7 +55,7 @@
                     </Button.Style>
                 </Button>
                 <StackPanel Orientation="Horizontal">
-                    <Button x:Name="btnCopyright" DockPanel.Dock="Right" Content="© 2016" Foreground="DimGray" FontSize="12" VerticalAlignment="Center" Padding="0" Background="Transparent" BorderThickness="0" Cursor="Hand" Click="btnCopyright_Click">
+                    <Button x:Name="btnCopyright" DockPanel.Dock="Right" Content="© 2019" Foreground="DimGray" FontSize="12" VerticalAlignment="Center" Padding="0" Background="Transparent" BorderThickness="0" Cursor="Hand" Click="btnCopyright_Click">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Foreground" Value="DimGray" />
@@ -68,7 +68,7 @@
                         </Button.Style>
                     </Button>
                     <TextBlock Text=" • " Foreground="DimGray" FontSize="12"/>
-                    <TextBlock DockPanel.Dock="Right" Text="v1.1.0" Foreground="DimGray" FontSize="12"/>
+                    <TextBlock DockPanel.Dock="Right" Text="v1.2.0" Foreground="DimGray" FontSize="12"/>
                 </StackPanel>
                
             </DockPanel>

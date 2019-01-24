@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using StudentElection.Services;
 using StudentElection.Repository.Models;
+using Humanizer;
 
 namespace StudentElection.Dialogs
 {
@@ -24,6 +25,7 @@ namespace StudentElection.Dialogs
 
         private readonly ElectionService _electionService = new ElectionService();
         private readonly PositionService _positionService = new PositionService();
+        private readonly CandidateService _candidateService = new CandidateService();
 
         private ElectionModel _currentElection;
 
@@ -57,7 +59,7 @@ namespace StudentElection.Dialogs
                 dgPositions.Refresh();
 
                 _window.lblPosition.Text = string.Format("Positions ({0})", dgPositions.Rows.Count);
-
+                
                 SetToAddSettings();
             }
             catch (Exception ex)
@@ -79,12 +81,12 @@ namespace StudentElection.Dialogs
         {
             int numberOfWinners = 1;
 
-            if (dgPositions.Rows.Count == 20)
-            {
-                MessageBox.Show("Up to 20 positions only.", "Position", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //if (dgPositions.Rows.Count == 20)
+            //{
+            //    MessageBox.Show("Up to 20 positions only.", "Position", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                return;
-            }
+            //    return;
+            //}
             
             if (txtPosition.Text.IsBlank())
             {
@@ -133,7 +135,9 @@ namespace StudentElection.Dialogs
                 await LoadPositionsAsync();
 
                 dgPositions.ClearSelection();
-                dgPositions.Rows[dgPositions.Rows.Count - 1].Selected = true;
+                var index = dgPositions.Rows.Count - 1;
+                dgPositions.Rows[index].Selected = true;
+                dgPositions.FirstDisplayedScrollingRowIndex = index;
 
                 G.EndWait(this);
             }
@@ -153,12 +157,13 @@ namespace StudentElection.Dialogs
 
                 G.EndWait(this);
 
-                MessageBox.Show("Successfully updated!", "Position", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show("Successfully updated!", "Position", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 dgPositions.ClearSelection();
                 dgPositions.Rows[sIndex].Selected = true;
+                dgPositions.FirstDisplayedScrollingRowIndex = sIndex;
             }
-            
+
             txtPosition.Focus();
         }
 
@@ -189,6 +194,7 @@ namespace StudentElection.Dialogs
                 G.EndWait(this);
 
                 dgPositions.Rows[sIndex - 1].Selected = true;
+                dgPositions.FirstDisplayedScrollingRowIndex = sIndex - 1;
             }
             catch (Exception ex)
             {
@@ -199,8 +205,6 @@ namespace StudentElection.Dialogs
 
         private async void btnDown_Click(object sender, EventArgs e)
         {
-            var positionAdapter = new PositionTableAdapter();
-
             try
             {
                 G.WaitLang(this);
@@ -222,6 +226,7 @@ namespace StudentElection.Dialogs
                 G.EndWait(this);
 
                 dgPositions.Rows[sIndex + 1].Selected = true;
+                dgPositions.FirstDisplayedScrollingRowIndex = sIndex + 1;
             }
             catch (Exception ex)
             {
@@ -282,13 +287,21 @@ namespace StudentElection.Dialogs
         {
             var position = dgPositions.SelectedRows[0].DataBoundItem as PositionModel;
 
-            var answer = MessageBox.Show(string.Format("Deleting the {0} position also deletes its candidate/s. Do you want to continue anyway?", position.Title), "Position", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            var candidates = await _candidateService.GetCandidatesByPositionAsync(position.Id);
+            if (candidates.Any())
+            {
+                MessageBox.Show($"Cannot delete this position\n\nThere's { "candidate".ToQuantity(candidates.Count()) } in this position",
+                    "Position", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
+                return;
+            }
+
+            var answer = MessageBox.Show(string.Format("Delete '{0}'?", position.Title), "Position", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
             if (answer == DialogResult.Yes)
             {
                 IsDeleted = true;
 
                 G.WaitLang(this);
-                
+
                 await _positionService.DeletePositionAsync(position);
 
                 G.EndWait(this);

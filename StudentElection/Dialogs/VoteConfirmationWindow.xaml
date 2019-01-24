@@ -5,13 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudentElection.Dialogs"
         mc:Ignorable="d"
-        Title="VoteConfirmationWindow" Height="360" Width="540" SnapsToDevicePixels="True" ResizeMode="NoResize" WindowStyle="None" FontFamily="Tahoma" FontSize="14.667" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Loaded="Window_Loaded">
-    <Grid Margin="8">
+        Title="VoteConfirmationWindow" Height="360" Width="540" Background="White" SnapsToDevicePixels="True" ResizeMode="NoResize" WindowStyle="None" FontFamily="Tahoma" FontSize="14.667" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Loaded="Window_Loaded" ContentRendered="Window_ContentRendered">
+    <Grid>
         <DockPanel>
-            <Label DockPanel.Dock="Top" Content="You have voted for the following:" FontSize="16" FontWeight="Bold" />
-            <DockPanel  DockPanel.Dock="Bottom">
-                <Label DockPanel.Dock="Left" Opacity="0.85" HorizontalAlignment="Left" Content="Click 'CAST' to confirm your votes.&#x0a;Click 'BACK' to close this window and change your votes." FontSize="12"  />
-                <StackPanel  DockPanel.Dock="Right"  Orientation="Horizontal" HorizontalAlignment="Right" >
+            <Label DockPanel.Dock="Top" Opacity="0.87" Content="You have voted for the following:" FontSize="20" FontWeight="Normal"  Margin="8 4"/>
+            <DockPanel  DockPanel.Dock="Bottom"  Margin="4">
+                <Label x:Name="lblInstructions" DockPanel.Dock="Left" Opacity="0.87" HorizontalAlignment="Left" Content="Click 'CAST' to confirm your votes.&#x0a;Click 'BACK' to close this window and change your votes." FontSize="12"  />
+                <StackPanel x:Name="stkScrollDown" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="12 4">
+                    <TextBlock Text="Scroll down to the bottom" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel x:Name="stkButtons" Visibility="Collapsed" DockPanel.Dock="Right"  Orientation="Horizontal" HorizontalAlignment="Right" >
                     <Button x:Name="btnCast"  Content="CAST" FontWeight="Bold" BorderBrush="{x:Null}" Margin="4" Width="80" Click="btnCast_Click">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}">
@@ -56,7 +59,7 @@
                     </Button>
                 </StackPanel>
             </DockPanel>
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer x:Name="svCandidates" VerticalScrollBarVisibility="Auto" Margin="8 0" Background="WhiteSmoke" ScrollChanged="SvCandidates_ScrollChanged">
                 <StackPanel x:Name="stkCandidates">
                     
                 </StackPanel>

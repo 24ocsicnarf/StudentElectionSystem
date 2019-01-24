@@ -12,6 +12,7 @@ namespace StudentElection.Repository.Interfaces
         Task<IEnumerable<PositionModel>> GetPositionsAsync(int electionId);
         Task<int> GetPositionsCountAsync(int electionId);
         Task<PositionModel> GetPositionAsync(int positionId);
+        Task<PositionModel> GetPositionByTitleAsync(int electionId, string positionTitle);
         Task InsertPositionAsync(PositionModel model);
         Task UpdatePositionAsync(PositionModel model);
         Task DeletePositionAsync(PositionModel model);

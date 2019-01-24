@@ -330,7 +330,7 @@
           <Property Name="TookPlaceOn" Type="DateTime" Precision="0" Nullable="false" />
           <Property Name="CandidatesFinalizedAt" Type="DateTime" Precision="6" />
           <Property Name="ClosedAt" Type="DateTime" Precision="6" />
-          <Property Name="Tag" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ServerTag" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Parties" Relationship="Self.Party_Election" FromRole="Election" ToRole="Party" />
           <NavigationProperty Name="Positions" Relationship="Self.Position_Election" FromRole="Election" ToRole="Position" />
           <NavigationProperty Name="Voters" Relationship="Self.Voter_Election" FromRole="Election" ToRole="Voter" />
@@ -615,7 +615,7 @@
                 <ScalarProperty Name="TookPlaceOn" ColumnName="TookPlaceOn" />
                 <ScalarProperty Name="CandidatesFinalizedAt" ColumnName="CandidatesFinalizedAt" />
                 <ScalarProperty Name="ClosedAt" ColumnName="ClosedAt" />
-                <ScalarProperty Name="Tag" ColumnName="Tag" />
+                <ScalarProperty Name="ServerTag" ColumnName="Tag" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

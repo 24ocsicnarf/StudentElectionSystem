@@ -33,7 +33,19 @@ namespace StudentElection.MSAccess.Repositories
 
             using (var tableAdapter = new CandidateTableAdapter())
             {
-                return tableAdapter.GetCandidateDetailsList(partyId)
+                return tableAdapter.GetCandidateDetailsListByParty(partyId)
+                    .AsQueryable<DataRow>()
+                    .ProjectTo<CandidateModel>();
+            }
+        }
+
+        public async Task<IEnumerable<CandidateModel>> GetCandidateDetailsListByPositionAsync(int positionId)
+        {
+            await Task.CompletedTask;
+
+            using (var tableAdapter = new CandidateTableAdapter())
+            {
+                return tableAdapter.GetCandidateDetailsListByPosition(positionId)
                     .AsQueryable<DataRow>()
                     .ProjectTo<CandidateModel>();
             }
@@ -127,6 +139,38 @@ namespace StudentElection.MSAccess.Repositories
                 var objCount = tableAdapter.CountCandidateQuery(electionId) ?? "0";
 
                 return Convert.ToInt32(objCount);
+            }
+        }
+
+        public async Task InsertCandidatesAsync(IEnumerable<CandidateModel> candidates)
+        {
+            await Task.CompletedTask;
+
+            using (var dataSet = new StudentElectionDataSet())
+            {
+                using (var manager = new TableAdapterManager())
+                {
+                    manager.CandidateTableAdapter = new CandidateTableAdapter();
+
+                    var id = -1;
+                    foreach (var candidate in candidates)
+                    {
+                        var newRow = dataSet.Candidate.NewCandidateRow();
+                        Mapper.Map(candidate, newRow);
+
+                        newRow.ID = id;
+                        if (candidate.Birthdate == null)
+                        {
+                            newRow.SetBirthdateNull();
+                        }
+
+                        dataSet.Candidate.AddCandidateRow(newRow);
+
+                        id--;
+                    }
+
+                    manager.UpdateAll(dataSet);
+                }
             }
         }
     }

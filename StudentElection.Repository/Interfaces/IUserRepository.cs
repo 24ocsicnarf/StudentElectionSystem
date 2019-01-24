@@ -14,5 +14,7 @@ namespace StudentElection.Repository.Interfaces
         Task<UserModel> GetUserAsync(int userId);
         Task AddUserAsync(UserModel user);
         Task UpdateUserAsync(UserModel user);
+        Task<IEnumerable<UserModel>> GetUsersAsync();
+        Task DeleteUserAsync(UserModel user);
     }
 }

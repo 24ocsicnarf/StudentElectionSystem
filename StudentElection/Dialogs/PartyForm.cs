@@ -1,4 +1,5 @@
 ﻿//using StudentElection.Classes;
+using Humanizer;
 using StudentElection;
 using StudentElection.Repository.Models;
 using StudentElection.Services;
@@ -22,6 +23,7 @@ namespace StudentElection.Dialogs
 
         private readonly ElectionService _electionService = new ElectionService();
         private readonly PartyService _partyService = new PartyService();
+        private readonly CandidateService _candidateService = new CandidateService();
 
         private ElectionModel _currentElection;
 
@@ -44,17 +46,17 @@ namespace StudentElection.Dialogs
         {
             cdgParty.Color = pbColor.BackColor;
 
-            //rechoose:
+            rechoose:
             var result = cdgParty.ShowDialog();
             
             if (result != DialogResult.Cancel)
             {
-                //double darkness = 1 - (0.299 * cdgParty.Color.R + 0.587 * cdgParty.Color.G + 0.114 * cdgParty.Color.B) / 255;
-                //if (darkness < (1 / 3d))
-                //{
-                //    MessageBox.Show("The chosen color is light. Make it darker.", "Make it darker", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //    goto rechoose;
-                //}
+                double darkness = 1 - (0.299 * cdgParty.Color.R + 0.587 * cdgParty.Color.G + 0.114 * cdgParty.Color.B) / 255;
+                if (darkness < (1 / 3d))
+                {
+                    MessageBox.Show("The chosen color is light. Make it darker.", "Make it darker", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    goto rechoose;
+                }
 
                 pbColor.BackColor = cdgParty.Color;
                 _argb = cdgParty.Color.ToArgb();
@@ -189,7 +191,16 @@ namespace StudentElection.Dialogs
 
         private async void btnDelete_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show("All candidates under this party will also be deleted.\n\nDo you want to continue?",
+            var candidates = await _candidateService.GetCandidatesByPartyAsync(Party.Id);
+            if (candidates.Any())
+            {
+                MessageBox.Show($"Cannot delete this party\n\nThere's { "candidate".ToQuantity(candidates.Count()) } in this party",
+                    "Position", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
+                return;
+            }
+
+
+            var result = MessageBox.Show($"Delete '{ Party.Title }'?",
                 Party.Title + " (" + Party.ShortName +  ")",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
@@ -200,14 +211,7 @@ namespace StudentElection.Dialogs
                     G.WaitLang(this);
 
                     await _partyService.DeletePartyAsync(Party);
-
-                    //TODO: DELETE CANDIDATES UNDER THE DELETED PARTY
-                    //Voters.Dictionary.Keys.Where(x => Candidates.Dictionary.Keys.Contains(x))?.ToList()
-                    //    .ForEach(x => {
-                    //        Candidates.DeleteData(x);
-                    //        Voters.UpdateIsForeign(x, false);
-                    //    } );
-
+                    
                     IsDeleted = true;
 
                     G.EndWait(this);
@@ -241,11 +245,9 @@ namespace StudentElection.Dialogs
                 btnDelete.Visible = false;
 
                 var random = new Random();
-                var b = new byte[3];
-                random.NextBytes(b);
-                pbColor.BackColor = Color.FromArgb(255, b[0], b[1], b[2]);
+                _argb = (int)(0xFF000000 + (random.Next(0xFFFFFF) & 0x7F7F7F));
 
-                _argb = pbColor.BackColor.ToArgb();
+                pbColor.BackColor = Color.FromArgb(_argb);
             }
             else
             {
@@ -277,6 +279,14 @@ namespace StudentElection.Dialogs
             }
 
             return false;
+        }
+
+        private void pbColor_Click(object sender, EventArgs e)
+        {
+            var random = new Random();
+            _argb = (int)(0xFF000000 + (random.Next(0xFFFFFF) & 0x7F7F7F));
+
+            pbColor.BackColor = Color.FromArgb(_argb);
         }
     }
 }

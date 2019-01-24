@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Reporting.WinForms;
+using StudentElection.Repository.Models;
+using StudentElection.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,26 +15,32 @@ namespace StudentElection.Dialogs
 {
     public partial class PrintForm : Form
     {
+        private readonly ElectionService _electionService = new ElectionService();
+
+        private ElectionModel _currentElection;
+
         public PrintForm()
         {
             InitializeComponent();
         }
 
-        private void PrintForm_Load(object sender, EventArgs e)
+        private async void PrintForm_Load(object sender, EventArgs e)
         {
+            _currentElection = await _electionService.GetCurrentElectionAsync();
+
             Print();
         }
 
         public void Print()
         {
-            this.VoteResultsTableAdapter.Fill(this.StudentElectionDataSet.VoteResults);
-            this.MachineTableAdapter.Fill(this.StudentElectionDataSet.Machine);
+            voteResultTableAdapter.FillVoteResults(studentElectionDataSet.VoteResult, _currentElection.Id);
             
-            reportViewer1.SetDisplayMode(Microsoft.Reporting.WinForms.DisplayMode.PrintLayout);
+            reportViewer1.SetDisplayMode(DisplayMode.PrintLayout);
             reportViewer1.ZoomPercent = 100;
-            reportViewer1.ZoomMode = Microsoft.Reporting.WinForms.ZoomMode.Percent;
-            //TODO: ELECTION TITLE
-            //reportViewer1.LocalReport.DisplayName = "SSG Elections 2018 Partial and Unofficial Results - " + Classes.Machine.Tag;
+            reportViewer1.ZoomMode = ZoomMode.Percent;
+
+            reportViewer1.LocalReport.DisplayName = _currentElection.Title;
+            reportViewer1.LocalReport.SetParameters(new ReportParameter("ImageFolderPath", App.ImageFolderPath));
         }
     }
 }

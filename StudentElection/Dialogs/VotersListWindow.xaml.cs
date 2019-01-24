@@ -82,7 +82,7 @@ namespace StudentElection.Dialogs
             }
         }
 
-        private void LoadVoters()
+        private async void LoadVoters()
         {
             _listVoter  = new List<Voter>();
             

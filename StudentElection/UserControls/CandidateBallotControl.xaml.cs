@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Project.Library.Helpers;
+using StudentElection.Repository.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -158,6 +160,24 @@ namespace StudentElection.UserControls
                 vbAlias.Stretch = Stretch.Uniform;
                 tbkAlias.Width = double.NaN;
                 ToolTipService.SetToolTip(tbkAlias, null);
+            }
+        }
+
+        private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var candidate = e.NewValue as CandidateModel;
+
+            imgCandidate.Source = ImageHelper.ImageToImageSource(Properties.Resources.default_candidate);
+            if (!candidate.PictureFileName.IsBlank())
+            {
+                var imagePath = System.IO.Path.Combine(App.ImageFolderPath, candidate.PictureFileName);
+                if (System.IO.File.Exists(imagePath))
+                {
+                    using (var bmpTemp = new System.Drawing.Bitmap(imagePath))
+                    {
+                        imgCandidate.Source = ImageHelper.ImageToImageSource(new System.Drawing.Bitmap(bmpTemp));
+                    }
+                }
             }
         }
 

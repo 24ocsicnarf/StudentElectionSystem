@@ -18,7 +18,7 @@ namespace StudentElection.Repository.Models
         public DateTime TookPlaceOn { get; set; }
         public DateTime? CandidatesFinalizedAt { get; set; }
         public DateTime? ClosedAt { get; set; }
-        public string Tag { get; set; }
+        public string ServerTag { get; set; }
     
         public ICollection<PartyModel> Parties { get; set; }
         public ICollection<PositionModel> Positions { get; set; }

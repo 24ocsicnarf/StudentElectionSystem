@@ -12,6 +12,10 @@
 
 namespace StudentElection.MSAccess.StudentElectionDataSetTableAdapters
 {
+    partial class BallotTableAdapter
+    {
+    }
+
     partial class CandidateTableAdapter
     {
     }

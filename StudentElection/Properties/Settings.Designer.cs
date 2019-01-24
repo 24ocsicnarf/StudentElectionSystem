@@ -23,17 +23,6 @@ namespace StudentElection.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\\StudentElection.mdb;" +
-            "Jet OLEDB:Database Password=9uAv92fjSh2E")]
-        public string StudentElectionConnectionString {
-            get {
-                return ((string)(this["StudentElectionConnectionString"]));
-            }
-        }
-        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("2Pd4HdP52snJ")]
@@ -64,6 +53,18 @@ namespace StudentElection.Properties {
         public string SystemTitle {
             get {
                 return ((string)(this["SystemTitle"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=\"D:\\Documents\\Visual Studio 2017\\RW " +
+            "Projects\\StudentElection - Client-Server\\StudentElection.MSAccess\\StudentElectio" +
+            "n.mdb\";Persist Security Info=True")]
+        public string StudentElectionConnectionString {
+            get {
+                return ((string)(this["StudentElectionConnectionString"]));
             }
         }
     }

@@ -80,6 +80,12 @@ namespace StudentElection.Dialogs
                 await _window.LoadCandidatesAsync();
 
                 _candidateParty = (await _candidateService.GetCandidatesByPartyAsync(Candidate.PartyId)).ToList();
+
+                _index = _candidateParty.FindIndex(c => c.Id == candidate.Id);
+                lblCandidatePage.Text = (_index + 1) + " of " + (_candidateParty.Count);
+
+                btnNext.Enabled = _index != _candidateParty.Count - 1;
+                btnPrev.Enabled = _index != 0;
             }
 
             Opacity = 1;
@@ -143,12 +149,17 @@ namespace StudentElection.Dialogs
             lblPosition.Text = Candidate.Position.Title;
             lblParty.Text = Candidate.Party.Title;
             lblAbbreviation.Text = Candidate.Party.ShortName;
-            
+
+            pbImage.Image = Properties.Resources.default_candidate;
             if (!Candidate.PictureFileName.IsBlank())
             {
-                using (var bmpTemp = new Bitmap(System.IO.Path.Combine(App.ImageFolderPath, Candidate.PictureFileName)))
+                var filePath = System.IO.Path.Combine(App.ImageFolderPath, Candidate.PictureFileName);
+                if (System.IO.File.Exists(filePath))
                 {
-                    pbImage.Image = new Bitmap(bmpTemp);
+                    using (var bmpTemp = new Bitmap(System.IO.Path.Combine(App.ImageFolderPath, Candidate.PictureFileName)))
+                    {
+                        pbImage.Image = new Bitmap(bmpTemp);
+                    }
                 }
             }
 

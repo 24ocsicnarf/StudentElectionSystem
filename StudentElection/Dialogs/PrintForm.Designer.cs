@@ -30,42 +30,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             Microsoft.Reporting.WinForms.ReportDataSource reportDataSource1 = new Microsoft.Reporting.WinForms.ReportDataSource();
             Microsoft.Reporting.WinForms.ReportDataSource reportDataSource2 = new Microsoft.Reporting.WinForms.ReportDataSource();
-            this.VoteResultsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.StudentElectionDataSet = new StudentElection.StudentElectionDataSet();
-            this.MachineBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.reportViewer1 = new Microsoft.Reporting.WinForms.ReportViewer();
-            this.VoteResultsTableAdapter = new VoteResultsTableAdapter();
-            this.MachineTableAdapter = new MachineTableAdapter();
-            ((System.ComponentModel.ISupportInitialize)(this.VoteResultsBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StudentElectionDataSet)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MachineBindingSource)).BeginInit();
+            this.voteResultTableAdapter = new StudentElection.MSAccess.StudentElectionDataSetTableAdapters.VoteResultTableAdapter();
+            this.studentElectionDataSet = new StudentElection.MSAccess.StudentElectionDataSet();
+            ((System.ComponentModel.ISupportInitialize)(this.studentElectionDataSet)).BeginInit();
             this.SuspendLayout();
-            // 
-            // VoteResultsBindingSource
-            // 
-            this.VoteResultsBindingSource.DataMember = "VoteResults";
-            this.VoteResultsBindingSource.DataSource = this.StudentElectionDataSet;
-            // 
-            // StudentElectionDataSet
-            // 
-            this.StudentElectionDataSet.DataSetName = "LMNSVotingDataSet";
-            this.StudentElectionDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // MachineBindingSource
-            // 
-            this.MachineBindingSource.DataMember = "Machine";
-            this.MachineBindingSource.DataSource = this.StudentElectionDataSet;
             // 
             // reportViewer1
             // 
             this.reportViewer1.Dock = System.Windows.Forms.DockStyle.Fill;
             reportDataSource1.Name = "VoteResultsDataSet";
-            reportDataSource1.Value = this.VoteResultsBindingSource;
+            reportDataSource1.Value = null;
             reportDataSource2.Name = "MiscDataSet";
-            reportDataSource2.Value = this.MachineBindingSource;
+            reportDataSource2.Value = null;
             this.reportViewer1.LocalReport.DataSources.Add(reportDataSource1);
             this.reportViewer1.LocalReport.DataSources.Add(reportDataSource2);
             this.reportViewer1.LocalReport.ReportEmbeddedResource = "StudentElection.Reports.VoteResultReport.rdlc";
@@ -74,13 +53,14 @@
             this.reportViewer1.Size = new System.Drawing.Size(624, 444);
             this.reportViewer1.TabIndex = 0;
             // 
-            // VoteResultsTableAdapter
+            // voteResultTableAdapter
             // 
-            this.VoteResultsTableAdapter.ClearBeforeFill = true;
+            this.voteResultTableAdapter.ClearBeforeFill = true;
             // 
-            // MachineTableAdapter
+            // studentElectionDataSet
             // 
-            this.MachineTableAdapter.ClearBeforeFill = true;
+            this.studentElectionDataSet.DataSetName = "StudentElectionDataSet";
+            this.studentElectionDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // PrintForm
             // 
@@ -92,19 +72,15 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Print";
             this.Load += new System.EventHandler(this.PrintForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.VoteResultsBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StudentElectionDataSet)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MachineBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.studentElectionDataSet)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        private System.Windows.Forms.BindingSource VoteResultsBindingSource;
-        private StudentElectionDataSet StudentElectionDataSet;
-        private VoteResultsTableAdapter VoteResultsTableAdapter;
-        private System.Windows.Forms.BindingSource MachineBindingSource;
-        private MachineTableAdapter MachineTableAdapter;
+
         private Microsoft.Reporting.WinForms.ReportViewer reportViewer1;
+        private MSAccess.StudentElectionDataSetTableAdapters.VoteResultTableAdapter voteResultTableAdapter;
+        private MSAccess.StudentElectionDataSet studentElectionDataSet;
     }
 }

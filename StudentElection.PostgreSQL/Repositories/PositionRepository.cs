@@ -97,5 +97,19 @@ namespace StudentElection.PostgreSQL.Repositories
                 return model;
             }
         }
+
+        public async Task<PositionModel> GetPositionByTitleAsync(int electionId, string positionTitle)
+        {
+            using (var context = new StudentElectionContext())
+            {
+                var position = await context.Positions
+                    .SingleOrDefaultAsync(p => p.ElectionId == electionId && p.Title.ToLower() == positionTitle.ToLower());
+
+                var model = new PositionModel();
+                Mapper.Map(position, model);
+
+                return model;
+            }
+        }
     }
 }

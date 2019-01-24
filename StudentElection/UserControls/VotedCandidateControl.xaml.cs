@@ -1,4 +1,5 @@
-﻿using StudentElection.Classes;
+﻿//using StudentElection.Classes;
+using StudentElection.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +29,8 @@ namespace StudentElection.UserControls
 
         private void tbkName_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var candidate = e.NewValue as Candidate;
-            if (candidate.ID == 0)
+            var candidate = e.NewValue as CandidateModel;
+            if (candidate.Id == 0)
             {
                 tbkName.Text = "(No candidate chosen)";
                 tbkName.Opacity = 0.5;

@@ -51,13 +51,13 @@ namespace StudentElection.MSAccess.Repositories
             }
         }
 
-        public async Task UpdateTagAsync(int electionId, string tag)
+        public async Task UpdateTagAsync(int electionId, string serverTag)
         {
             await Task.CompletedTask;
 
             using (var tableAdapter = new ElectionTableAdapter())
             {
-                tableAdapter.UpdateTagQuery(tag, electionId);
+                tableAdapter.UpdateServerTagQuery(serverTag, electionId);
             }
         }
     }

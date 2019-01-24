@@ -52,7 +52,7 @@ namespace StudentElection.PostgreSQL.Repositories
         {
             using (var context = new StudentElectionContext())
             {
-                var election = await context.Elections.Where(e => e.ClosedAt == null)
+                var election = await context.Elections
                     .OrderByDescending(e => e.TookPlaceOn)
                     .ThenByDescending(e => e.Id).FirstOrDefaultAsync();
 
@@ -68,7 +68,7 @@ namespace StudentElection.PostgreSQL.Repositories
             using (var context = new StudentElectionContext())
             {
                 var election = await context.Elections.SingleOrDefaultAsync(e => e.Id == electionId);
-                election.Tag = tag;
+                election.ServerTag = tag;
 
                 await context.SaveChangesAsync();
             }

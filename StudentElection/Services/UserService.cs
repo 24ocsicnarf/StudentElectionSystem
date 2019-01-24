@@ -4,6 +4,7 @@ using StudentElection.Repository;
 using StudentElection.Repository.Interfaces;
 using StudentElection.Repository.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
@@ -25,12 +26,20 @@ namespace StudentElection.Services
         {
             var user = await _userRepository.GetUserByUsernameAsync(username);
 
-            if (await CryptographyHelper.MatchHashAsync(password, user.PasswordHash))
+            if (user != null)
             {
-                return user;
+                if (await CryptographyHelper.MatchHashAsync(password, user.PasswordHash))
+                {
+                    return user;
+                }
             }
             
             return null;
+        }
+
+        public async Task<IEnumerable<UserModel>> GetUsersAsync()
+        {
+            return await _userRepository.GetUsersAsync();
         }
 
         public async Task<UserModel> GetUserByUsernameAsync(string username)
@@ -63,6 +72,11 @@ namespace StudentElection.Services
                 //TODO: CHANGE PASSWORD
                 await _userRepository.UpdateUserAsync(user);
             }
+        }
+
+        public async Task DeleteUserAsync(UserModel user)
+        {
+            await _userRepository.DeleteUserAsync(user);
         }
     }
 }

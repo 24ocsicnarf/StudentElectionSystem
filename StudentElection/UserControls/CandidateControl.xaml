@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StudentElection" 
              xmlns:prop="clr-namespace:StudentElection.Properties" 
-             mc:Ignorable="d" FontFamily="Tahoma" FontSize="14.667" Cursor="Hand" Margin="1,0" Loaded="UserControl_Loaded" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave" PreviewMouseLeftButtonUp="UserControl_PreviewMouseLeftButtonUp" >
+             mc:Ignorable="d" FontFamily="Tahoma" FontSize="14.667" DataContextChanged="UserControl_DataContextChanged" Cursor="Hand" Margin="1,0" Loaded="UserControl_Loaded" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave" PreviewMouseLeftButtonUp="UserControl_PreviewMouseLeftButtonUp" >
     <Grid Height="164" Width="106" >
         <Border x:Name="bdrCandidate" BorderBrush="#00404040" BorderThickness="4" Margin="0" >
             <Grid Background="White">

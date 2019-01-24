@@ -1,4 +1,6 @@
-﻿using StudentElection.Classes;
+﻿//using StudentElection.Classes;
+using Project.Library.Helpers;
+using StudentElection.Repository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +30,22 @@ namespace StudentElection.UserControls
 
         private void tbkCount_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if ((e.NewValue as Candidate).VoteCount == 1)
+            var voteResult = (e.NewValue as VoteResultModel);
+
+            imgCandidate.Source = ImageHelper.ImageToImageSource(Properties.Resources.default_candidate);
+            if (!voteResult.PictureFileName.IsBlank())
+            {
+                var imagePath = System.IO.Path.Combine(App.ImageFolderPath, voteResult.PictureFileName);
+                if (System.IO.File.Exists(imagePath))
+                {
+                    using (var bmpTemp = new System.Drawing.Bitmap(imagePath))
+                    {
+                        imgCandidate.Source = ImageHelper.ImageToImageSource(new System.Drawing.Bitmap(bmpTemp));
+                    }
+                }
+            }
+
+            if (voteResult.VoteCount == 1)
             {
                 tbkVoteLabel.Text = "vote";
             }

@@ -1,7 +1,10 @@
 namespace StudentElection.Repository.Models
 {
     using Project.Library;
+    using Project.Library.Enums;
     using Project.Library.Extensions;
+    using Project.Library.Helpers;
+    using Project.Library.Interfaces;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
@@ -11,7 +14,7 @@ namespace StudentElection.Repository.Models
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
-    public partial class CandidateModel
+    public partial class CandidateModel : IPersonName
     {
         public CandidateModel()
         {
@@ -36,6 +39,7 @@ namespace StudentElection.Repository.Models
         public PositionModel Position { get; set; }
         public ICollection<VoteModel> Votes { get; set; }
 
-        public string FullName => $"{ this.LastName }, { this.FirstName } { this.Suffix } { this.MiddleName }";
+        public string FullName => DataHelper.GetPersonFullName(this, PersonNameFormat.LastNameFirst,
+            System.Windows.Controls.CharacterCasing.Upper);
     }
 }

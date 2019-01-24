@@ -9,7 +9,7 @@ namespace StudentElection.Repository.Models
         {
             this.Votes = new HashSet<VoteModel>();
         }
-    
+
         public int Id { get; set; }
         public string Code { get; set; }
         public System.DateTime EnteredAt { get; set; }

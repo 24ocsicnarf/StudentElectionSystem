@@ -1,10 +1,7 @@
-﻿using StudentElection.Classes;
+﻿//using StudentElection.Classes;
 using StudentElection;
 //using Microsoft.Reporting.WinForms;
 using Microsoft.Win32;
-using Syncfusion.Data;
-using Syncfusion.UI.Xaml.Grid.Converter;
-using Syncfusion.XlsIO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,6 +30,9 @@ using StudentElection.Dialogs;
 using StudentElection.Repository.Models;
 using StudentElection.Services;
 using Project.Library.Helpers;
+using StudentElection.Repository.Interfaces;
+using Humanizer;
+using ExcelDataReader;
 
 namespace StudentElection.Main
 {
@@ -46,13 +46,18 @@ namespace StudentElection.Main
 
         private bool _isLogOut;
 
+        private readonly UserService _userService = new UserService();
         private readonly ElectionService _electionService = new ElectionService();
         private readonly PositionService _positionService = new PositionService();
         private readonly PartyService _partyService = new PartyService();
         private readonly CandidateService _candidateService = new CandidateService();
         private readonly VoterService _voterService = new VoterService();
+        private readonly BallotService _ballotService = new BallotService();
 
         private ElectionModel _currentElection;
+        
+        private BackgroundWorker _backgroundWorker;
+        private ProgressWindow _progressWindow;
 
         [DllImport("user32.dll")]
         private static extern int SetWindowLong(HandleRef hWnd, int nIndex, int dwNewLong);
@@ -84,19 +89,10 @@ namespace StudentElection.Main
 
         private void RefreshVoterCountLabel()
         {
-            _voterCount = 0;
-            _foreignCount = 0;
-
+            _voterCount = lvVoter.Items.Count;
             CollectionViewSource.GetDefaultView(lvVoter.ItemsSource).Refresh();
 
-            if ((int)lblVoterInfo.Tag == 0)
-            {
-                lblVoterInfo.Content = string.Format("{0:#,##0} voter{1} & {2:#,##0} foreign candidate{3} ({4:#,##0} total)", _voterCount, _voterCount == 1 ? "" : "s", _foreignCount, _foreignCount == 1 ? "" : "s", _voterCount + _foreignCount);
-            }
-            else
-            {
-                lblVoterInfo.Content = string.Format("{0:#,##0} foreign candidate{1}", _foreignCount, _foreignCount == 1 ? "" : "s");
-            }
+            lblVoterInfo.Content = $"{ "voter".ToQuantity(_voterCount) }";
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -104,10 +100,10 @@ namespace StudentElection.Main
             G.WaitLang(this);
 
             await LoadElectionAsync();
-            LoadStaff();
+            await LoadUsersAsync();
             await LoadVotersAsync();
             await LoadCandidatesAsync();
-            //LoadResults();
+            await LoadResultsAsync();
 
             lblPosition.Text = string.Format("Positions ({0})", await _positionService.GetPositionsCountAsync(_currentElection.Id));
             lblUsername.Content = User.UserName;
@@ -126,15 +122,15 @@ namespace StudentElection.Main
             {
                 _currentElection = await _electionService.GetCurrentElectionAsync();
 
-                if (_currentElection.Tag.IsBlank())
+                if (_currentElection.ServerTag.IsBlank())
                 {
                     lblTag.Content = "(No Tag)";
                     txtTag.Text = "";
                 }
                 else
                 {
-                    lblTag.Content = _currentElection.Tag;
-                    txtTag.Text = _currentElection.Tag;
+                    lblTag.Content = _currentElection.ServerTag;
+                    txtTag.Text = _currentElection.ServerTag;
                 }
                 
                 if (_currentElection.CandidatesFinalizedAt.HasValue && !_currentElection.ClosedAt.HasValue)
@@ -186,19 +182,20 @@ namespace StudentElection.Main
 
                     Application.Current?.Shutdown();
                 }
-                chkVoted.Visibility = Visibility.Collapsed;
+                //chkVoted.Visibility = Visibility.Collapsed;
 
                 lblTag.Cursor = Cursors.IBeam;
             }
             else
             {
                 dckCandidateButtons.Visibility = Visibility.Collapsed;
-                chkVoted.Visibility = Visibility.Visible;
+                //chkVoted.Visibility = Visibility.Visible;
 
                 foreach (PartyItemControl item in stkCandidates.Children)
                 {
                     item.AreCandidatesFinalized = true;
                     item.btnAddCandidate.Visibility = Visibility.Collapsed;
+                    item.btnImportCandidates.Visibility = Visibility.Collapsed;
                     item.tbkParty.Cursor = Cursors.Arrow;
                 }
 
@@ -206,43 +203,45 @@ namespace StudentElection.Main
             }
         }
 
-        private void CheckResults()
+        private async Task CheckResultsAsync()
         {
-            //TODO: CHECK RESULTS
-            //if (!_currentElection.ClosedAt.HasValue)
-            //{
-            //    try
-            //    {
-            //        btnVoterButtons.Visibility = Visibility.Visible;
+            if (!_currentElection.ClosedAt.HasValue)
+            {
+                try
+                {
+                    btnVoterButtons.Visibility = Visibility.Visible;
 
-            //        if (Ballots.Dictionary.Count > 0)
-            //        {
-            //            lblResultsAvailable.Content = string.Format("Results are available ({0:n0} of {1:n0} voters voted)", Ballots.Dictionary.Count, Voters.Dictionary.Count);
-            //            grdViewResult.Visibility = Visibility.Visible;
-            //            lblNoResults.Visibility = Visibility.Collapsed;
-            //        }
-            //        else
-            //        {
-            //            grdViewResult.Visibility = Visibility.Collapsed;
-            //            lblNoResults.Visibility = Visibility.Visible;
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                    var ballotsCount = await _ballotService.CountBallotsAsync(_currentElection.Id);
+                    var votersCount = await _voterService.CountVotersAsync(_currentElection.Id);
 
-            //        Application.Current?.Shutdown();
-            //    }
-            //}
-            //else
-            //{
-            //    grdViewResult.Visibility = Visibility.Collapsed;
-            //    btnExportPrint.Visibility = Visibility.Visible;
+                    if (ballotsCount > 0)
+                    {
+                        lblResultsAvailable.Content = string.Format("Results are available ({0:n0} of {1:n0} voters voted)", ballotsCount, votersCount);
+                        grdViewResult.Visibility = Visibility.Visible;
+                        lblNoResults.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        grdViewResult.Visibility = Visibility.Collapsed;
+                        lblNoResults.Visibility = Visibility.Visible;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
 
-            //    btnAddVoter.Visibility = Visibility.Collapsed;
-            //    btnEditVoter.Visibility = Visibility.Collapsed;
-            //    btnDeleteVoter.Visibility = Visibility.Collapsed;
-            //}
+                    Application.Current?.Shutdown();
+                }
+            }
+            else
+            {
+                grdViewResult.Visibility = Visibility.Collapsed;
+                btnExportPrint.Visibility = Visibility.Visible;
+
+                btnAddVoter.Visibility = Visibility.Collapsed;
+                btnEditVoter.Visibility = Visibility.Collapsed;
+                btnDeleteVoter.Visibility = Visibility.Collapsed;
+            }
         }
 
         #region Staff
@@ -257,17 +256,17 @@ namespace StudentElection.Main
                 return true;
             else
             {
-                return ((obj as Staff).LastName.IndexOf(txtStaffFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
-                    ((obj as Staff).FirstName.IndexOf(txtStaffFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
-                    ((obj as Staff).MiddleName.IndexOf(txtStaffFilter.Text, StringComparison.OrdinalIgnoreCase) == 0);
+                return ((obj as UserModel).LastName.IndexOf(txtStaffFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
+                    ((obj as UserModel).FirstName.IndexOf(txtStaffFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
+                    ((obj as UserModel).MiddleName.IndexOf(txtStaffFilter.Text, StringComparison.OrdinalIgnoreCase) == 0);
             }
         }
 
-        private void LoadStaff()
+        private async Task LoadUsersAsync()
         {
             try
             {
-                lvStaff.ItemsSource = Staffs.Dictionary.Values;
+                lvStaff.ItemsSource = await _userService.GetUsersAsync();
 
                 cvStaff = (CollectionView)CollectionViewSource.GetDefaultView(lvStaff.ItemsSource);
                 cvStaff.Filter = StaffFilter;
@@ -300,7 +299,7 @@ namespace StudentElection.Main
             }
         }
 
-        private void btnAddStaff_Click(object sender, RoutedEventArgs e)
+        private async void btnAddStaff_Click(object sender, RoutedEventArgs e)
         {
             if (stkCandidates.Children.Count == 10)
             {
@@ -326,14 +325,14 @@ namespace StudentElection.Main
             Opacity = 1;
 
             if (!staffWindow.IsCanceled)
-                LoadStaff();
+                await LoadUsersAsync();
             
             lvStaff.ScrollIntoView(lvStaff.Items[lvStaff.Items.Count - 1]);
 
             G.EndWait(this);
         }
 
-        private void btnEditStaff_Click(object sender, RoutedEventArgs e)
+        private async void btnEditStaff_Click(object sender, RoutedEventArgs e)
         {
             G.EndWait(this);
 
@@ -353,7 +352,7 @@ namespace StudentElection.Main
 
             Opacity = 1;
             if (!staffWindow.IsCanceled)
-                LoadStaff();
+                await LoadUsersAsync();
 
             lvStaff.ScrollIntoView(lvStaff.Items[_selectedStaff]);
             lvStaff.SelectedIndex = _selectedStaff;
@@ -361,12 +360,12 @@ namespace StudentElection.Main
             G.EndWait(this);
         }
 
-        private void btnDeleteStaff_Click(object sender, RoutedEventArgs e)
+        private async void btnDeleteStaff_Click(object sender, RoutedEventArgs e)
         {
             if (lvStaff.SelectedItems.Count == 1)
             {
-                var staff = (lvStaff.SelectedValue as Staff);
-                var result = MessageBox.Show(staff.FullName + " will not be able to log in on this system. Do you want to continue?", "Deleting '" + staff.Username + "'", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+                var user = (lvStaff.SelectedValue as UserModel);
+                var result = MessageBox.Show(user.FullName + " will not be able to log in on this system. Do you want to continue?", "Deleting '" + user.UserName + "'", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
                 var selectedStaff = _selectedStaff == lvStaff.Items.Count - 1 ? _selectedStaff - 1 : _selectedStaff;
 
                 if (result == MessageBoxResult.Yes)
@@ -375,13 +374,13 @@ namespace StudentElection.Main
                     {
                         G.WaitLang(this);
 
-                        Staffs.DeleteData(staff.ID);
+                        await _userService.DeleteUserAsync(user);
 
                         G.EndWait(this);
                         MessageBox.Show("The user is deleted.", "Staff", MessageBoxButton.OK, MessageBoxImage.Information);
 
                         G.WaitLang(this);
-                        LoadStaff();
+                        await LoadUsersAsync();
 
                         lvStaff.ScrollIntoView(lvStaff.Items[selectedStaff]);
                         G.EndWait(this);
@@ -419,9 +418,9 @@ namespace StudentElection.Main
         {
             var voter = obj as VoterModel;
             
-            bool containsText = ((voter.LastName.IndexOf(txtVoterFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
-                       (voter.FirstName.IndexOf(txtVoterFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
-                       (voter.MiddleName.IndexOf(txtVoterFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
+            bool containsText = ((voter.FullName.IndexOf(txtVoterFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
+                       //(voter.FirstName.IndexOf(txtVoterFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
+                       //(voter.MiddleName.IndexOf(txtVoterFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
                        (voter.YearLevel.ToString().IndexOf(txtVoterFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
                        (voter.Section.IndexOf(txtVoterFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
                        (voter.Sex.ToString().IndexOf(txtVoterFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
@@ -635,10 +634,9 @@ namespace StudentElection.Main
                 }
                 else
                 {
-                    //TODO: focus on added item
-                    //var newItem = Voters.Dictionary.Values.OrderBy(x => x.ID).Last();
-                    //lvVoter.ScrollIntoView(newItem);
-                    //lvVoter.SelectedItem = newItem;
+                    var newItem = lvVoter.ItemsSource.Cast<VoterModel>().OrderBy(v => v.Id).LastOrDefault();
+                    lvVoter.ScrollIntoView(newItem);
+                    lvVoter.SelectedItem = newItem;
                 }
             }
 
@@ -799,7 +797,7 @@ namespace StudentElection.Main
 
         #region Maintenance
 
-        private void lblUsername_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private async void lblUsername_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Opacity = 0.5;
 
@@ -812,7 +810,7 @@ namespace StudentElection.Main
 
             if (staffWindow.IsCanceled) return;
 
-            LoadStaff();
+            await LoadUsersAsync();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -841,12 +839,12 @@ namespace StudentElection.Main
 
         private async void btnAddParty_Click(object sender, RoutedEventArgs e)
         {
-            if (stkCandidates.Children.Count == 20)
-            {
-                MessageBox.Show("Up to 20 parties only.", "Party", MessageBoxButton.OK, MessageBoxImage.Error);
+            //if (stkCandidates.Children.Count == 20)
+            //{
+            //    MessageBox.Show("Up to 20 parties only.", "Party", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                return;
-            }
+            //    return;
+            //}
 
             Opacity = 0.5;
             
@@ -916,18 +914,6 @@ namespace StudentElection.Main
                     foreach (var candidate in candidateParty)
                     {
                         var candidateControl = new CandidateControl();
-                        if (!candidate.PictureFileName.IsBlank())
-                        {
-                            var imagePath = System.IO.Path.Combine(App.ImageFolderPath, candidate.PictureFileName);
-                            using (var bmpTemp = new Bitmap(imagePath))
-                            {
-                                candidateControl.imgCandidate.Source = ImageHelper.ImageToImageSource(new System.Drawing.Bitmap(bmpTemp));
-                            }
-                        }
-                        else
-                        {
-                            candidateControl.imgCandidate.Source = ImageHelper.ImageToImageSource(Properties.Resources.default_candidate);
-                        }
                         candidateControl.DataContext = candidate;
                         item.stkCandidate.Children.Add(candidateControl);
                     }
@@ -955,7 +941,7 @@ namespace StudentElection.Main
         
         private async void btnFinalize_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentElection.Tag.IsBlank())
+            if (_currentElection.ServerTag.IsBlank())
             {
                 MessageBox.Show("Please provide a tag for this machine's server. Make sure that the tag is unique among other servers.", "Provide A Tag", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -1006,199 +992,190 @@ namespace StudentElection.Main
 
         #region Results
         
-        public void LoadResults()
+        public async Task LoadResultsAsync()
         {
-            //CheckResults();
+            await CheckResultsAsync();
 
-            //if (!_currentElection.ClosedAt.HasValue)
-            //{
-            //    return;
-            //}
+            if (!_currentElection.ClosedAt.HasValue)
+            {
+                return;
+            }
 
-            //var listPosition = new List<Classes.Position>();
-            
-            //try
-            //{
-            //    var positionRows = Positions.Dictionary.Values;
-            //    dgResults.ItemsSource = Ballots.Results.Select(r => new VoteResult
-            //    {
-            //        PictureSource = r.PictureSource,
-            //        Name = r.FullName,
-            //        Alias = r.Alias,
-            //        PositionName = r.Position.Title,
-            //        PositionOrder = r.Position.Order,
-            //        GradeLevel = r.GradeLevel,
-            //        GradeStrand = r.GradeStrand,
-            //        PartyTitle = r.Party.Title,
-            //        PartyColorBrush = r.Party.ColorBrush,
-            //        VoteCount = r.VoteCount
-            //    }).OrderBy(vr => vr.PositionOrder);
+            var listPosition = new List<PositionModel>();
 
-
-            //    stkResults.Children.Clear();
-
-            //    cmbPositions.Items.Clear();
-            //    cmbPositions.Items.Add(new Classes.Position()
-            //    {
-            //        ID = 0,
-            //        Title = "All"
-            //    });
-
-            //    foreach (var position in positionRows)
-            //    {
-            //        var candidatesPosition = Ballots.Results.Where(x => x.Position.ID == position.ID).OrderByDescending(r => r.VoteCount).ToList();
-
-            //        if (!candidatesPosition.Any())
-            //        {
-            //            continue;
-            //        }
-
-            //        cmbPositions.Items.Add(position);
-
-            //        var item = new PositionItemControl();
-            //        item.tbkName.Visibility = Visibility.Collapsed;
-            //        item.recParty.Visibility = Visibility.Collapsed;
-            //        item.cdfCandidate.Width = new GridLength(0);
-            //        item.DataContext = position;
-
-            //        stkResults.Children.Add(item);
-
-            //        lblNoResults.Visibility = Visibility.Hidden;
-
-            //        item.wrpCandidate.Children.Clear();
-
-            //        int rank = 0;
-            //        for (int i = 0; i < candidatesPosition.Count; i++)
-            //        {
-            //            var candidate = candidatesPosition[i];
-            //            item.wrpCandidate.Visibility = Visibility.Visible;
-            //            var control = new CandidateResultControl();
-
-            //            var previousCandidate = i == 0 ? null : candidatesPosition.ElementAtOrDefault(i - 1);
-
-            //            if (previousCandidate == null || previousCandidate.VoteCount != candidate.VoteCount)
-            //            {
-            //                rank++;
-            //            }
-
-            //            control.tbkRank.Text = string.Format("#{0:n0}", rank);
-
-            //            control.SizeChanged += (s, ev) =>
-            //            {
-            //                var actualWidth = control.ActualWidth - control.bdrImageInfo.ActualWidth - control.bdrImageInfo.Margin.Left - control.bdrImageInfo.Margin.Right - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right;
-            //                if (control.tbkName.ActualWidth >= actualWidth * 1.5)
-            //                {
-            //                    control.vbName.Stretch = Stretch.Fill;
-
-            //                    control.tbkName.Width = actualWidth * 1.5;
-            //                    control.tbkName.TextTrimming = TextTrimming.CharacterEllipsis;
-
-
-            //                    ToolTipService.SetShowDuration(control.tbkName, int.MaxValue);
-            //                }
-
-            //                actualWidth = control.ActualWidth - control.bdrImageInfo.ActualWidth - control.bdrImageInfo.Margin.Left - control.bdrImageInfo.Margin.Right - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right;
-            //                if (control.tbkAlias.ActualWidth >= actualWidth * 1.5)
-            //                {
-            //                    control.vbAlias.Stretch = Stretch.Fill;
-
-            //                    control.tbkAlias.Width = actualWidth * 1.5;
-            //                    control.tbkAlias.TextTrimming = TextTrimming.CharacterEllipsis;
-
-            //                    ToolTipService.SetShowDuration(control.tbkAlias, int.MaxValue);
-            //                }
-
-
-            //                actualWidth = control.ActualWidth - control.bdrImageInfo.ActualWidth - control.bdrImageInfo.Margin.Left - control.bdrImageInfo.Margin.Right - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right;
-            //                if (control.tbkParty.ActualWidth >= actualWidth * 1.5)
-            //                {
-            //                    control.vbParty.Stretch = Stretch.Fill;
-
-            //                    control.tbkParty.Width = actualWidth * 1.5;
-            //                    control.tbkParty.TextTrimming = TextTrimming.CharacterEllipsis;
-
-            //                    ToolTipService.SetShowDuration(control.tbkParty, int.MaxValue);
-            //                }
-            //            };
-            //            control.tbkName.SizeChanged += (s, ev) =>
-            //            {
-            //                var actualWidth = control.ActualWidth - control.bdrImageInfo.ActualWidth - control.bdrImageInfo.Margin.Left - control.bdrImageInfo.Margin.Right - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right;
-
-            //                if (control.tbkName.ActualWidth >= actualWidth)
-            //                {
-            //                    control.vbName.Width = actualWidth - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right; ;
-            //                    control.vbName.Stretch = Stretch.Fill;
-            //                }
-            //                else
-            //                {
-            //                    control.vbName.Stretch = Stretch.Uniform;
-            //                }
-            //            };
-
-            //            control.tbkAlias.SizeChanged += (s, ev) =>
-            //            {
-            //                var actualWidth = control.ActualWidth - control.bdrImageInfo.ActualWidth - control.bdrImageInfo.Margin.Left - control.bdrImageInfo.Margin.Right - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right;
-
-            //                if (control.tbkAlias.ActualWidth >= actualWidth)
-            //                {
-            //                    control.vbAlias.Width = actualWidth - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right; ;
-            //                    control.vbAlias.Stretch = Stretch.Fill;
-            //                }
-            //                else
-            //                {
-            //                    control.vbAlias.Stretch = Stretch.Uniform;
-            //                }
-            //            };
-
-            //            control.tbkParty.SizeChanged += (s, ev) =>
-            //            {
-            //                var actualWidth = control.ActualWidth - control.bdrImageInfo.ActualWidth - control.bdrImageInfo.Margin.Left - control.bdrImageInfo.Margin.Right - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right;
-
-            //                if (control.tbkParty.ActualWidth >= actualWidth)
-            //                {
-            //                    control.vbParty.Width = actualWidth - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right; ;
-            //                    control.vbParty.Stretch = Stretch.Fill;
-            //                }
-            //                else
-            //                {
-            //                    control.vbParty.Stretch = Stretch.Uniform;
-            //                }
-            //            };
-
-            //            item.SizeChanged += (s, ev) =>
-            //            {
-            //                item.wrpCandidate.ItemWidth = item.ActualWidth;
-            //            };
-            //            control.DataContext = candidate;
-
-            //            double quotient = candidate.VoteCount / (double)candidate.PositionVoteCount;
-
-            //            if (!double.IsNaN(quotient))
-            //            {
-            //                control.recCandidate.Height = 120 * quotient;
-            //            }
-
-            //            item.wrpCandidate.Children.Add(control);
-            //        }
-            //    }
-
-            //    cmbPositions.SelectedIndex = 0;
+            try
+            {
+                var positionRows = await _positionService.GetPositionsAsync(_currentElection.Id);
+                var voteResults = await _ballotService.GetVoteResultsAsync(_currentElection.Id);
                 
-            //    cmbPositions.Focusable = false;
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                stkResults.Children.Clear();
 
-            //    Application.Current?.Shutdown();
-            //}
+                cmbPositions.Items.Clear();
+                cmbPositions.Items.Add(new PositionModel
+                {
+                    Id = 0,
+                    Title = "All"
+                });
+
+                foreach (var position in positionRows)
+                {
+                    var voteResultsPosition = voteResults.Where(x => x.PositionId == position.Id).OrderByDescending(r => r.VoteCount).ToList();
+
+                    if (!voteResultsPosition.Any())
+                    {
+                        continue;
+                    }
+
+                    cmbPositions.Items.Add(position);
+
+                    var item = new PositionItemControl();
+                    item.tbkName.Visibility = Visibility.Collapsed;
+                    item.stkVotes.Visibility = Visibility.Collapsed;
+                    item.cdfCandidate.Width = new GridLength(0);
+                    item.DataContext = position;
+
+                    stkResults.Children.Add(item);
+
+                    lblNoResults.Visibility = Visibility.Hidden;
+
+                    item.wrpCandidate.Children.Clear();
+
+                    int rank = 0;
+                    int continuousRank = 0;
+                    for (int i = 0; i < voteResultsPosition.Count; i++)
+                    {
+                        continuousRank++;
+
+                        var voteResult = voteResultsPosition[i];
+                        item.wrpCandidate.Visibility = Visibility.Visible;
+                        var control = new CandidateResultControl();
+
+                        var previousCandidate = i == 0 ? null : voteResultsPosition.ElementAtOrDefault(i - 1);
+
+                        if (previousCandidate == null || previousCandidate.VoteCount != voteResult.VoteCount)
+                        {
+                            rank = continuousRank;
+                        }
+
+                        control.tbkRank.Text = string.Format("#{0:n0}", rank);
+
+                        control.SizeChanged += (s, ev) =>
+                        {
+                            var actualWidth = control.ActualWidth - control.bdrImageInfo.ActualWidth - control.bdrImageInfo.Margin.Left - control.bdrImageInfo.Margin.Right - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right;
+                            if (control.tbkName.ActualWidth >= actualWidth * 1.5)
+                            {
+                                control.vbName.Stretch = Stretch.Fill;
+
+                                control.tbkName.Width = actualWidth * 1.5;
+                                control.tbkName.TextTrimming = TextTrimming.CharacterEllipsis;
+
+
+                                ToolTipService.SetShowDuration(control.tbkName, int.MaxValue);
+                            }
+
+                            actualWidth = control.ActualWidth - control.bdrImageInfo.ActualWidth - control.bdrImageInfo.Margin.Left - control.bdrImageInfo.Margin.Right - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right;
+                            if (control.tbkAlias.ActualWidth >= actualWidth * 1.5)
+                            {
+                                control.vbAlias.Stretch = Stretch.Fill;
+
+                                control.tbkAlias.Width = actualWidth * 1.5;
+                                control.tbkAlias.TextTrimming = TextTrimming.CharacterEllipsis;
+
+                                ToolTipService.SetShowDuration(control.tbkAlias, int.MaxValue);
+                            }
+
+
+                            actualWidth = control.ActualWidth - control.bdrImageInfo.ActualWidth - control.bdrImageInfo.Margin.Left - control.bdrImageInfo.Margin.Right - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right;
+                            if (control.tbkParty.ActualWidth >= actualWidth * 1.5)
+                            {
+                                control.vbParty.Stretch = Stretch.Fill;
+
+                                control.tbkParty.Width = actualWidth * 1.5;
+                                control.tbkParty.TextTrimming = TextTrimming.CharacterEllipsis;
+
+                                ToolTipService.SetShowDuration(control.tbkParty, int.MaxValue);
+                            }
+                        };
+                        control.tbkName.SizeChanged += (s, ev) =>
+                        {
+                            var actualWidth = control.ActualWidth - control.bdrImageInfo.ActualWidth - control.bdrImageInfo.Margin.Left - control.bdrImageInfo.Margin.Right - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right;
+
+                            if (control.tbkName.ActualWidth >= actualWidth)
+                            {
+                                control.vbName.Width = actualWidth - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right; ;
+                                control.vbName.Stretch = Stretch.Fill;
+                            }
+                            else
+                            {
+                                control.vbName.Stretch = Stretch.Uniform;
+                            }
+                        };
+
+                        control.tbkAlias.SizeChanged += (s, ev) =>
+                        {
+                            var actualWidth = control.ActualWidth - control.bdrImageInfo.ActualWidth - control.bdrImageInfo.Margin.Left - control.bdrImageInfo.Margin.Right - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right;
+
+                            if (control.tbkAlias.ActualWidth >= actualWidth)
+                            {
+                                control.vbAlias.Width = actualWidth - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right; ;
+                                control.vbAlias.Stretch = Stretch.Fill;
+                            }
+                            else
+                            {
+                                control.vbAlias.Stretch = Stretch.Uniform;
+                            }
+                        };
+
+                        control.tbkParty.SizeChanged += (s, ev) =>
+                        {
+                            var actualWidth = control.ActualWidth - control.bdrImageInfo.ActualWidth - control.bdrImageInfo.Margin.Left - control.bdrImageInfo.Margin.Right - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right;
+
+                            if (control.tbkParty.ActualWidth >= actualWidth)
+                            {
+                                control.vbParty.Width = actualWidth - control.dckInfo.Margin.Left - control.dckInfo.Margin.Right; ;
+                                control.vbParty.Stretch = Stretch.Fill;
+                            }
+                            else
+                            {
+                                control.vbParty.Stretch = Stretch.Uniform;
+                            }
+                        };
+
+                        item.SizeChanged += (s, ev) =>
+                        {
+                            item.wrpCandidate.ItemWidth = item.ActualWidth;
+                        };
+                        control.DataContext = voteResult;
+                        control.recCandidate.Height = 120;
+
+                        //double quotient = candidate.VoteCount / (double)candidate.PositionVoteCount;
+
+                        //if (!double.IsNaN(quotient))
+                        //{
+                        //    control.recCandidate.Height = 120 * quotient;
+                        //}
+
+                        item.wrpCandidate.Children.Add(control);
+                    }
+                }
+
+                cmbPositions.SelectedIndex = 0;
+
+                cmbPositions.Focusable = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+
+                Application.Current?.Shutdown();
+            }
         }
 
         private void cmbPositions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             foreach(PositionItemControl item in stkResults.Children)
             {
-                if ((item.DataContext as Classes.Position).ID == (cmbPositions.SelectedItem as Classes.Position).ID || cmbPositions.SelectedIndex == 0)
+                if ((item.DataContext as PositionModel).Id == (cmbPositions.SelectedItem as PositionModel).Id || cmbPositions.SelectedIndex == 0)
                 {
                     item.Visibility = Visibility.Visible;
                 }
@@ -1217,207 +1194,208 @@ namespace StudentElection.Main
             e.Handled = true;
         }
 
-        private void btnExportReport_Click(object sender, RoutedEventArgs e)
+        private async void btnExportReport_Click(object sender, RoutedEventArgs e)
         {
-            G.WaitLang(this);
+            //var options = new ExcelExportingOptions();
+            //options.ExportMode = ExportMode.Text;
+            //options.ExcelVersion = ExcelVersion.Excel2007;
 
-            var dateNow = DateTime.Now;
-            var options = new ExcelExportingOptions();
-
-            var saveFileDialog = new SaveFileDialog
-            {
-                FileName = string.Format("LNHS Voting Result {1:yyyy-MM-dd-HHmmss} ({0}).xls", _currentElection.Tag, dateNow)
-            };
-            saveFileDialog.Filter = "Excel file (*.xls)|*.xls";
-
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                try
-                {
-                    G.WaitLang(this);
-
-                    using (var excelEngine = dgResults.ExportToExcel(dgResults.View, options))
-                    {
-                        var workBook = excelEngine.Excel.Workbooks[0];
-                        var resultWorksheet = workBook.Worksheets[0];
-                        resultWorksheet.Name = "VOTING RESULTS";
-
-                        resultWorksheet[1, 1, 1, dgResults.Columns.Count].CellStyle.Font.Bold = true;
-
-                        resultWorksheet.Columns[1].Group(ExcelGroupBy.ByColumns);
-
-                        resultWorksheet.UsedRange.AutofitColumns();
-                        resultWorksheet.UsedRange.AutofitRows();
-
-                        var infoWorksheet = excelEngine.Excel.Worksheets.AddCopyBefore(resultWorksheet);
-                        infoWorksheet.Clear();
-
-                        infoWorksheet.Name = "REPORT INFO";
-
-                        infoWorksheet.Range[1, 1].Text = "SERVER TAG";
-                        infoWorksheet.Range[1, 1].HorizontalAlignment = ExcelHAlign.HAlignRight;
-                        infoWorksheet.Range[1, 2].Text = _currentElection.Tag;
-                        
-                        infoWorksheet.Range[2, 1].Text = "SERVER NAME";
-                        infoWorksheet.Range[2, 1].HorizontalAlignment = ExcelHAlign.HAlignRight;
-                        infoWorksheet.Range[2, 2].Text = Environment.MachineName;
-
-                        infoWorksheet.Range[3, 1].Text = "GENERATED BY";
-                        infoWorksheet.Range[3, 1].HorizontalAlignment = ExcelHAlign.HAlignRight;
-                        infoWorksheet.Range[3, 2].Text = User.UserName;
-                        infoWorksheet.Range[4, 2].Text = User.FullName;
-
-                        infoWorksheet.Range[5, 1].Text = "GENERATED AT";
-                        infoWorksheet.Range[5, 1].HorizontalAlignment = ExcelHAlign.HAlignRight;
-                        infoWorksheet.Range[5, 2].Text = string.Format("{0:MMMM d, yyyy h:mm:ss tt}", dateNow);
-
-                        infoWorksheet.Range[1, 1, 5, 1].CellStyle.Font.Bold = true;
-
-                        var range = infoWorksheet.Range[1, 1, 5, 2];
-                        range.CellStyle.Font.FontName = "Tahoma";
-                        range.AutofitColumns();
-
-                        workBook.ActiveSheetIndex = 1;
-                        workBook.Worksheets.Remove(workBook.Worksheets[2]);
-                        workBook.Worksheets.Remove(workBook.Worksheets[2]);
-
-                        resultWorksheet.Protect(Properties.Settings.Default.ReportWorksheetPW, ExcelSheetProtection.All);
-                        infoWorksheet.Protect(Properties.Settings.Default.ReportWorksheetPW, ExcelSheetProtection.All);
-                        workBook.Protect(true, true, Properties.Settings.Default.WorkbookPW);
-                        workBook.SaveAs(saveFileDialog.FileName);
-                    }
-                    
-                    System.Windows.Forms.MessageBox.Show("Excel file created!", "Excel Report", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
-
-                    Process.Start(System.IO.Path.GetDirectoryName(saveFileDialog.FileName));
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.Forms.MessageBox.Show("Unable to create Excel file.\n" + ex.GetBaseException().Message, "Excel Report", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-                }
-            }
-            
-            G.EndWait(this);
-
-
-            //var dateNow = DateTime.Now;
-
-            //Microsoft.Office.Interop.Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
-            //Microsoft.Office.Interop.Excel.Workbook xlWorkBook = null;
-            //Microsoft.Office.Interop.Excel.Worksheet xlWorkSheetReport = null;
-            //Microsoft.Office.Interop.Excel.Worksheet xlWorkSheetVotes = null;
-
-            //try
+            //var saveFileDialog = new SaveFileDialog
             //{
-            //    if (xlApp == null)
+            //    FileName = $"{ _currentElection.Title } Result - { _currentElection.ServerTag } - { dateNow.ToString("yyyy-MM-dd HHmmss") }.xls"
+            //};
+            //saveFileDialog.Filter = "Excel file (*.xls)|*.xls";
+
+            //if (saveFileDialog.ShowDialog() == true)
+            //{
+            //    try
             //    {
-            //        G.EndWait(this);
+            //        G.WaitLang(this);
 
-            //        MessageBox.Show("Excel is not properly installed!", "No MS Excel", MessageBoxButton.OK, MessageBoxImage.Error);
-            //        return;
-            //    }
-            //    object misValue = System.Reflection.Missing.Value;
-
-            //    //REPORT
-            //    xlWorkBook = xlApp.Workbooks.Add(misValue);
-            //    xlWorkSheetReport = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets[1];
-            //    xlWorkSheetReport.Name = "REPORT INFO";
-
-            //    xlWorkSheetReport.Cells[1, 1] = "MACHINE TAG/NAME";
-            //    xlWorkSheetReport.Cells[1, 1].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
-            //    xlWorkSheetReport.Cells[1, 2] = Machine.Tag + "@" + Environment.MachineName;
-
-            //    xlWorkSheetReport.Cells[2, 1] = "LOGGED USERNAME";
-            //    xlWorkSheetReport.Cells[2, 1].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
-            //    xlWorkSheetReport.Cells[2, 2] = Staff.Username;
-            //    xlWorkSheetReport.Cells[3, 2] = Staff.FullName;
-
-            //    xlWorkSheetReport.Cells[4, 1] = "GENERATED DATE";
-            //    xlWorkSheetReport.Cells[4, 1].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
-            //    xlWorkSheetReport.Cells[4, 2] = string.Format("{0:MMMM d, yyyy • h:mm:ss tt}", dateNow);
-
-            //    xlWorkSheetReport.Range[xlWorkSheetReport.Cells[1, 1], xlWorkSheetReport.Cells[4, 1]].Font.Bold = true;
-
-            //    var range = xlWorkSheetReport.Range[xlWorkSheetReport.Cells[1, 1], xlWorkSheetReport.Cells[4, 2]];
-
-            //    range.Font.Name = "Tahoma";
-            //    range.Columns.AutoFit();
-            //    xlWorkSheetReport.Protect(Properties.Settings.Default.ReportWorksheetPW, misValue, misValue, misValue, true, false, false, false, false, false, false, false, false, false, false, false);
-
-
-            //    //VOTING
-            //    xlWorkSheetVotes = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.Add(After: xlWorkBook.Sheets[xlWorkBook.Sheets.Count]);
-            //    xlWorkSheetVotes.Name = "VOTING RESULTS";
-
-            //    int r = 0;
-            //    foreach (Position position in Positions.Dictionary.Values)
-            //    {
-            //        var listCandidates = Ballots.Results.Where(x => x.Position.ID == position.ID).OrderBy(x => x.FullName);
-
-            //        if (listCandidates.Count() != 0)
+            //        using (var excelEngine = dgResults.ExportToExcel(dgResults.View, options))
             //        {
-            //            r++;
+            //            var workBook = excelEngine.Excel.Workbooks[0];
+            //            var resultWorksheet = workBook.Worksheets[0];
+            //            resultWorksheet.Name = "VOTING RESULTS";
 
-            //            xlWorkSheetVotes.Cells[r, 1] = position.Title.ToUpper();
-            //            xlWorkSheetVotes.Cells[r, 1].Font.Bold = true;
+            //            resultWorksheet[1, 1, 1, dgResults.Columns.Count].CellStyle.Font.Bold = true;
 
-            //            xlWorkSheetVotes.Cells[r, 2] = "TOTAL VOTES";
-            //            xlWorkSheetVotes.Cells[r, 2].Font.Bold = true;
+            //            resultWorksheet.Columns[1].Group(ExcelGroupBy.ByColumns);
 
-            //            xlWorkSheetVotes.Range[xlWorkSheetVotes.Cells[r, 1], xlWorkSheetVotes.Cells[r, 2]].Font.Name = "Tahoma";
+            //            resultWorksheet.UsedRange.AutofitColumns();
+            //            resultWorksheet.UsedRange.AutofitRows();
 
-            //            foreach (Candidate candidate in listCandidates)
-            //            {
-            //                r++;
+            //            var infoWorksheet = excelEngine.Excel.Worksheets.AddCopyBefore(resultWorksheet);
+            //            infoWorksheet.Clear();
 
-            //                xlWorkSheetVotes.Cells[r, 1] = candidate.FullName + string.Format(" ({0})", candidate.Party.Abbreviation);
-            //                xlWorkSheetVotes.Cells[r, 2] = candidate.VoteCount;
-            //                xlWorkSheetVotes.Cells[r, 2].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            //            infoWorksheet.Name = "REPORT INFO";
 
-            //                xlWorkSheetVotes.Range[xlWorkSheetVotes.Cells[r, 1], xlWorkSheetVotes.Cells[r, 2]].Font.Name = "Tahoma";
-            //             }
+            //            infoWorksheet.Range[1, 1].Text = "SERVER TAG";
+            //            infoWorksheet.Range[1, 1].HorizontalAlignment = ExcelHAlign.HAlignRight;
+            //            infoWorksheet.Range[1, 2].Text = _currentElection.ServerTag;
+
+            //            infoWorksheet.Range[2, 1].Text = "SERVER NAME";
+            //            infoWorksheet.Range[2, 1].HorizontalAlignment = ExcelHAlign.HAlignRight;
+            //            infoWorksheet.Range[2, 2].Text = Environment.MachineName;
+
+            //            infoWorksheet.Range[3, 1].Text = "GENERATED BY";
+            //            infoWorksheet.Range[3, 1].HorizontalAlignment = ExcelHAlign.HAlignRight;
+            //            infoWorksheet.Range[3, 2].Text = User.UserName;
+            //            infoWorksheet.Range[4, 2].Text = User.FullName;
+
+            //            infoWorksheet.Range[5, 1].Text = "GENERATED AT";
+            //            infoWorksheet.Range[5, 1].HorizontalAlignment = ExcelHAlign.HAlignRight;
+            //            infoWorksheet.Range[5, 2].Text = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dateNow);
+
+            //            infoWorksheet.Range[1, 1, 5, 1].CellStyle.Font.Bold = true;
+
+            //            var range = infoWorksheet.Range[1, 1, 5, 2];
+            //            range.CellStyle.Font.FontName = "Tahoma";
+            //            range.AutofitColumns();
+
+            //            workBook.ActiveSheetIndex = 1;
+            //            workBook.Worksheets.Remove(workBook.Worksheets[2]);
+            //            workBook.Worksheets.Remove(workBook.Worksheets[2]);
+
+            //            resultWorksheet.Protect(Properties.Settings.Default.ReportWorksheetPW, ExcelSheetProtection.All);
+            //            infoWorksheet.Protect(Properties.Settings.Default.ReportWorksheetPW, ExcelSheetProtection.All);
+            //            workBook.Protect(true, true, Properties.Settings.Default.WorkbookPW);
+            //            workBook.SaveAs(saveFileDialog.FileName);
             //        }
 
-            //        r++;
+            //        System.Windows.Forms.MessageBox.Show("Excel file created!", "Excel Report", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+
+            //        Process.Start(System.IO.Path.GetDirectoryName(saveFileDialog.FileName));
             //    }
-
-            //    range = xlWorkSheetVotes.Range[xlWorkSheetVotes.Cells[1, 1], xlWorkSheetVotes.Cells[r, 2]];
-            //    range.Columns.AutoFit();
-
-            //    xlWorkSheetVotes.Protect(Properties.Settings.Default.ReportWorksheetPW, misValue, misValue, misValue, true, false, false, false, false, false, false, false, false, false, false, false);
-            //    xlWorkBook.Protect(Properties.Settings.Default.WorkbookPW);
-
-            //    string dateString = string.Format("{0:00}{1:00}{2:0000} {3:00}{4:00}{5:00}", dateNow.Month, dateNow.Day, dateNow.Year, dateNow.Hour, dateNow.Minute, dateNow.Second);
-            //    string filename = string.Format("LNHS Voting Result ({0}).xls", Machine.Tag);
-
-            //    xlWorkBook.SaveAs(string.Format(@"{0}\{1}", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), filename), Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlShared, misValue, misValue, misValue, misValue, misValue);
-
-            //    xlWorkBook.Close(false, misValue, misValue);
-            //    xlApp.Quit();
-
-
-            //    G.EndWait(this);
-
-            //    System.Windows.Forms.MessageBox.Show("Excel file created!", "Excel Report", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
-
-            //    Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+            //    catch (Exception ex)
+            //    {
+            //        System.Windows.Forms.MessageBox.Show("Unable to create Excel file.\n" + ex.GetBaseException().Message, "Excel Report", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            //    }
             //}
-            //catch (Exception)
-            //{
-            //    G.EndWait(this);
+            
+            G.WaitLang(this);
 
-            //    System.Windows.Forms.MessageBox.Show("Unable to create Excel file.", "Excel Report", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-            //}
+            Microsoft.Office.Interop.Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
+            Microsoft.Office.Interop.Excel.Workbook xlWorkBook = null;
+            Microsoft.Office.Interop.Excel.Worksheet xlWorkSheetReport = null;
+            Microsoft.Office.Interop.Excel.Worksheet xlWorkSheetVotes = null;
 
-            //Process.GetProcesses().Where(p => p.ProcessName == "EXCEL" && p.MainWindowHandle.ToInt32() == 0).ToList().ForEach(process => process.Kill());
+            try
+            {
+                if (xlApp == null)
+                {
+                    G.EndWait(this);
 
-            //ReleaseObject(xlWorkSheetVotes);
-            //ReleaseObject(xlWorkSheetReport);
-            //ReleaseObject(xlWorkBook);
-            //ReleaseObject(xlApp);
+                    MessageBox.Show("Excel is not properly installed!", "No MS Excel", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
-            //Topmost = true;
-            //Topmost = false;
+                var dateNow = DateTime.Now;
+                object misValue = System.Reflection.Missing.Value;
+
+                //REPORT
+                xlWorkBook = xlApp.Workbooks.Add(misValue);
+                xlWorkSheetReport = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets[1];
+                xlWorkSheetReport.Name = "REPORT INFO";
+
+                xlWorkSheetReport.Cells[2, 1] = "SERVER TAG/NAME";
+                xlWorkSheetReport.Cells[2, 1].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
+                xlWorkSheetReport.Cells[2, 2] = _currentElection.ServerTag + "@" + Environment.MachineName;
+
+                xlWorkSheetReport.Cells[3, 1] = "GENERATED BY";
+                xlWorkSheetReport.Cells[3, 1].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
+                xlWorkSheetReport.Cells[3, 2] = User.UserName;
+                xlWorkSheetReport.Cells[4, 2] = User.FullName;
+
+                xlWorkSheetReport.Cells[5, 1] = "GENERATED AT";
+                xlWorkSheetReport.Cells[5, 1].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
+                xlWorkSheetReport.Cells[5, 2] = string.Format("{0:yyyy-MM-dd HH:mm:ss}", dateNow);
+                xlWorkSheetReport.Cells[5, 2].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
+
+
+                xlWorkSheetReport.Range[xlWorkSheetReport.Cells[1, 1], xlWorkSheetReport.Cells[5, 1]].Font.Bold = true;
+
+                var range = xlWorkSheetReport.Range[xlWorkSheetReport.Cells[1, 1], xlWorkSheetReport.Cells[5, 2]];
+                range.Font.Name = "Tahoma";
+                range.Columns.AutoFit();
+                xlWorkSheetReport.Protect(Properties.Settings.Default.ReportWorksheetPW, misValue, misValue, misValue, true, false, false, false, false, false, false, false, false, false, false, false);
+
+
+                //VOTING
+                xlWorkSheetVotes = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.Add(After: xlWorkBook.Sheets[xlWorkBook.Sheets.Count]);
+                xlWorkSheetVotes.Name = "VOTING RESULTS";
+
+                xlWorkSheetVotes.Cells[1, 1] = "Position";
+                xlWorkSheetVotes.Cells[1, 2] = "Candidate";
+                xlWorkSheetVotes.Cells[1, 3] = "YearLevel";
+                xlWorkSheetVotes.Cells[1, 4] = "Section";
+                xlWorkSheetVotes.Cells[1, 5] = "Alias";
+                xlWorkSheetVotes.Cells[1, 6] = "Party";
+                xlWorkSheetVotes.Cells[1, 7] = "Vote Count";
+                xlWorkSheetVotes.Range[xlWorkSheetVotes.Cells[1, 1], xlWorkSheetVotes.Cells[1, 7]].Font.Bold = true;
+                
+                var voteResults = (await _ballotService.GetVoteResultsAsync(_currentElection.Id))
+                    .OrderBy(vr => vr.PositionRank)
+                    .ThenBy(vr => vr.LastName)
+                    .ThenBy(vr => vr.FirstName)
+                    .ThenBy(vr => vr.Suffix)
+                    .ThenBy(vr => vr.MiddleName)
+                    .ThenBy(vr => vr.Alias);
+
+                int r = 1;
+                foreach (var result in voteResults)
+                {
+                    r++;
+                    xlWorkSheetVotes.Cells[r, 1] = result.PositionTitle;
+                    xlWorkSheetVotes.Cells[r, 2] = result.FullName;
+                    xlWorkSheetVotes.Cells[r, 3] = result.YearLevel;
+                    xlWorkSheetVotes.Cells[r, 4] = result.Section;
+                    xlWorkSheetVotes.Cells[r, 5] = result.Alias;
+                    xlWorkSheetVotes.Cells[r, 6] = result.PartyTitle;
+
+                    xlWorkSheetVotes.Cells[r, 7] = result.VoteCount;
+                    xlWorkSheetVotes.Cells[r, 7].HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignGeneral;
+                }
+
+                range = xlWorkSheetVotes.Range[xlWorkSheetVotes.Cells[1, 1], xlWorkSheetVotes.Cells[r, 7]];
+                range.Font.Name = "Tahoma";
+                range.Columns.AutoFit();
+
+                xlWorkSheetVotes.Protect(Properties.Settings.Default.ReportWorksheetPW, misValue, misValue, misValue, true, false, false, false, false, false, false, false, false, false, false, false);
+                xlWorkBook.Protect(Properties.Settings.Default.WorkbookPW);
+
+                string filename = $"{ _currentElection.Title } Result - { _currentElection.ServerTag } - { dateNow.ToString("yyyy-MM-dd HHmmss") }.xls";
+
+                xlWorkBook.SaveAs(string.Format(@"{0}\{1}", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), filename), Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlShared, misValue, misValue, misValue, misValue, misValue);
+
+                //xlWorkBook.Close(misValue, misValue, misValue);
+                xlApp.Quit();
+
+
+                G.EndWait(this);
+
+                System.Windows.Forms.MessageBox.Show("Excel file created!", "Excel Report", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+
+                Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+            }
+            catch (Exception ex)
+            {
+                G.EndWait(this);
+
+                System.Windows.Forms.MessageBox.Show("Unable to create Excel file.", "Excel Report", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+
+            Process.GetProcesses().Where(p => p.ProcessName == "EXCEL" && p.MainWindowHandle.ToInt32() == 0).ToList().ForEach(process => process.Kill());
+
+            ReleaseObject(xlWorkSheetVotes);
+            ReleaseObject(xlWorkSheetReport);
+            ReleaseObject(xlWorkBook);
+            ReleaseObject(xlApp);
+
+            Topmost = true;
+            Topmost = false;
+
+            G.EndWait(this);
         }
 
         private void ReleaseObject(object obj)
@@ -1442,10 +1420,10 @@ namespace StudentElection.Main
         {
             //G.WaitLang(this);
             
-            var form = new PrintForm();
+            //var form = new PrintForm();
             //form.Opacity = 0;
             //form.ShowInTaskbar = false;
-            form.ShowDialog();
+            //form.ShowDialog();
             //form.Hide();
             //WindowInteropHelper helper = new WindowInteropHelper(this);
             //SetWindowLong(new HandleRef(form, form.Handle), -8, helper.Handle.ToInt32());
@@ -1514,7 +1492,7 @@ namespace StudentElection.Main
         {
             if (txtTag.Text.IsBlank())
             {
-                MessageBox.Show("Please provide a tag for this machine's server.", "No Tag", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Please provide a tag for this machine's server.", "No Server Tag", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtTag.Focus();
 
                 return;
@@ -1592,43 +1570,45 @@ namespace StudentElection.Main
             btnUpdateTag.Foreground = new SolidColorBrush(Colors.WhiteSmoke);
             btnCancelTag.Foreground = new SolidColorBrush(Colors.WhiteSmoke);
 
-            txtTag.Text = _currentElection.Tag;
+            txtTag.Text = _currentElection.ServerTag;
             txtTag.SelectAll();
             txtTag.Focus();
         }
 
         private async void btnViewResult_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: VIEW RESULTS
-            //Opacity = 0.5;
+            Opacity = 0.5;
 
-            //try
-            //{
-            //    var votedCount = Voters.Dictionary.Values.Where(x => Ballots.Dictionary.Keys.Contains(x.ID)).Count();
+            try
+            {
+                var votersCount = await _voterService.CountVotersAsync(_currentElection.Id);
+                var votedCount = await _voterService.CountVotedVotersAsync(_currentElection.Id);
+                var notVotedCount = votersCount - votedCount;
 
-            //    //TODO: CHANGE TO CLOSE MESSAGE
-            //    var result = MessageBox.Show(string.Format("Once viewed, ALL {0} VOTER{1}, who still not voted yet, will NOT allowed to vote anymore.\n\nAlso, you CANNOT ALLOW to CREATE, EDIT or DELETE voters.\n\n\nDo you want to view the results from this server?", Voters.Dictionary.Count - votedCount, (Voters.Dictionary.Count - votedCount) == 1 ? "S" : ""), "Viewing Results", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+                //TODO: CHANGE TO CLOSE MESSAGE
+                var result = MessageBox.Show($"Once viewed, ALL { "VOTER".ToQuantity(notVotedCount) }, who still not voted yet, will NOT allowed to vote anymore.\n\nAlso, you CANNOT ALLOW to CREATE, EDIT or DELETE voters.\n\n\nDo you want to view the results from this server?",
+                    "Viewing Results", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
 
-            //    if (result == MessageBoxResult.Yes)
-            //    {
-            //        G.WaitLang(this);
+                if (result == MessageBoxResult.Yes)
+                {
+                    G.WaitLang(this);
 
-            //        await _electionService.CloseElectionAsync(_currentElection.Id);
+                    await _electionService.CloseElectionAsync(_currentElection.Id);
 
-            //        LoadElection();
-            //        LoadResults();
+                    await LoadElectionAsync();
+                    await LoadResultsAsync();
 
-            //        G.EndWait(this);
-            //    }
+                    G.EndWait(this);
+                }
 
-            //    Opacity = 1;
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                Opacity = 1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
 
-            //    Application.Current?.Shutdown();
-            //}
+                Application.Current?.Shutdown();
+            }
         }
         
 
@@ -1778,25 +1758,176 @@ namespace StudentElection.Main
             e.Handled = e.Key == Key.Space;
         }
 
-        private void dgResults_SortColumnsChanged(object sender, Syncfusion.UI.Xaml.Grid.GridSortColumnsChangedEventArgs e)
+        //private void dgResults_SortColumnsChanged(object sender, Syncfusion.UI.Xaml.Grid.GridSortColumnsChangedEventArgs e)
+        //{
+        //}
+
+        //private void dgResults_QueryRowHeight(object sender, Syncfusion.UI.Xaml.Grid.QueryRowHeightEventArgs e)
+        //{
+        //    var dg = (Syncfusion.UI.Xaml.Grid.SfDataGrid)sender;
+
+        //    if (e.RowIndex != 0)
+        //    {
+        //        if (dg.GridColumnSizer.GetAutoRowHeight(e.RowIndex, new Syncfusion.UI.Xaml.Grid.GridRowSizingOptions { AutoFitMode = Syncfusion.UI.Xaml.Grid.AutoFitMode.SmartFit }, out double newHeight))
+        //        {
+        //            if (newHeight > 24)
+        //            {
+        //                e.Height = newHeight;
+        //                e.Handled = true;
+        //            }
+        //        }
+        //    }
+        //}
+
+        private void btnImportVoters_Click(object sender, RoutedEventArgs e)
         {
+            var fileDialog = new OpenFileDialog
+            {
+                Title = $"Import voters for { _currentElection.Title }",
+                Filter = "Excel Files|*.xls;*.xlsx;"
+            };
+
+            if (fileDialog.ShowDialog() == true)
+            {
+                _backgroundWorker = new BackgroundWorker
+                {
+                    WorkerReportsProgress = true,
+                    WorkerSupportsCancellation = true,
+                };
+
+                _backgroundWorker.DoWork += BackgroundWorker_DoWork;
+                _backgroundWorker.ProgressChanged += _backgroundWorker_ProgressChanged;
+                _backgroundWorker.RunWorkerCompleted += _backgroundWorker_RunWorkerCompleted;
+                _backgroundWorker.RunWorkerAsync(fileDialog.OpenFile());
+
+                _progressWindow = new ProgressWindow();
+                _progressWindow.btnCancel.Click += delegate
+                {
+                    _backgroundWorker.CancelAsync();
+                };
+                _progressWindow.progressBar.IsIndeterminate = true;
+                
+                G.WaitLang(this);
+                this.Opacity = 0.5;
+
+                _progressWindow.Owner = this;
+                _progressWindow.ShowDialog();
+            }
         }
 
-        private void dgResults_QueryRowHeight(object sender, Syncfusion.UI.Xaml.Grid.QueryRowHeightEventArgs e)
+        private async void _backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            var dg = (Syncfusion.UI.Xaml.Grid.SfDataGrid)sender;
-
-            if (e.RowIndex != 0)
+            if (e.Error != null || e.Result is Exception)
             {
-                if (dg.GridColumnSizer.GetAutoRowHeight(e.RowIndex, new Syncfusion.UI.Xaml.Grid.GridRowSizingOptions { AutoFitMode = Syncfusion.UI.Xaml.Grid.AutoFitMode.SmartFit }, out double newHeight))
+                MessageBox.Show($"{ (e.Error ?? e.Result as Exception).GetBaseException().Message }\n\nNo voters imported",
+                    "Import error", MessageBoxButton.OK, MessageBoxImage.Stop);
+            }
+            else if (e.Cancelled)
+            {
+                MessageBox.Show("Import cancelled.\n\nNo voters imported", "Import cancelled", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                await LoadVotersAsync();
+
+                var count = Convert.ToInt32(e.Result);
+                MessageBox.Show($"Successfully imported { "voter".ToQuantity(count) }", "Import successful", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
+            _progressWindow.Close();
+
+            G.EndWait(this);
+            this.Opacity = 1;
+
+            _backgroundWorker.Dispose();
+        }
+
+        private void _backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            var count = Convert.ToInt32(e.UserState);
+
+            if (e.ProgressPercentage == 0)
+            {
+                _progressWindow.tbkMessage.Text = $"Checking { "voter".ToQuantity(count) }...";
+            }
+            else
+            {
+                _progressWindow.tbkMessage.Text = $"Importing { "voter".ToQuantity(count) }...";
+            }
+        }
+
+        private async void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var stream = e.Argument as System.IO.Stream;
+            var importedVoters = new List<VoterModel>();
+
+            try
+            {
+                using (stream)
                 {
-                    if (newHeight > 24)
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
                     {
-                        e.Height = newHeight;
-                        e.Handled = true;
+                        int count = 0;
+
+                        reader.Read();
+                        while (reader.Read())
+                        {
+                            count++;
+                            _backgroundWorker.ReportProgress(0, count);
+
+                            var newVoter = new VoterModel();
+                            newVoter.ElectionId = _currentElection.Id;
+                            newVoter.Vin = reader.GetString(0);
+                            newVoter.FirstName = reader.GetString(1);
+                            newVoter.MiddleName = reader.GetString(2);
+                            newVoter.LastName = reader.GetString(3);
+                            newVoter.Suffix = reader.GetString(4);
+                            newVoter.Birthdate = reader.IsDBNull(5) ? default(DateTime?) : reader.GetDateTime(5);
+
+                            var sexText = reader.GetString(6);
+                            if (sexText.Equals("male", StringComparison.OrdinalIgnoreCase))
+                            {
+                                newVoter.Sex = Sex.Male;
+                            }
+                            else if (sexText.Equals("female", StringComparison.OrdinalIgnoreCase))
+                            {
+                                newVoter.Sex = Sex.Female;
+                            }
+                            else
+                            {
+                                throw new ArgumentException("Must be 'male' or 'female'", nameof(newVoter.Sex));
+                            }
+
+                            var yearLevelText = reader.GetValue(7);
+                            if (int.TryParse(yearLevelText?.ToString(), out int yearLevel))
+                            {
+                                newVoter.YearLevel = yearLevel;
+                            }
+                            else
+                            {
+                                throw new ArgumentException("Invalid year level", nameof(newVoter.YearLevel));
+                            }
+
+                            newVoter.Section = reader.GetString(8);
+
+                            await _voterService.ValidateAsync(_currentElection.Id, newVoter);
+
+                            importedVoters.Add(newVoter);
+                        }
                     }
                 }
+
+                _backgroundWorker.ReportProgress(100, importedVoters.Count);
+                await _voterService.ImportVotersAsync(importedVoters);
+
             }
+            catch (Exception ex)
+            {
+                e.Result = ex;
+                return;
+            }
+
+            e.Result = importedVoters.Count;
         }
 
         private void lvVoter_PreviewMouseMove(object sender, MouseEventArgs e)
@@ -1805,55 +1936,55 @@ namespace StudentElection.Main
         }
     }
 
-    public class VoteResult
-    {
-        public ImageSource PictureSource { get; set; }
-        public string Name { get; set; }
-        public string Alias { get; set; }
-        public string PositionName { get; set; }
-        public int PositionOrder { get; set; }
-        public int GradeLevel { get; set; }
-        public string GradeStrand { get; set; }
-        public string PartyTitle { get; set; }
-        public SolidColorBrush PartyColorBrush { get; set; }
-        public int VoteCount { get; set; }
-    }
+    //public class VoteResult
+    //{
+    //    public ImageSource PictureSource { get; set; }
+    //    public string Name { get; set; }
+    //    public string Alias { get; set; }
+    //    public string PositionName { get; set; }
+    //    public int PositionOrder { get; set; }
+    //    public int GradeLevel { get; set; }
+    //    public string GradeStrand { get; set; }
+    //    public string PartyTitle { get; set; }
+    //    public SolidColorBrush PartyColorBrush { get; set; }
+    //    public int VoteCount { get; set; }
+    //}
 
-    public class CustomSorting : IComparer<Object>, ISortDirection
-    {
-        private ListSortDirection _SortDirection;
-        public ListSortDirection SortDirection
-        {
-            get { return _SortDirection; }
-            set { _SortDirection = value; }
-        }
+    //public class CustomSorting : IComparer<Object>, ISortDirection
+    //{
+    //    private ListSortDirection _SortDirection;
+    //    public ListSortDirection SortDirection
+    //    {
+    //        get { return _SortDirection; }
+    //        set { _SortDirection = value; }
+    //    }
 
-        public int Compare(object x, object y)
-        {
-            int namX;
-            int namY;
-            if (x.GetType() == typeof(VoteResult))
-            {
-                namX = ((VoteResult)x).PositionOrder;
-                namY = ((VoteResult)y).PositionOrder;
-            }
-            else if (x.GetType() == typeof(Group))
-            {
-                namX = ((Group)x).Key.ToString().Length;
-                namY = ((Group)y).Key.ToString().Length;
-            }
-            else
-            {
-                namX = x.ToString().Length;
-                namY = y.ToString().Length;
-            }
+    //    public int Compare(object x, object y)
+    //    {
+    //        int namX;
+    //        int namY;
+    //        if (x.GetType() == typeof(VoteResult))
+    //        {
+    //            namX = ((VoteResult)x).PositionOrder;
+    //            namY = ((VoteResult)y).PositionOrder;
+    //        }
+    //        else if (x.GetType() == typeof(Group))
+    //        {
+    //            namX = ((Group)x).Key.ToString().Length;
+    //            namY = ((Group)y).Key.ToString().Length;
+    //        }
+    //        else
+    //        {
+    //            namX = x.ToString().Length;
+    //            namY = y.ToString().Length;
+    //        }
 
-            if (namX.CompareTo(namY) > 0)
-                return SortDirection == ListSortDirection.Ascending ? 1 : -1;
-            else if (namX.CompareTo(namY) == -1)
-                return SortDirection == ListSortDirection.Ascending ? -1 : 1;
-            else
-                return 0;
-        }
-    }
+    //        if (namX.CompareTo(namY) > 0)
+    //            return SortDirection == ListSortDirection.Ascending ? 1 : -1;
+    //        else if (namX.CompareTo(namY) == -1)
+    //            return SortDirection == ListSortDirection.Ascending ? -1 : 1;
+    //        else
+    //            return 0;
+    //    }
+    //}
 }

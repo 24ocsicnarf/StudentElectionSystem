@@ -12,10 +12,12 @@ namespace StudentElection.Services
     public class CandidateService
     {
         private readonly ICandidateRepository _candidateRepository;
+        private readonly IPositionRepository _positionRepository;
 
         public CandidateService()
         {
             _candidateRepository = RepositoryFactory.Get<ICandidateRepository>();
+            _positionRepository = RepositoryFactory.Get<IPositionRepository>();
         }
 
         public async Task<int> GetCandidatesCount(int electionId)
@@ -26,6 +28,11 @@ namespace StudentElection.Services
         public async Task<IEnumerable<CandidateModel>> GetCandidatesByPartyAsync(int partyId)
         {
             return await _candidateRepository.GetCandidateDetailsListByPartyAsync(partyId);
+        }
+
+        public async Task<IEnumerable<CandidateModel>> GetCandidatesByPositionAsync(int positionId)
+        {
+            return await _candidateRepository.GetCandidateDetailsListByPositionAsync(positionId);
         }
 
         public async Task<CandidateModel> GetCandidateAsync(int candidateId)
@@ -53,6 +60,39 @@ namespace StudentElection.Services
         public async Task DeleteCandidateAsync(CandidateModel candidate)
         {
             await _candidateRepository.DeleteCandidateAsync(candidate);
+        }
+
+        public async Task ImportCandidatesAsync(IEnumerable<CandidateModel> candidates)
+        {
+            await _candidateRepository.InsertCandidatesAsync(candidates);
+        }
+
+        public async Task ValidateAsync(int electionId, CandidateModel candidate)
+        {
+            if (candidate.FirstName.IsBlank())
+            {
+                throw new ArgumentException("No first name provided", nameof(candidate.FirstName));
+            }
+
+            if (candidate.LastName.IsBlank())
+            {
+                throw new ArgumentException("No last name provided", nameof(candidate.LastName));
+            }
+
+            if (candidate.YearLevel < 1 || candidate.YearLevel > 12)
+            {
+                throw new ArgumentOutOfRangeException("Year level must be from 1 to 12", nameof(candidate.YearLevel));
+            }
+
+            if (candidate.Section.IsBlank())
+            {
+                throw new ArgumentException("No section provided", nameof(candidate.Section));
+            }
+
+            if (await IsAliasExistingAsync(electionId, candidate.Alias, null))
+            {
+                throw new InvalidOperationException($"Alias '{ candidate.Alias }' already exists");
+            }
         }
     }
 }

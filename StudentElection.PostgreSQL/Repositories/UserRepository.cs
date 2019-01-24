@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using StudentElection.PostgreSQL.Model;
 using StudentElection.Repository.Interfaces;
 using StudentElection.Repository.Models;
@@ -26,6 +27,17 @@ namespace StudentElection.PostgreSQL.Repositories
             }
         }
 
+        public async Task DeleteUserAsync(UserModel model)
+        {
+            using (var context = new StudentElectionContext())
+            {
+                var user = await context.Users.SingleOrDefaultAsync(u => u.Id == model.Id);
+                context.Users.Remove(user);
+
+                await context.SaveChangesAsync();
+            }
+        }
+
         public async Task<UserModel> GetUserAsync(int userId)
         {
             using (var context = new StudentElectionContext())
@@ -47,6 +59,14 @@ namespace StudentElection.PostgreSQL.Repositories
                 Mapper.Map(user, model);
 
                 return model;
+            }
+        }
+
+        public async Task<IEnumerable<UserModel>> GetUsersAsync()
+        {
+            using (var context = new StudentElectionContext())
+            {
+                return await context.Users.ProjectTo<UserModel>().ToListAsync();
             }
         }
 

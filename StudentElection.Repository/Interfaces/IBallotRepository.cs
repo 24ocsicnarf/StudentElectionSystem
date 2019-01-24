@@ -9,9 +9,13 @@ namespace StudentElection.Repository.Interfaces
 {
     public interface IBallotRepository
     {
+        Task<int> CountBallotsAsync(int electionId);
+        Task<BallotModel> GetBallotAsync(int ballotId);
         Task<BallotModel> GetBallotByVinAsync(int electionId, string vin);
-        Task InsertBallotAsync(BallotModel ballot);
+        Task<BallotModel> InsertBallotAsync(VoterModel voter, DateTime enteredAt);
+        Task SetBallotCodeAsync(BallotModel ballot);
         Task CastVotesAsync(int ballotId, IEnumerable<VoteModel> votes, DateTime castedAt);
+        Task<int> CountCastedBallotsQuery(int voterId);
 
         Task<IEnumerable<VoteResultModel>> GetVoteResultsAsync(int electionId);
     }

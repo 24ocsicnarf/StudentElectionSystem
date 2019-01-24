@@ -1,8 +1,8 @@
-﻿using StudentElection.Classes;
+﻿//using StudentElection.Classes;
 using StudentElection;
 using Microsoft.Win32;
-using Portable.Licensing;
-using Portable.Licensing.Validation;
+//using Portable.Licensing;
+//using Portable.Licensing.Validation;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -40,6 +40,8 @@ namespace StudentElection.Main
 
         private readonly UserService _userService = new UserService();
         private readonly ElectionService _electionService = new ElectionService();
+        private readonly VoterService _voterService = new VoterService();
+        private readonly BallotService _ballotService = new BallotService();
 
         private ElectionModel _currentElection;
 
@@ -87,7 +89,7 @@ namespace StudentElection.Main
                     }
                 }
 
-                this.Title = $"{ Properties.Settings.Default.SystemTitle } • { (_currentElection.Tag.IsBlank() ? "(No tag)" : _currentElection.Tag) }";
+                this.Title = $"{ Properties.Settings.Default.SystemTitle } • { (_currentElection.ServerTag.IsBlank() ? "(No tag)" : _currentElection.ServerTag) }";
 
                 //var fileName = "D:/Videos/New Text Document.txt";
                 //FileSecurity fSecurity = File.GetAccessControl(fileName);
@@ -106,75 +108,75 @@ namespace StudentElection.Main
 
         }
 
-        private bool LicenseException(License license)
-        {
-            return license.Type == LicenseType.Trial;
-        }
+        //private bool LicenseException(License license)
+        //{
+        //    return license.Type == LicenseType.Trial;
+        //}
 
-        private string ValidateLicense(License license, string publicKey, string machineId)
-        {
-            const string ReturnValue = "License is Valid";
+        //private string ValidateLicense(License license, string publicKey, string machineId)
+        //{
+        //    const string ReturnValue = "License is Valid";
             
-            var invalidLicenseFileFailure = new GeneralValidationFailure
-            {
-                Message = "Invalid License File",
-                HowToResolve = ""
-            };
+        //    var invalidLicenseFileFailure = new GeneralValidationFailure
+        //    {
+        //        Message = "Invalid License File",
+        //        HowToResolve = ""
+        //    };
 
-            var invalidPublicKeyFailure = new GeneralValidationFailure
-            {
-                Message = "Invalid Public Key",
-                HowToResolve = ""
-            };
+        //    var invalidPublicKeyFailure = new GeneralValidationFailure
+        //    {
+        //        Message = "Invalid Public Key",
+        //        HowToResolve = ""
+        //    };
 
-            var validationFailures = new List<IValidationFailure>();
+        //    var validationFailures = new List<IValidationFailure>();
 
-            if (license == null)
-            {
-                validationFailures.Add(invalidLicenseFileFailure);
+        //    if (license == null)
+        //    {
+        //        validationFailures.Add(invalidLicenseFileFailure);
 
-                return validationFailures.Aggregate(string.Empty, (current, validationFailure) => current + validationFailure.HowToResolve + ": " + "\r\n" + validationFailure.Message + "\r\n");
-            }
+        //        return validationFailures.Aggregate(string.Empty, (current, validationFailure) => current + validationFailure.HowToResolve + ": " + "\r\n" + validationFailure.Message + "\r\n");
+        //    }
 
-            if (publicKey == null)
-            {
-                validationFailures.Add(invalidPublicKeyFailure);
+        //    if (publicKey == null)
+        //    {
+        //        validationFailures.Add(invalidPublicKeyFailure);
 
-                return validationFailures.Aggregate(string.Empty, (current, validationFailure) => current + validationFailure.HowToResolve + ": " + "\r\n" + validationFailure.Message + "\r\n");
-            }
+        //        return validationFailures.Aggregate(string.Empty, (current, validationFailure) => current + validationFailure.HowToResolve + ": " + "\r\n" + validationFailure.Message + "\r\n");
+        //    }
 
-            try
-            {
-                license.VerifySignature(publicKey);
-            }
-            catch (Exception ex)
-            {
-                validationFailures.Add(new InvalidSignatureValidationFailure());
+        //    try
+        //    {
+        //        license.VerifySignature(publicKey);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        validationFailures.Add(new InvalidSignatureValidationFailure());
 
-                return validationFailures.Aggregate(string.Empty, (current, validationFailure) => current + validationFailure.HowToResolve + ": " + "\r\n" + validationFailure.Message + "\r\n");
-            }
+        //        return validationFailures.Aggregate(string.Empty, (current, validationFailure) => current + validationFailure.HowToResolve + ": " + "\r\n" + validationFailure.Message + "\r\n");
+        //    }
 
-            var invalidMachineIdFailure = new GeneralValidationFailure
-            {
-                Message = "Invalid Machine ID",
-                HowToResolve = ""
-            };
+        //    var invalidMachineIdFailure = new GeneralValidationFailure
+        //    {
+        //        Message = "Invalid Machine ID",
+        //        HowToResolve = ""
+        //    };
 
-            validationFailures =
-                license.Validate()
-                    .ExpirationDate()
-                    .When(LicenseException)
-                    .And()
-                    .AssertThat(lic => lic.AdditionalAttributes.Get("Machine ID") == machineId, invalidMachineIdFailure)
-                    .When(lic => lic.AdditionalAttributes.Contains("Machine ID"))
-                    .And()
-                    .Signature(publicKey)
-                    .AssertValidLicense().ToList();
+        //    validationFailures =
+        //        license.Validate()
+        //            .ExpirationDate()
+        //            .When(LicenseException)
+        //            .And()
+        //            .AssertThat(lic => lic.AdditionalAttributes.Get("Machine ID") == machineId, invalidMachineIdFailure)
+        //            .When(lic => lic.AdditionalAttributes.Contains("Machine ID"))
+        //            .And()
+        //            .Signature(publicKey)
+        //            .AssertValidLicense().ToList();
 
-            var failures = validationFailures as List<IValidationFailure> ?? validationFailures.ToList();
+        //    var failures = validationFailures as List<IValidationFailure> ?? validationFailures.ToList();
 
-            return !failures.Any() ? ReturnValue : failures.Aggregate(string.Empty, (current, validationFailure) => current + validationFailure.HowToResolve + ": " + "\r\n" + validationFailure.Message + "\r\n");
-        }
+        //    return !failures.Any() ? ReturnValue : failures.Aggregate(string.Empty, (current, validationFailure) => current + validationFailure.HowToResolve + ": " + "\r\n" + validationFailure.Message + "\r\n");
+        //}
 
         private string GetHash(string s)
         {
@@ -248,25 +250,23 @@ namespace StudentElection.Main
             }
         }
 
-        private void btnVote_Click(object sender, RoutedEventArgs e)
+        private async void btnVote_Click(object sender, RoutedEventArgs e)
         {
-            WaitLang(this);
+            G.WaitLang(this);
             try
             {
-                var voterRows = Voters.Dictionary.Values;
-
-                Classes.Voter voter = null;
-
-                if (voterRows.Count > 0)
+                bool isValid = false;
+                var voter = await _voterService.GetVoterByVinAsync(_currentElection.Id, txtStudentId.Text);
+                if (voter != null)
                 {
-                    var vRows = voterRows.Where(x => x.VoterID == txtStudentId.Text);
-
-                    if (vRows.Count() > 0) voter = vRows.First();
+                    bool isVoted = await _ballotService.IsVoterAlreadyVotedAsync(voter);
+                    if (!isVoted)
+                    {
+                        isValid = true;
+                    }
                 }
 
-                bool isVoted = voter != null && Ballots.Dictionary.Keys.Contains(Convert.ToInt32(voter.ID));
-
-                if (voter != null && Convert.ToString(voter.VoterID) == txtStudentId.Text && !isVoted && !Convert.ToBoolean(voter.IsForeign))
+                if (isValid)
                 {
                     Hide();
 
@@ -279,7 +279,7 @@ namespace StudentElection.Main
                 else
                 {
                     EndWait(this);
-                    MessageBox.Show("Invalid Voter ID", "Student Voting", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Invalid Voter ID", Properties.Settings.Default.SystemTitle, MessageBoxButton.OK, MessageBoxImage.Error);
 
                     txtStudentId.Focus();
                 }
@@ -463,26 +463,26 @@ namespace StudentElection.Main
 
         private void btnLicenseInfo_Click(object sender, RoutedEventArgs e)
         {
-            License license = null;
-            using (var licenseStream = new StreamReader(licenseKeyFilePath))
-            {
-                if (licenseStream.BaseStream.Length > 0)
-                {
-                    license = License.Load(licenseStream.BaseStream);
-                }
-            }
+            //License license = null;
+            //using (var licenseStream = new StreamReader(licenseKeyFilePath))
+            //{
+            //    if (licenseStream.BaseStream.Length > 0)
+            //    {
+            //        license = License.Load(licenseStream.BaseStream);
+            //    }
+            //}
 
-            if (license != null)
-            {
-                var info = new StringBuilder();
-                info.AppendFormat("License ID:\t{0}\n\n", license.Id);
+            //if (license != null)
+            //{
+            //    var info = new StringBuilder();
+            //    info.AppendFormat("License ID:\t{0}\n\n", license.Id);
 
-                info.AppendFormat("Software:\t{0}\n", license.AdditionalAttributes.Get("Software"));
-                info.AppendFormat("Licensed to:\t{0} ({1})\n", license.Customer.Name, license.Customer.Email);
-                info.AppendFormat("Expires on:\t{0}\n", license.Type == LicenseType.Standard ? "(No expiry)" : license.Expiration.ToString("MMMM d, yyyy"));
+            //    info.AppendFormat("Software:\t{0}\n", license.AdditionalAttributes.Get("Software"));
+            //    info.AppendFormat("Licensed to:\t{0} ({1})\n", license.Customer.Name, license.Customer.Email);
+            //    info.AppendFormat("Expires on:\t{0}\n", license.Type == LicenseType.Standard ? "(No expiry)" : license.Expiration.ToString("MMMM d, yyyy"));
 
-                MessageBox.Show(info.ToString(), "License Info", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            //    MessageBox.Show(info.ToString(), "License Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            //}
         }
 
         private void btnBrowseLic_Click(object sender, RoutedEventArgs e)
@@ -514,16 +514,16 @@ namespace StudentElection.Main
         private void btnCopyright_Click(object sender, RoutedEventArgs e)
         {
             var info = new StringBuilder();
-            info.AppendLine("STUDENT ELECTION VOTING SYSTEM");
+            info.AppendLine("STUDENT ELECTION SYSTEM");
             info.AppendLine("version 1.2.0");
             info.AppendLine();
             info.AppendLine();
             info.AppendLine("© 2019 Albert Francisco");
-            info.AppendLine();
-            info.AppendLine();
-            info.AppendLine("THIRD-PARTY SOFTWARE:");
-            info.AppendLine("• Portable.Licensing");
-            info.AppendLine("  https://github.com/dnauck/Portable.Licensing");
+            //info.AppendLine();
+            //info.AppendLine();
+            //info.AppendLine("THIRD-PARTY SOFTWARE:");
+            //info.AppendLine("• Portable.Licensing");
+            //info.AppendLine("  https://github.com/dnauck/Portable.Licensing");
 
             MessageBox.Show(info.ToString(), "Software Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }

@@ -1,4 +1,4 @@
-﻿using StudentElection.Classes;
+﻿//using StudentElection.Classes;
 using StudentElection.Dialogs;
 using StudentElection.Main;
 using Microsoft.Win32;
@@ -24,6 +24,9 @@ using StudentElection.Repository.Models;
 using StudentElection.Services;
 using Project.Library.Helpers;
 using System.Drawing;
+using ExcelDataReader;
+using Humanizer;
+using System.ComponentModel;
 
 namespace StudentElection.UserControls
 {
@@ -35,8 +38,15 @@ namespace StudentElection.UserControls
         public bool AreCandidatesFinalized = false;
 
         private double _hOffset = -1;
-        
+
         private readonly CandidateService _candidateService = new CandidateService();
+        private readonly PositionService _positionService = new PositionService();
+
+        private PartyModel _party;
+
+        private BackgroundWorker _backgroundWorker;
+        private ProgressWindow _progressWindow;
+        private MaintenanceWindow _maintenanceWindow;
 
         public PartyItemControl()
         {
@@ -64,7 +74,7 @@ namespace StudentElection.UserControls
             _hOffset = svrCandidate.HorizontalOffset;
             var candidateForm = new CandidateForm();
             candidateForm.Candidate = null;
-            candidateForm.SetParty(DataContext as PartyModel);
+            candidateForm.SetParty(_party);
 
             WindowInteropHelper helper = new WindowInteropHelper(window);
             SetWindowLong(new HandleRef(candidateForm, candidateForm.Handle), -8, helper.Handle.ToInt32());
@@ -91,10 +101,8 @@ namespace StudentElection.UserControls
                 try
                 {
                     stkCandidate.Children.Clear();
-
-                    var partyId = (DataContext as PartyModel).Id;
                     
-                    var candidateParty = await _candidateService.GetCandidatesByPartyAsync(partyId);
+                    var candidateParty = await _candidateService.GetCandidatesByPartyAsync(_party.Id);
 
                     if (candidateParty.Count() > 0)
                         stkCandidate.Visibility = Visibility.Visible;
@@ -105,19 +113,6 @@ namespace StudentElection.UserControls
                     foreach (var candidate in candidateParty)
                     {
                         var candidateControl = new CandidateControl();
-                        if (!candidate.PictureFileName.IsBlank())
-                        {
-                            var imagePath = System.IO.Path.Combine(App.ImageFolderPath, candidate.PictureFileName);
-                            using (var bmpTemp = new System.Drawing.Bitmap(imagePath))
-                            {
-                                candidateControl.imgCandidate.Source = ImageHelper.ImageToImageSource(new System.Drawing.Bitmap(bmpTemp));
-                            }
-                        }
-                        else
-                        {
-                            candidateControl.imgCandidate.Source = ImageHelper.ImageToImageSource(Properties.Resources.default_candidate);
-                        }
-
                         candidateControl.DataContext = candidate;
                         stkCandidate.Children.Add(candidateControl);
                     }
@@ -163,7 +158,7 @@ namespace StudentElection.UserControls
             window.Opacity = 0.5;
             
             var form = new PartyForm();
-            form.Party = DataContext as PartyModel;
+            form.Party = _party;
 
             WindowInteropHelper helper = new WindowInteropHelper(window);
             SetWindowLong(new HandleRef(form, form.Handle), -8, helper.Handle.ToInt32());
@@ -194,20 +189,6 @@ namespace StudentElection.UserControls
                     //    //TODO: PositionVoteCount = temp.PositionVoteCount,
                     //    //TODO: VoteCount = temp.VoteCount
                     //};
-
-                    if (!candidate.PictureFileName.IsBlank())
-                    {
-                        var imagePath = System.IO.Path.Combine(App.ImageFolderPath, candidate.PictureFileName);
-                        using (var bmpTemp = new Bitmap(imagePath))
-                        {
-                            control.imgCandidate.Source = ImageHelper.ImageToImageSource(new Bitmap(bmpTemp));
-                        }
-                    }
-                    else
-                    {
-                        control.imgCandidate.Source = ImageHelper.ImageToImageSource(Properties.Resources.default_candidate);
-                    }
-
                     control.DataContext = candidate;
                 }
                 await window.LoadVotersAsync();
@@ -274,7 +255,163 @@ namespace StudentElection.UserControls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            _party = DataContext as PartyModel;
+
             ResizePartyTextBlock();
+        }
+
+        private void btnImportCandidates_Click(object sender, RoutedEventArgs e)
+        {
+            var fileDialog = new OpenFileDialog
+            {
+                Title = $"Import candidates from { _party.Title.Titleize() } ({ _party.ShortName })",
+                Filter = "Excel Files|*.xls;*.xlsx;"
+            };
+
+            if (fileDialog.ShowDialog() == true)
+            {
+                _backgroundWorker = new BackgroundWorker
+                {
+                    WorkerReportsProgress = true,
+                    WorkerSupportsCancellation = true
+                };
+                
+                _backgroundWorker.DoWork += BackgroundWorker_DoWork;
+                _backgroundWorker.ProgressChanged += _backgroundWorker_ProgressChanged;
+                _backgroundWorker.RunWorkerCompleted += _backgroundWorker_RunWorkerCompleted;
+                _backgroundWorker.RunWorkerAsync(fileDialog.OpenFile());
+
+                _progressWindow = new ProgressWindow();
+                _progressWindow.btnCancel.Click += delegate
+                {
+                    _backgroundWorker.CancelAsync();
+                };
+                _progressWindow.progressBar.IsIndeterminate = true;
+
+                var parentWindow = Window.GetWindow(this);
+                _maintenanceWindow = parentWindow as MaintenanceWindow;
+                
+                G.WaitLang(_maintenanceWindow);
+                _maintenanceWindow.Opacity = 0.5;
+
+                _progressWindow.Owner = _maintenanceWindow;
+                _progressWindow.ShowDialog();
+            }
+        }
+
+        private async void _backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            _progressWindow.Close();
+
+            G.EndWait(_maintenanceWindow);
+            _maintenanceWindow.Opacity = 1;
+
+            if (e.Cancelled)
+            {
+                MessageBox.Show("Import cancelled.\n\nNo candidates imported", "Import cancelled", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (e.Error != null)
+            {
+                MessageBox.Show($"{ e.Error.GetBaseException().Message } \n\n { "No candidates imported" }", "Import error", MessageBoxButton.OK, MessageBoxImage.Stop);
+            }
+            else
+            {
+                await _maintenanceWindow.LoadCandidatesAsync();
+
+                var count = Convert.ToInt32(e.Result);
+                MessageBox.Show($"Successfully imported { "candidate".ToQuantity(count) }", "Import successful", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
+            _backgroundWorker.Dispose();
+        }
+
+        private void _backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            var count = Convert.ToInt32(e.UserState);
+
+            if (e.ProgressPercentage == 0)
+            {
+                _progressWindow.tbkMessage.Text = $"Checking { "candidate".ToQuantity(count) }...";
+            }
+            else
+            {
+                _progressWindow.tbkMessage.Text = $"Importing { "candidate".ToQuantity(count) }...";
+            }
+        }
+
+        private async void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var stream = e.Argument as System.IO.Stream;
+            var importedCandidates = new List<CandidateModel>();
+
+            using (stream)
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    int count = 0;
+
+                    reader.Read();
+                    while (reader.Read())
+                    {
+                        count++;
+                        _backgroundWorker.ReportProgress(0, count);
+
+                        var newCandidate = new CandidateModel();
+                        newCandidate.PartyId = _party.Id;
+                        newCandidate.FirstName = reader.GetString(0);
+                        newCandidate.MiddleName = reader.GetString(1);
+                        newCandidate.LastName = reader.GetString(2);
+                        newCandidate.Suffix = reader.GetString(3);
+                        newCandidate.Birthdate = reader.IsDBNull(4) ? default(DateTime?) : reader.GetDateTime(4);
+
+                        var sexText = reader.GetString(5);
+                        if (sexText.Equals("male", StringComparison.OrdinalIgnoreCase))
+                        {
+                            newCandidate.Sex = Sex.Male;
+                        }
+                        else if (sexText.Equals("female", StringComparison.OrdinalIgnoreCase))
+                        {
+                            newCandidate.Sex = Sex.Female;
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Must be 'male' or 'female'", nameof(newCandidate.Sex));
+                        }
+
+                        var yearLevelText = reader.GetValue(6);
+                        if (int.TryParse(yearLevelText?.ToString(), out int yearLevel))
+                        {
+                            newCandidate.YearLevel = yearLevel;
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Invalid year level", nameof(newCandidate.YearLevel));
+                        }
+
+                        newCandidate.Section = reader.GetString(7);
+                        newCandidate.Alias = reader.GetString(8);
+                        newCandidate.PictureFileName = reader.GetString(9);
+
+                        var positionTitle = reader.GetString(10);
+                        var position = await _positionService.GetPositionByTitleAsync(_party.ElectionId, positionTitle);
+                        if (position == null)
+                        {
+                            throw new ArgumentException($"Position '{ positionTitle }' does not exist", nameof(newCandidate.Position));
+                        }
+
+                        newCandidate.PositionId = position.Id;
+
+                        await _candidateService.ValidateAsync(_party.ElectionId, newCandidate);
+
+                        importedCandidates.Add(newCandidate);
+                    }
+                }
+            }
+
+            _backgroundWorker.ReportProgress(100, importedCandidates.Count);
+            await _candidateService.ImportCandidatesAsync(importedCandidates);
+
+            e.Result = importedCandidates.Count;
         }
     }
 }

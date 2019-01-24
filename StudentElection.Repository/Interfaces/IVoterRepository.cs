@@ -14,7 +14,10 @@ namespace StudentElection.Repository.Interfaces
         Task<VoterModel> GetVoterByVinAsync(int electionId, string vin);
         Task<bool> IsVinExistingAsync(int electionId, string vin, VoterModel voter);
         Task InsertVoterAsync(VoterModel voter);
+        Task InsertVotersAsync(IEnumerable<VoterModel> voters);
         Task UpdateVoterAsync(VoterModel voter);
         Task DeleteVoterAsync(VoterModel voter);
+        Task<int> CountVotersAsync(int electionId);
+        Task<int> CountVotedVotersAsync(int electionId);
     }
 }

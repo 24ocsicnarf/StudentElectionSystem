@@ -15,6 +15,7 @@ using System.Windows.Interop;
 using StudentElection.Repository.Models;
 using StudentElection.Services;
 using Project.Library.Helpers;
+using Humanizer;
 
 namespace StudentElection.Dialogs
 {
@@ -185,17 +186,21 @@ namespace StudentElection.Dialogs
                 {
                     dtBirthdate.Value = Candidate.Birthdate.Value;
                 }
-                radMale.Checked = Candidate.Sex == Sex.Male;
-                radFemale.Checked = Candidate.Sex == Sex.Female;
+                cmbSex.SelectedIndex = (int)Candidate.Sex - 1;
                 cmbYearLevel.Text = Candidate.YearLevel.ToString();
                 txtSection.Text = Candidate.Section;
                 txtAlias.Text = Candidate.Alias;
-                
+
+                pbImage.Image = Properties.Resources.default_candidate;
                 if (!Candidate.PictureFileName.IsBlank())
                 {
-                    using (var bmpTemp = new Bitmap(Path.Combine(App.ImageFolderPath, Candidate.PictureFileName)))
+                    var filePath = Path.Combine(App.ImageFolderPath, Candidate.PictureFileName);
+                    if (File.Exists(filePath))
                     {
-                        pbImage.Image = new Bitmap(bmpTemp);
+                        using (var bmpTemp = new Bitmap(filePath))
+                        {
+                            pbImage.Image = new Bitmap(bmpTemp);
+                        }
                     }
                 }
 
@@ -339,7 +344,7 @@ namespace StudentElection.Dialogs
                 MessageBox.Show("Enter the candidate's last name.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (!radMale.Checked && !radFemale.Checked)
+            if (cmbSex.SelectedIndex < 0)
             {
                 MessageBox.Show("Select the candidate's sex.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -367,7 +372,7 @@ namespace StudentElection.Dialogs
                 return;
             }
 
-            txtAlias.Text = txtAlias.Text.ToProperCase();
+            //txtAlias.Text = txtAlias.Text.ToUpper();
 
             try
             {
@@ -382,6 +387,20 @@ namespace StudentElection.Dialogs
                     txtAlias.Focus();
 
                     return;
+                }
+
+                var position = cmbPosition.SelectedItem as PositionModel;
+                var candidatesByPosition = await _candidateService.GetCandidatesByPositionAsync(position.Id);
+
+                if (candidatesByPosition.Any(c => c.Id != Candidate.Id && c.PartyId == Candidate.PartyId))
+                {
+                    G.EndWait(this);
+                    var result = MessageBox.Show($"There's already a candidate for { position.Title }.\n\nContinue adding this candidate?",
+                        "Position has a candidate", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (result == DialogResult.No)
+                    {
+                        return;
+                    }
                 }
 
                 string existingImageFile = null;
@@ -404,15 +423,13 @@ namespace StudentElection.Dialogs
                     pbImage.Image.Save($"{ Path.Combine(App.ImageFolderPath, newFileName) }");
                 }
 
-                var position = cmbPosition.SelectedItem as PositionModel;
-
                 var candidate = new CandidateModel
                 {
                     FirstName = txtFirstName.Text,
                     MiddleName = txtMiddleName.Text,
                     LastName = txtLastName.Text,
                     Suffix = txtSuffix.Text,
-                    Sex = radMale.Checked ? Sex.Male : Sex.Female,
+                    Sex = (Sex)(cmbSex.SelectedIndex + 1),
                     Birthdate = dtBirthdate.Checked ? dtBirthdate.Value.Date : default(DateTime?),
                     YearLevel = int.Parse(cmbYearLevel.Text),
                     Section = txtSection.Text,

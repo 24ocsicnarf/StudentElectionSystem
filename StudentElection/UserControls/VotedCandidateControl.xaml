@@ -9,14 +9,14 @@
     <UserControl.Resources>
         <Converters:ToUpperValueConverter x:Key="toUpperValueConverter" />
     </UserControl.Resources>
-    <Grid Width="520" Height="30" Background="White">
+    <Grid Width="520" Height="30" Background="WhiteSmoke">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Viewbox Grid.Column="0" x:Name="vbPosition" HorizontalAlignment="Right" VerticalAlignment="Center" Height="16" Width="180" Margin="4,0">
+        <Viewbox Grid.Column="0" x:Name="vbPosition" HorizontalAlignment="Right" VerticalAlignment="Center" Height="14" Width="180" Opacity="0.87" Margin="4,0">
             <Grid>
-                <TextBlock x:Name="tbkPosition" Text="{Binding Path=Position.Title, Converter={StaticResource toUpperValueConverter}}" LineStackingStrategy="BlockLineHeight" LineHeight="16" FontSize="16" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="tbkPosition_SizeChanged">
+                <TextBlock x:Name="tbkPosition" FontWeight="Bold" Text="{Binding Path=Position.Title, Converter={StaticResource toUpperValueConverter}}" LineStackingStrategy="BlockLineHeight" LineHeight="14" FontSize="14" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="tbkPosition_SizeChanged">
                     <TextBlock.ToolTip>
                         <TextBlock Text="{Binding Path=Position.Title, Converter={StaticResource toUpperValueConverter}}" TextWrapping="Wrap" />
                     </TextBlock.ToolTip>
@@ -24,7 +24,7 @@
             </Grid>
         </Viewbox>
         <StackPanel Orientation="Horizontal" Grid.Column="1" >
-            <Rectangle x:Name="recParty" Width="12" Fill="{Binding Path=Party.ColorBrush}" Margin="4,2" >
+            <Rectangle x:Name="recParty" Width="8" Fill="{Binding Path=Party.ColorBrush}" Margin="6,2" >
                 <Rectangle.ToolTip>
                     <TextBlock Text="{Binding Path=Party.Title}" TextWrapping="Wrap" />
                 </Rectangle.ToolTip>

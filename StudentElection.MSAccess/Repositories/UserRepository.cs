@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using StudentElection.MSAccess.StudentElectionDataSetTableAdapters;
 using StudentElection.Repository.Interfaces;
 using StudentElection.Repository.Models;
@@ -33,6 +34,18 @@ namespace StudentElection.MSAccess.Repositories
             }
         }
 
+        public async Task DeleteUserAsync(UserModel user)
+        {
+            using (var tableAdapter = new UserTableAdapter())
+            {
+                await Task.CompletedTask;
+
+                tableAdapter.Delete(
+                    user.Id
+                );
+            }
+        }
+
         public async Task<UserModel> GetUserAsync(int userId)
         {
             await Task.CompletedTask;
@@ -59,11 +72,28 @@ namespace StudentElection.MSAccess.Repositories
                 {
                     return null;
                 }
+                if (!row.UserName.Equals(username, StringComparison.Ordinal))
+                {
+                    return null;
+                }
 
                 var model = new UserModel();
                 Mapper.Map(row, model);
 
                 return model;
+            }
+        }
+
+        public async Task<IEnumerable<UserModel>> GetUsersAsync()
+        {
+            await Task.CompletedTask;
+
+            using (var tableAdapter = new UserTableAdapter())
+            {
+                return tableAdapter.GetData()
+                    .AsQueryable()
+                    .ProjectTo<UserModel>()
+                    .AsEnumerable();
             }
         }
 

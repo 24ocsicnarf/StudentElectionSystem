@@ -33,6 +33,11 @@ namespace StudentElection.Services
             return await _voterRepository.GetVoterByVinAsync(electionId, vin);
         }
 
+        public async Task<int> CountVotersAsync(int electionId)
+        {
+            return await _voterRepository.CountVotersAsync(electionId);
+        }
+
         public async Task<IEnumerable<VoterModel>> GetVotersAsync(int electionId)
         {
             return await _voterRepository.GetVotersAsync(electionId);
@@ -58,6 +63,44 @@ namespace StudentElection.Services
         public async Task DeleteVoterAsync(VoterModel voter)
         {
             await _voterRepository.DeleteVoterAsync(voter);
+        }
+
+        public async Task ImportVotersAsync(IEnumerable<VoterModel> voters)
+        {
+            await _voterRepository.InsertVotersAsync(voters);
+        }
+
+        public async Task<int> CountVotedVotersAsync(int electionId)
+        {
+            return await _voterRepository.CountVotedVotersAsync(electionId);
+        }
+
+        public async Task ValidateAsync(int electionId, VoterModel voter)
+        {
+            if (voter.FirstName.IsBlank())
+            {
+                throw new ArgumentException("No first name provided", nameof(voter.FirstName));
+            }
+
+            if (voter.LastName.IsBlank())
+            {
+                throw new ArgumentException("No last name provided", nameof(voter.LastName));
+            }
+
+            if (voter.YearLevel < 1 || voter.YearLevel > 12)
+            {
+                throw new ArgumentOutOfRangeException("Year level must be from 1 to 12", nameof(voter.YearLevel));
+            }
+
+            if (voter.Section.IsBlank())
+            {
+                throw new ArgumentException("No section provided", nameof(voter.Section));
+            }
+
+            if (await IsVinExistingAsync(electionId, voter.Vin, null))
+            {
+                throw new InvalidOperationException($"Voter ID '{ voter.Vin }' already exists");
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using StudentElection.Classes;
+﻿//using StudentElection.Classes;
 using StudentElection;
 using StudentElection.Dialogs;
 using System;
@@ -15,6 +15,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using StudentElection.UserControls;
+using StudentElection.Repository.Models;
+using StudentElection.Services;
+using Humanizer;
+using Humanizer.Localisation;
+using System.Windows.Controls.Primitives;
 //using StudentElection.StudentElectionDataSetTableAdapters;
 
 namespace StudentElection.Dialogs
@@ -24,14 +29,20 @@ namespace StudentElection.Dialogs
     /// </summary>
     public partial class VoteConfirmationWindow : Window
     {
-        public List<Candidate> ListVotedCandidates;
-        public Voter @Voter;
-        public string BallotCode;
+        public List<CandidateModel> ListVotedCandidates;
+        public VoterModel Voter;
+        public int BallotId;
         public bool IsCasted = false;
+        
+        private readonly BallotService _ballotService = new BallotService();
 
         public VoteConfirmationWindow()
         {
             InitializeComponent();
+
+            stkButtons.Visibility = Visibility.Collapsed;
+            stkScrollDown.Visibility = Visibility.Collapsed;
+            lblInstructions.Visibility = Visibility.Hidden;
 
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += (s, ev) =>
             {
@@ -44,31 +55,43 @@ namespace StudentElection.Dialogs
             Close();
         }
 
-        private void btnCast_Click(object sender, RoutedEventArgs e)
+        private async void btnCast_Click(object sender, RoutedEventArgs e)
         {
             G.WaitLang(this);
             try
             {
-                Ballots.InsertData(new Ballot()
+                var votes = new List<VoteModel>();
+                foreach (var candidate in ListVotedCandidates)
                 {
-                    Code = BallotCode,
-                    UserID = Voter.ID
-                });
-
-                var bcAdapter = new BallotCandidateTableAdapter();
-                foreach (Candidate candidate in ListVotedCandidates)
-                {
-                    if (candidate.ID != 0)
+                    if (candidate.Id != 0)
                     {
-                        bcAdapter.Insert(Voter.ID, candidate.ID);
+                        votes.Add(new VoteModel
+                        {
+                            BallotId = BallotId,
+                            CandidateId = candidate.Id
+                        });
                     }
                 }
 
-                Voters.Dictionary[Voter.ID].IsVoted = true;
+                await _ballotService.CastVotesAsync(BallotId, votes);
+
+                var ballot = await _ballotService.GetBallotAsync(BallotId);
 
                 G.EndWait(this);
 
-                MessageBox.Show("Your votes have been casted. Thank you for your participation. :D", "Votes Casted", MessageBoxButton.OK, MessageBoxImage.Information);
+                var messageBuilder = new StringBuilder();
+                messageBuilder.AppendLine("Your votes have been casted.");
+                messageBuilder.AppendLine("Thank you for your participation :D");
+                messageBuilder.AppendLine();
+                messageBuilder.AppendLine($"Ballot Code:\t{ ballot.Code }");
+                messageBuilder.AppendLine($"Voter ID:\t\t{ Voter.Vin }");
+                messageBuilder.AppendLine();
+                messageBuilder.AppendLine($"Started At:\t{ ballot.EnteredAt.ToString("yyyy-MM-dd hh:mm:ss tt") }");
+                messageBuilder.AppendLine($"Casted At:\t{ ballot.CastedAt?.ToString("yyyy-MM-dd hh:mm:ss tt") }");
+                var duration = ballot.CastedAt.Value.Subtract(ballot.EnteredAt);
+                messageBuilder.AppendLine($"Duration:\t{ TimeSpan.FromSeconds(duration.TotalSeconds).Humanize(minUnit: TimeUnit.Second) }");
+                
+                MessageBox.Show(messageBuilder.ToString(), "Votes Casted", MessageBoxButton.OK, MessageBoxImage.Information);
                 IsCasted = true;
 
                 Close();
@@ -84,12 +107,71 @@ namespace StudentElection.Dialogs
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             stkCandidates.Children.Clear();
-            foreach (Candidate candidate in ListVotedCandidates)
+            for (int i = 0; i < ListVotedCandidates.Count; i++)
             {
-                var votedCandidate = new VotedCandidateControl();
-                votedCandidate.DataContext = candidate;
-                
+                var candidate = ListVotedCandidates[i];
+                var votedCandidate = new VotedCandidateControl
+                {
+                    DataContext = candidate,
+                };
+
+                var samePosition = false;
+                if (i > 0 && candidate.PositionId > 0)
+                {
+                    var prev = ListVotedCandidates[i - 1];
+                    if (prev.PositionId == candidate.PositionId)
+                    {
+                        votedCandidate.tbkPosition.Text = string.Empty;
+                        samePosition = true;
+                    }
+                }
+
+                if (!samePosition)
+                {
+                    stkCandidates.Children.Add(new Rectangle
+                    {
+                        Height = 10,
+                    });
+                }
+
                 stkCandidates.Children.Add(votedCandidate);
+            }
+            stkCandidates.Children.Add(new Rectangle
+            {
+                Height = 10,
+            });
+        }
+
+        private void SvCandidates_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (stkButtons.Visibility == Visibility.Visible)
+            {
+                return;
+            }
+
+            var sb = e.OriginalSource as ScrollViewer;
+            
+            if (e.VerticalOffset > 0 && sb.ScrollableHeight == e.VerticalOffset)
+            {
+                stkButtons.Visibility = Visibility.Visible;
+                lblInstructions.Visibility = Visibility.Visible;
+                stkScrollDown.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void Window_ContentRendered(object sender, EventArgs e)
+        {
+            if (svCandidates.ComputedVerticalScrollBarVisibility == Visibility.Collapsed)
+            {
+                stkButtons.Visibility = Visibility.Visible;
+                lblInstructions.Visibility = Visibility.Visible;
+                stkScrollDown.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                stkButtons.Visibility = Visibility.Collapsed;
+                lblInstructions.Visibility = Visibility.Hidden;
+                stkScrollDown.Visibility = Visibility.Visible;
             }
         }
     }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudentElection"
         mc:Ignorable="d" Width="800" Height="600"
-        Title="Ballot" WindowStyle="None" ResizeMode="NoResize" Closing="Window_Closing" WindowStartupLocation="CenterScreen" FontFamily="Tahoma" FontSize="14.667" SizeChanged="Window_SizeChanged">
+        Title="Ballot" WindowStyle="None" ResizeMode="NoResize" Loaded="Window_Loaded" Closing="Window_Closing" WindowStartupLocation="CenterScreen" FontFamily="Tahoma" FontSize="14.667" SizeChanged="Window_SizeChanged">
     <Grid Background="Black">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -40,7 +40,7 @@
                         </StackPanel>
                         <StackPanel  Grid.Column="2"  HorizontalAlignment="Stretch">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
-                                <Label DockPanel.Dock="Right" Content="Ballot Code:" Width="90" HorizontalAlignment="Right" HorizontalContentAlignment="Right"  VerticalAlignment="Center" Padding="4"  Visibility="Visible" />
+                                <Label DockPanel.Dock="Right" Content="Ballot Code:" Width="90" HorizontalAlignment="Right" HorizontalContentAlignment="Right"  VerticalAlignment="Center" Padding="2"  Visibility="Visible" />
                                 <Viewbox x:Name="vbBallotCode" Height="18" HorizontalAlignment="Left" Margin="4,0">
                                     <TextBlock x:Name="tbkBallotCode" Text="W" VerticalAlignment="Center" Visibility="Visible" FontWeight="Bold" Padding="0" SizeChanged="tbkBallotCode_SizeChanged" >
 
@@ -48,7 +48,7 @@
                                 </Viewbox>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                <Label DockPanel.Dock="Right" Content="Voter ID:" Width="90"  HorizontalAlignment="Right" HorizontalContentAlignment="Right" VerticalAlignment="Center" Padding="4,0"  Visibility="Visible" />
+                                <Label DockPanel.Dock="Right" Content="Voter ID:" Width="90"  HorizontalAlignment="Right" HorizontalContentAlignment="Right" VerticalAlignment="Center" Padding="2"  Visibility="Visible" />
                                 <Viewbox x:Name="vbVoterID" Height="18" HorizontalAlignment="Left" Margin="4,0">
                                     <TextBlock  x:Name="tbkVoterID"  Text="WWWWWWWWWWWWW" VerticalAlignment="Center" Visibility="Visible" FontWeight="Bold" Padding="0" SizeChanged="tbkVoterID_SizeChanged">
 
@@ -56,10 +56,10 @@
                                 </Viewbox>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
-                                <Label DockPanel.Dock="Right" Visibility="Hidden" Content="Voter ID:" Width="90"  HorizontalAlignment="Right" VerticalAlignment="Center" Padding="0" />
-                                <Viewbox x:Name="vbFullName" Height="16"  HorizontalAlignment="Left" Margin="4,0">
-                                    <TextBlock x:Name="tbkFullName" Text="Name" VerticalAlignment="Center" Visibility="Collapsed" Padding="0" FontSize="12" Foreground="#CC000000" SizeChanged="tbkFullName_SizeChanged">
-
+                                <Label DockPanel.Dock="Right" Visibility="Visible" Content="Started At:" Width="90" HorizontalContentAlignment="Right" VerticalAlignment="Center" Padding="2" />
+                                <Viewbox x:Name="vbFullName" Height="18" HorizontalAlignment="Left" Margin="4,0">
+                                    <TextBlock x:Name="tbkFullName" VerticalAlignment="Center" Visibility="Visible" Padding="0" FontSize="12" Foreground="#CC000000" SizeChanged="tbkFullName_SizeChanged">
+                                        
                                     </TextBlock>
                                 </Viewbox>
                             </StackPanel>

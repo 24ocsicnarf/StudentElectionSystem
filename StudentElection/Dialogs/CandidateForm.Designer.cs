@@ -52,14 +52,14 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtSuffix = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.radMale = new System.Windows.Forms.RadioButton();
-            this.radFemale = new System.Windows.Forms.RadioButton();
             this.label8 = new System.Windows.Forms.Label();
             this.cmbYearLevel = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.txtSection = new System.Windows.Forms.TextBox();
             this.positionModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dtBirthdate = new System.Windows.Forms.DateTimePicker();
+            this.label10 = new System.Windows.Forms.Label();
+            this.cmbSex = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pbImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbBorder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionModelBindingSource)).BeginInit();
@@ -297,28 +297,6 @@
             this.label5.TabIndex = 1;
             this.label5.Text = "Birthdate";
             // 
-            // radMale
-            // 
-            this.radMale.AutoSize = true;
-            this.radMale.Location = new System.Drawing.Point(330, 164);
-            this.radMale.Name = "radMale";
-            this.radMale.Size = new System.Drawing.Size(49, 18);
-            this.radMale.TabIndex = 5;
-            this.radMale.TabStop = true;
-            this.radMale.Text = "Male";
-            this.radMale.UseVisualStyleBackColor = true;
-            // 
-            // radFemale
-            // 
-            this.radFemale.AutoSize = true;
-            this.radFemale.Location = new System.Drawing.Point(385, 164);
-            this.radFemale.Name = "radFemale";
-            this.radFemale.Size = new System.Drawing.Size(63, 18);
-            this.radFemale.TabIndex = 6;
-            this.radFemale.TabStop = true;
-            this.radFemale.Text = "Female";
-            this.radFemale.UseVisualStyleBackColor = true;
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -350,6 +328,7 @@
             "11",
             "12"});
             this.cmbYearLevel.Location = new System.Drawing.Point(200, 201);
+            this.cmbYearLevel.MaxDropDownItems = 12;
             this.cmbYearLevel.Name = "cmbYearLevel";
             this.cmbYearLevel.Size = new System.Drawing.Size(52, 22);
             this.cmbYearLevel.TabIndex = 7;
@@ -388,6 +367,32 @@
             this.dtBirthdate.Size = new System.Drawing.Size(124, 22);
             this.dtBirthdate.TabIndex = 4;
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(330, 164);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(27, 14);
+            this.label10.TabIndex = 1;
+            this.label10.Text = "Sex";
+            // 
+            // cmbSex
+            // 
+            this.cmbSex.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.cmbSex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSex.DropDownWidth = 48;
+            this.cmbSex.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbSex.FormattingEnabled = true;
+            this.cmbSex.Items.AddRange(new object[] {
+            "Male",
+            "Female"});
+            this.cmbSex.Location = new System.Drawing.Point(363, 161);
+            this.cmbSex.MaxDropDownItems = 12;
+            this.cmbSex.Name = "cmbSex";
+            this.cmbSex.Size = new System.Drawing.Size(85, 22);
+            this.cmbSex.TabIndex = 7;
+            // 
             // CandidateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -395,9 +400,8 @@
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(460, 360);
             this.Controls.Add(this.dtBirthdate);
+            this.Controls.Add(this.cmbSex);
             this.Controls.Add(this.cmbYearLevel);
-            this.Controls.Add(this.radFemale);
-            this.Controls.Add(this.radMale);
             this.Controls.Add(this.btnPosition);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnAdd);
@@ -412,6 +416,7 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
+            this.Controls.Add(this.label10);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lblParty);
@@ -461,13 +466,13 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtSuffix;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.RadioButton radMale;
-        private System.Windows.Forms.RadioButton radFemale;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox cmbYearLevel;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox txtSection;
         private System.Windows.Forms.BindingSource positionModelBindingSource;
         private System.Windows.Forms.DateTimePicker dtBirthdate;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ComboBox cmbSex;
     }
 }

@@ -36,9 +36,9 @@ namespace StudentElection.MSAccess.Repositories
             {
                 tableAdapter.Insert(
                     model.Title,
-                    model.ElectionId,
+                    model.WinnersCount,
                     model.Rank,
-                    model.WinnersCount
+                    model.ElectionId
                 );
             }
         }
@@ -51,9 +51,9 @@ namespace StudentElection.MSAccess.Repositories
             {
                 tableAdapter.Update(
                     model.Title,
-                    model.ElectionId,
-                    model.Rank,
                     model.WinnersCount,
+                    model.Rank,
+                    model.ElectionId,
                     model.Id
                 );
             }
@@ -106,6 +106,21 @@ namespace StudentElection.MSAccess.Repositories
             using (var tableAdapter = new PositionTableAdapter())
             {
                 var row = tableAdapter.GetPositions(positionId).SingleOrDefault();
+
+                var model = new PositionModel();
+                Mapper.Map(row, model);
+
+                return model;
+            }
+        }
+
+        public async Task<PositionModel> GetPositionByTitleAsync(int electionId, string positionTitle)
+        {
+            await Task.CompletedTask;
+
+            using (var tableAdapter = new PositionTableAdapter())
+            {
+                var row = tableAdapter.GetPositionsByTitle(electionId, positionTitle).SingleOrDefault();
 
                 var model = new PositionModel();
                 Mapper.Map(row, model);
