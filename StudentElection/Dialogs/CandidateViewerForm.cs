@@ -290,7 +290,7 @@ namespace StudentElection.Dialogs
         
         private async void btnDelete_Click(object sender, EventArgs e)
         {
-            var result = System.Windows.MessageBox.Show(Candidate.FullName + " will become a voter only. Do you want to continue?", "Deleting a Candidate", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning, System.Windows.MessageBoxResult.No);
+            var result = System.Windows.MessageBox.Show($"Delete candidate '{ Candidate.FullName }'?", "Delete candidate", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning, System.Windows.MessageBoxResult.No);
 
             if (result == System.Windows.MessageBoxResult.Yes)
             {

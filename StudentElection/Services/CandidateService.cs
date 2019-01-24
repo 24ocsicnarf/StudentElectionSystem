@@ -71,22 +71,22 @@ namespace StudentElection.Services
         {
             if (candidate.FirstName.IsBlank())
             {
-                throw new ArgumentException("No first name provided", nameof(candidate.FirstName));
+                throw new ArgumentException("No first name provided");
             }
 
             if (candidate.LastName.IsBlank())
             {
-                throw new ArgumentException("No last name provided", nameof(candidate.LastName));
+                throw new ArgumentException("No last name provided");
             }
 
             if (candidate.YearLevel < 1 || candidate.YearLevel > 12)
             {
-                throw new ArgumentOutOfRangeException("Year level must be from 1 to 12", nameof(candidate.YearLevel));
+                throw new ArgumentOutOfRangeException("Year level must be from 1 to 12");
             }
 
             if (candidate.Section.IsBlank())
             {
-                throw new ArgumentException("No section provided", nameof(candidate.Section));
+                throw new ArgumentException("No section provided");
             }
 
             if (await IsAliasExistingAsync(electionId, candidate.Alias, null))

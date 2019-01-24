@@ -230,12 +230,18 @@
                                 </StackPanel>
                             </Grid>
                             <DockPanel x:Name="btnExportPrint" Visibility="Collapsed">
-                                <StackPanel  DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="2" Visibility="Visible">
+                                <DockPanel  DockPanel.Dock="Top" VerticalAlignment="Top"  Margin="2" Visibility="Visible">
                                     <Label Foreground="#CC000000" x:Name="lblFilterPosition"  Content="Filter Position" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                    <Border BorderThickness="1" BorderBrush="#ABADB3" Margin="2">
-                                        <ComboBox x:Name="cmbPositions" Width="240" HorizontalAlignment="Right" SelectionChanged="cmbPositions_SelectionChanged" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}"  />
+                                    <Border BorderThickness="1" BorderBrush="#ABADB3" Margin="2" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <ComboBox x:Name="cmbPositions" Width="240" HorizontalAlignment="Right" VerticalAlignment="Center" SelectionChanged="cmbPositions_SelectionChanged" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}"  />
                                     </Border>
-                                </StackPanel>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4">
+                                        <TextBlock Foreground="#CC000000" Text="Vote turnout:"  HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2">
+                                        </TextBlock>
+                                        <TextBlock x:Name="txtVoteTurnout" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2">
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DockPanel>
                                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" >
                                     <Button x:Name="btnExportReport" Content="EXPORT TO EXCEL" FontWeight="Bold" BorderBrush="{x:Null}" Margin="4" Click="btnExportReport_Click">
                                         <Button.Style>
@@ -505,7 +511,7 @@
                                             <TextBox x:Name="txtVoterFilter" Width="180" Height="Auto" VerticalAlignment="Center" MaxLines="1" MaxLength="20" TextChanged="txtVoterFilter_TextChanged" />
                                         </StackPanel>
                                     </DockPanel>
-                                    <ListView x:Name="lvVoter" FontSize="12" Foreground="#FF191919" FontWeight="Regular" SelectionChanged="lvVoter_SelectionChanged" PreviewMouseMove="lvVoter_PreviewMouseMove" PreviewMouseLeftButtonDown="lvVoter_PreviewMouseLeftButtonDown" PreviewMouseUp="lvVoter_PreviewMouseUp" PreviewKeyUp="lvVoter_PreviewKeyUp">
+                                    <ListView x:Name="lvVoter" FontSize="12" Foreground="#FF191919" FontWeight="Regular" SelectionChanged="lvVoter_SelectionChanged" SelectionMode="Single" PreviewMouseMove="lvVoter_PreviewMouseMove" PreviewMouseLeftButtonDown="lvVoter_PreviewMouseLeftButtonDown" PreviewMouseUp="lvVoter_PreviewMouseUp" PreviewKeyUp="lvVoter_PreviewKeyUp">
                                         <ListView.Resources>
                                             <Style TargetType="{x:Type ListViewItem}">
                                                 <Style.Triggers>
@@ -518,7 +524,7 @@
                                         </ListView.Resources>
                                         <ListView.View>
                                             <GridView x:Name="gvVoter">
-                                                <GridViewColumn Header="▲ Voter ID" Width="90" DisplayMemberBinding="{Binding Vin}" />
+                                                <GridViewColumn Header="Voter ID" Width="90" DisplayMemberBinding="{Binding Vin}" />
                                                 <GridViewColumn Header="Name" Width="300" DisplayMemberBinding="{Binding FullName}"/>
                                                 <GridViewColumn Header="Year Level" Width="80" DisplayMemberBinding="{Binding YearLevel}"/>
                                                 <GridViewColumn Header="Section" Width="120" DisplayMemberBinding="{Binding Section}"/>

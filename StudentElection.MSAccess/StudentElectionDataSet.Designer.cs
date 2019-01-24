@@ -3502,6 +3502,8 @@ namespace StudentElection.MSAccess {
             
             private global::System.Data.DataColumn columnElectionId;
             
+            private global::System.Data.DataColumn columnPositionVoteCount;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public VoteResultDataTable() {
@@ -3705,6 +3707,14 @@ namespace StudentElection.MSAccess {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn PositionVoteCountColumn {
+                get {
+                    return this.columnPositionVoteCount;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -3759,7 +3769,8 @@ namespace StudentElection.MSAccess {
                         string PartyTitle, 
                         string PartyShortName, 
                         int PartyArgb, 
-                        string ServerTag) {
+                        string ServerTag, 
+                        int PositionVoteCount) {
                 VoteResultRow rowVoteResultRow = ((VoteResultRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
@@ -3782,7 +3793,8 @@ namespace StudentElection.MSAccess {
                         PartyShortName,
                         PartyArgb,
                         ServerTag,
-                        null};
+                        null,
+                        PositionVoteCount};
                 rowVoteResultRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowVoteResultRow);
                 return rowVoteResultRow;
@@ -3826,6 +3838,7 @@ namespace StudentElection.MSAccess {
                 this.columnPartyArgb = base.Columns["PartyArgb"];
                 this.columnServerTag = base.Columns["ServerTag"];
                 this.columnElectionId = base.Columns["ElectionId"];
+                this.columnPositionVoteCount = base.Columns["PositionVoteCount"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3873,6 +3886,8 @@ namespace StudentElection.MSAccess {
                 base.Columns.Add(this.columnServerTag);
                 this.columnElectionId = new global::System.Data.DataColumn("ElectionId", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnElectionId);
+                this.columnPositionVoteCount = new global::System.Data.DataColumn("PositionVoteCount", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPositionVoteCount);
                 this.columnCandidateId.AutoIncrement = true;
                 this.columnFirstName.MaxLength = 255;
                 this.columnMiddleName.MaxLength = 255;
@@ -6150,6 +6165,22 @@ namespace StudentElection.MSAccess {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int PositionVoteCount {
+                get {
+                    try {
+                        return ((int)(this[this.tableVoteResult.PositionVoteCountColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PositionVoteCount\' in table \'VoteResult\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableVoteResult.PositionVoteCountColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public bool IsCandidateIdNull() {
                 return this.IsNull(this.tableVoteResult.CandidateIdColumn);
             }
@@ -6398,6 +6429,18 @@ namespace StudentElection.MSAccess {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public void SetElectionIdNull() {
                 this[this.tableVoteResult.ElectionIdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsPositionVoteCountNull() {
+                return this.IsNull(this.tableVoteResult.PositionVoteCountColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetPositionVoteCountNull() {
+                this[this.tableVoteResult.PositionVoteCountColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -8897,8 +8940,8 @@ WHERE        (Candidate.ID = ?)";
             this._commandCollection = new global::System.Data.OleDb.OleDbCommand[5];
             this._commandCollection[0] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT        ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, Y" +
-                "earLevel, [Section], ElectionId\r\nFROM            Voter";
+            this._commandCollection[0].CommandText = "SELECT ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, YearLeve" +
+                "l, [Section], ElectionId FROM Voter";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[1].Connection = this.Connection;
@@ -8915,15 +8958,14 @@ WHERE        (Candidate.ID = ?)";
             this._commandCollection[2].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[3] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[3].Connection = this.Connection;
-            this._commandCollection[3].CommandText = "SELECT        ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, Y" +
-                "earLevel, [Section], ElectionId\r\nFROM            Voter\r\nWHERE        (ID = ?)";
+            this._commandCollection[3].CommandText = "SELECT ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, YearLeve" +
+                "l, [Section], ElectionId FROM Voter WHERE (ID = ?)";
             this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[3].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[4] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[4].Connection = this.Connection;
-            this._commandCollection[4].CommandText = "SELECT        ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, Y" +
-                "earLevel, [Section], ElectionId\r\nFROM            Voter\r\nWHERE        (Vin = ?) A" +
-                "ND (ElectionId = ?)";
+            this._commandCollection[4].CommandText = "SELECT ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, YearLeve" +
+                "l, [Section], ElectionId FROM Voter WHERE (Vin = ?) AND (ElectionId = ?)";
             this._commandCollection[4].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[4].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Vin", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Vin", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[4].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
@@ -10796,6 +10838,7 @@ HAVING        (Election.ID = ?)";
             tableMapping.ColumnMappings.Add("PartyArgb", "PartyArgb");
             tableMapping.ColumnMappings.Add("ServerTag", "ServerTag");
             tableMapping.ColumnMappings.Add("ElectionId", "ElectionId");
+            tableMapping.ColumnMappings.Add("PositionVoteCount", "PositionVoteCount");
             this._adapter.TableMappings.Add(tableMapping);
         }
         
@@ -10812,8 +10855,8 @@ HAVING        (Election.ID = ?)";
             this._commandCollection = new global::System.Data.OleDb.OleDbCommand[1];
             this._commandCollection[0] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = @"SELECT        PositionRank, VoteCount, LastName, FirstName, Suffix, MiddleName, CandidateId, YearLevel, [Section], Birthdate, Sex, PartyId, PositionId, Alias, PictureFileName, PositionTitle, PartyTitle, PartyShortName, PartyArgb, ElectionId, 
-                         ServerTag
+            this._commandCollection[0].CommandText = @"SELECT        PositionRank, VoteCount, LastName, FirstName, Suffix, MiddleName, CandidateId, PositionVoteCount, YearLevel, [Section], Birthdate, Sex, PartyId, PositionId, Alias, PictureFileName, PositionTitle, PartyTitle, PartyShortName, 
+                         PartyArgb, ElectionId, ServerTag
 FROM            VoteResult
 WHERE        (ElectionId = ?)";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;

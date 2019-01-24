@@ -369,7 +369,7 @@ namespace StudentElection.Main
                     
                     var position = (item.DataContext as PositionModel);
 
-                    item.tbkName.Text = $"Choose up to { "candidate".ToQuantity(position.WinnersCount) }";
+                    item.tbkName.Text = $"0 selected";
                     item.bdrPartyVoted.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 224, 224, 224));
 
                     foreach (Rectangle circle in item.stkVotes.Children)

@@ -44,10 +44,14 @@ namespace StudentElection.MSAccess.Repositories
 
             using (var tableAdapter = new PartyTableAdapter())
             {
-                var party = tableAdapter.GetParties(partyId).SingleOrDefault();
+                var row = tableAdapter.GetParties(partyId).SingleOrDefault();
+                if (row == null)
+                {
+                    return null;
+                }
 
                 var model = new PartyModel();
-                Mapper.Map(party, model);
+                Mapper.Map(row, model);
 
                 return model;
             }

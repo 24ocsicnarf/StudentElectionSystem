@@ -155,7 +155,7 @@ WHERE        (ID = ?)</CommandText>
               <Mapping SourceColumn="WinnersCount" DataSetColumn="WinnersCount" />
             </Mappings>
             <Sources>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountPositionsQuery" Modifier="Public" Name="CountPositionsQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountPositionsQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountPositionsQuery" Modifier="Public" Name="CountPositionsQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountPositionsQuery">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        COUNT(*) AS Expr1
@@ -263,7 +263,7 @@ WHERE        (ID = ?)</CommandText>
               <Mapping SourceColumn="Argb" DataSetColumn="Argb" />
             </Mappings>
             <Sources>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountPartiesQuery" Modifier="Public" Name="CountPartiesQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountPartiesQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountPartiesQuery" Modifier="Public" Name="CountPartiesQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountPartiesQuery">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        COUNT(*) AS Expr1
@@ -380,7 +380,7 @@ HAVING        (Party.ElectionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillBy" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidateDetailsListByParty" GeneratorSourceName="FillBy" GetMethodModifier="Public" GetMethodName="GetCandidateDetailsListByParty" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidateDetailsListByParty" UserSourceName="FillBy">
+              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillBy" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidateDetailsListByParty" GeneratorSourceName="FillBy" GetMethodModifier="Public" GetMethodName="GetCandidateDetailsListByParty" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidateDetailsListByParty" UserSourceName="FillBy">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
@@ -397,7 +397,7 @@ ORDER BY [Position].Rank</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillBy1" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidatesByAlias" GeneratorSourceName="FillBy1" GetMethodModifier="Public" GetMethodName="GetCandidatesByAlias" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidatesByAlias" UserSourceName="FillBy1">
+              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillBy1" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidatesByAlias" GeneratorSourceName="FillBy1" GetMethodModifier="Public" GetMethodName="GetCandidatesByAlias" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidatesByAlias" UserSourceName="FillBy1">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
@@ -413,7 +413,7 @@ WHERE         (Party.ElectionId = ?) AND (Candidate.Alias = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillBy2" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidateDetailsListByPosition" GeneratorSourceName="FillBy2" GetMethodModifier="Public" GetMethodName="GetCandidateDetailsListByPosition" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidateDetailsListByPosition" UserSourceName="FillBy2">
+              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillBy2" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidateDetailsListByPosition" GeneratorSourceName="FillBy2" GetMethodModifier="Public" GetMethodName="GetCandidateDetailsListByPosition" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidateDetailsListByPosition" UserSourceName="FillBy2">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
@@ -429,7 +429,7 @@ WHERE        (Candidate.PositionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillBy3" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidateDetails" GeneratorSourceName="FillBy3" GetMethodModifier="Public" GetMethodName="GetCandidateDetails" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidateDetails" UserSourceName="FillBy3">
+              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillBy3" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidateDetails" GeneratorSourceName="FillBy3" GetMethodModifier="Public" GetMethodName="GetCandidateDetails" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidateDetails" UserSourceName="FillBy3">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
@@ -478,8 +478,7 @@ WHERE        (ID = ?)</CommandText>
                 </InsertCommand>
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
-                    <CommandText>SELECT        ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, YearLevel, [Section], ElectionId
-FROM            Voter</CommandText>
+                    <CommandText>SELECT ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, YearLevel, [Section], ElectionId FROM Voter</CommandText>
                     <Parameters />
                   </DbCommand>
                 </SelectCommand>
@@ -519,7 +518,7 @@ WHERE        (ID = ?)</CommandText>
               <Mapping SourceColumn="ElectionId" DataSetColumn="ElectionId" />
             </Mappings>
             <Sources>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountVotedVotersQuery" Modifier="Public" Name="CountVotedVotersQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountVotedVotersQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountVotedVotersQuery" Modifier="Public" Name="CountVotedVotersQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountVotedVotersQuery">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        COUNT(*) AS [Count]
@@ -549,9 +548,7 @@ HAVING        (ElectionId = ?)</CommandText>
               <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Voter" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillVotersById" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetVotersById" GeneratorSourceName="FillVotersById" GetMethodModifier="Public" GetMethodName="GetVotersById" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetVotersById" UserSourceName="FillVotersById">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
-                    <CommandText>SELECT        ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, YearLevel, [Section], ElectionId
-FROM            Voter
-WHERE        (ID = ?)</CommandText>
+                    <CommandText>SELECT ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, YearLevel, [Section], ElectionId FROM Voter WHERE (ID = ?)</CommandText>
                     <Parameters>
                       <Parameter AllowDbNull="false" AutogeneratedName="Param1" ColumnName="ID" DataSourceName="Voter" DataTypeServer="DbType.Int32" DbType="Int32" Direction="Input" ParameterName="ID" Precision="0" ProviderType="Integer" Scale="0" Size="0" SourceColumn="ID" SourceColumnNullMapping="false" SourceVersion="Current" />
                     </Parameters>
@@ -561,9 +558,7 @@ WHERE        (ID = ?)</CommandText>
               <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Voter" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillVotersByVin" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetVotersByVin" GeneratorSourceName="FillVotersByVin" GetMethodModifier="Public" GetMethodName="GetVotersByVin" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetVotersByVin" UserSourceName="FillVotersByVin">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
-                    <CommandText>SELECT        ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, YearLevel, [Section], ElectionId
-FROM            Voter
-WHERE        (Vin = ?) AND (ElectionId = ?)</CommandText>
+                    <CommandText>SELECT ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, YearLevel, [Section], ElectionId FROM Voter WHERE (Vin = ?) AND (ElectionId = ?)</CommandText>
                     <Parameters>
                       <Parameter AllowDbNull="true" AutogeneratedName="Param1" ColumnName="Vin" DataSourceName="Voter" DataTypeServer="DbType.StringFixedLength(255)" DbType="String" Direction="Input" ParameterName="Vin" Precision="0" ProviderType="WChar" Scale="0" Size="255" SourceColumn="Vin" SourceColumnNullMapping="false" SourceVersion="Current" />
                       <Parameter AllowDbNull="true" AutogeneratedName="Param2" ColumnName="ElectionId" DataSourceName="Voter" DataTypeServer="DbType.Int32" DbType="Int32" Direction="Input" ParameterName="ElectionId" Precision="0" ProviderType="Integer" Scale="0" Size="0" SourceColumn="ElectionId" SourceColumnNullMapping="false" SourceVersion="Current" />
@@ -706,7 +701,7 @@ WHERE         (Voter.ElectionId = ?) AND (Voter.Vin = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillVoteResults" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetVoteResults" GeneratorSourceName="FillVoteResults" GetMethodModifier="Public" GetMethodName="GetVoteResults" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetVoteResults" UserSourceName="FillVoteResults">
+              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillVoteResults" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetVoteResults" GeneratorSourceName="FillVoteResults" GetMethodModifier="Public" GetMethodName="GetVoteResults" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetVoteResults" UserSourceName="FillVoteResults">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        Candidate.ID AS CandidateId, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.YearLevel, Candidate.[Section], Candidate.Birthdate, Candidate.Sex, Candidate.PartyId, 
@@ -912,8 +907,8 @@ WHERE        (ID = ?)</CommandText>
               <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="VoteResult" DbObjectType="View" FillMethodModifier="Public" FillMethodName="FillVoteResults" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetVoteResults" GeneratorSourceName="FillVoteResults" GetMethodModifier="Public" GetMethodName="GetVoteResults" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetVoteResults" UserSourceName="FillVoteResults">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
-                    <CommandText>SELECT        PositionRank, VoteCount, LastName, FirstName, Suffix, MiddleName, CandidateId, YearLevel, [Section], Birthdate, Sex, PartyId, PositionId, Alias, PictureFileName, PositionTitle, PartyTitle, PartyShortName, PartyArgb, ElectionId, 
-                         ServerTag
+                    <CommandText>SELECT        PositionRank, VoteCount, LastName, FirstName, Suffix, MiddleName, CandidateId, PositionVoteCount, YearLevel, [Section], Birthdate, Sex, PartyId, PositionId, Alias, PictureFileName, PositionTitle, PartyTitle, PartyShortName, 
+                         PartyArgb, ElectionId, ServerTag
 FROM            VoteResult
 WHERE        (ElectionId = ?)</CommandText>
                     <Parameters>
@@ -945,6 +940,7 @@ WHERE        (ElectionId = ?)</CommandText>
               <Mapping SourceColumn="PartyArgb" DataSetColumn="PartyArgb" />
               <Mapping SourceColumn="ServerTag" DataSetColumn="ServerTag" />
               <Mapping SourceColumn="ElectionId" DataSetColumn="ElectionId" />
+              <Mapping SourceColumn="PositionVoteCount" DataSetColumn="PositionVoteCount" />
             </Mappings>
             <Sources />
           </TableAdapter>
@@ -1308,6 +1304,7 @@ WHERE        (ElectionId = ?)</CommandText>
                 </xs:simpleType>
               </xs:element>
               <xs:element name="ElectionId" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnElectionId" msprop:Generator_ColumnPropNameInRow="ElectionId" msprop:Generator_ColumnPropNameInTable="ElectionIdColumn" msprop:Generator_UserColumnName="ElectionId" type="xs:int" minOccurs="0" />
+              <xs:element name="PositionVoteCount" msprop:Generator_ColumnVarNameInTable="columnPositionVoteCount" msprop:Generator_ColumnPropNameInRow="PositionVoteCount" msprop:Generator_ColumnPropNameInTable="PositionVoteCountColumn" msprop:Generator_UserColumnName="PositionVoteCount" type="xs:int" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

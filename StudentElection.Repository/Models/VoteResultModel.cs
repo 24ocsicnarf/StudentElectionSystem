@@ -27,7 +27,7 @@ namespace StudentElection.Repository.Models
         public string PictureFileName { get; set; }
         public int PositionRank { get; set; }
         public int VoteCount { get; set; }
-        //public int PositionVoteCount { get; set; }
+        public int PositionVoteCount { get; set; }
         public string PositionTitle { get; set; }
         public string PartyTitle { get; set; }
         public string PartyShortName { get; set; }

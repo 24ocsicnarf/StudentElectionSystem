@@ -38,6 +38,11 @@ namespace StudentElection.Services
             return existingBallot;
         }
 
+        public async Task<BallotModel> GetBallotByVinAsync(ElectionModel election, VoterModel voter)
+        {
+            return await _ballotRepository.GetBallotByVinAsync(election.Id, voter.Vin);
+        }
+
         public async Task CastVotesAsync(int ballotId, IEnumerable<VoteModel> votes)
         {
             var castedAt = DateTime.Now;

@@ -133,52 +133,10 @@ namespace StudentElection.MSAccess.AutoMapper
             CreateMap<VoteRow, VoteModel>();
 
             CreateMap<VoteModel, VoteRow>();
-
+            
             CreateMap<VoteResultRow, VoteResultModel>()
                 .ForMember(m => m.Sex, o => o.MapFrom(s => (Sex)s.Sex))
                 .ForMember(m => m.Birthdate, o => o.MapFrom(s => s.IsBirthdateNull() ? default(DateTime?) : s.Birthdate));
-
-            //CreateMap<DataRow, VoteResultModel>()
-            //    .ForMember(m => m.CandidateId,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["CandidateId"]) ? default(int?) : Convert.ToInt32(s["CandidateId"])))
-            //    .ForMember(m => m.FirstName,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["FirstName"]) ? null : Convert.ToString(s["FirstName"])))
-            //    .ForMember(m => m.MiddleName,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["MiddleName"]) ? null : Convert.ToString(s["MiddleName"])))
-            //    .ForMember(m => m.LastName,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["LastName"]) ? null : Convert.ToString(s["LastName"])))
-            //    .ForMember(m => m.Suffix,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["Suffix"]) ? null : Convert.ToString(s["Suffix"])))
-            //    .ForMember(m => m.YearLevel,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["YearLevel"]) ? default(int?) : Convert.ToInt32(s["YearLevel"])))
-            //    .ForMember(m => m.Section,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["Section"]) ? null : Convert.ToString(s["Section"])))
-            //    .ForMember(m => m.Birthdate,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["Birthdate"]) ? default(DateTime?) : Convert.ToDateTime(s["Birthdate"])))
-            //    .ForMember(m => m.Sex,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["Sex"]) ? default(Sex?) : (Sex)Convert.ToInt32(s["Sex"])))
-            //    .ForMember(m => m.Alias,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["Alias"]) ? null : Convert.ToString(s["Alias"])))
-            //    .ForMember(m => m.PictureFileName,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["PictureFileName"]) ? null : Convert.ToString(s["PictureFileName"])))
-            //    .ForMember(m => m.PartyId,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["PartyId"]) ? default(int?) : Convert.ToInt32(s["PartyId"])))
-            //    .ForMember(m => m.PositionId,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["PositionId"]) ? default(int?) : Convert.ToInt32(s["PositionId"])))
-            //    .ForMember(m => m.PositionRank,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["PositionRank"]) ? default(int?) : Convert.ToInt32(s["PositionRank"])))
-            //    .ForMember(m => m.VoteCount,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["VoteCount"]) ? default(int?) : Convert.ToInt32(s["VoteCount"])))
-            //    .ForMember(m => m.PositionTitle,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["PositionTitle"]) ? null : Convert.ToString(s["PositionTitle"])))
-            //    .ForMember(m => m.PartyTitle,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["PartyTitle"]) ? null : Convert.ToString(s["PartyTitle"])))
-            //    .ForMember(m => m.PartyShortName,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["PartyShortName"]) ? null : Convert.ToString(s["PartyShortName"])))
-            //    .ForMember(m => m.PartyArgb,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["PartyArgb"]) ? default(int?) : Convert.ToInt32(s["PartyArgb"])))
-            //    .ForMember(m => m.ServerTag,
-            //        o => o.MapFrom(s => Convert.IsDBNull(s["ServerTag"]) ? null : Convert.ToString(s["ServerTag"])));
         }
     }
 }

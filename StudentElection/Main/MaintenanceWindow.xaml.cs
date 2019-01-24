@@ -144,6 +144,7 @@ namespace StudentElection.Main
                     bdrMaintenance.BorderThickness = new Thickness(4);
                     
                     btnAddVoter.Visibility = Visibility.Collapsed;
+                    btnImportVoters.Visibility = Visibility.Collapsed;
                     btnEditVoter.Visibility = Visibility.Collapsed;
                     btnDeleteVoter.Visibility = Visibility.Collapsed;
                 }
@@ -205,14 +206,14 @@ namespace StudentElection.Main
 
         private async Task CheckResultsAsync()
         {
-            if (!_currentElection.ClosedAt.HasValue)
+            try
             {
-                try
+                var ballotsCount = await _ballotService.CountBallotsAsync(_currentElection.Id);
+                var votersCount = await _voterService.CountVotersAsync(_currentElection.Id);
+
+                if (!_currentElection.ClosedAt.HasValue)
                 {
                     btnVoterButtons.Visibility = Visibility.Visible;
-
-                    var ballotsCount = await _ballotService.CountBallotsAsync(_currentElection.Id);
-                    var votersCount = await _voterService.CountVotersAsync(_currentElection.Id);
 
                     if (ballotsCount > 0)
                     {
@@ -226,21 +227,24 @@ namespace StudentElection.Main
                         lblNoResults.Visibility = Visibility.Visible;
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                    txtVoteTurnout.Text = $"{ ballotsCount } out of { votersCount } ({ ((double)ballotsCount / votersCount).ToString("p2") })";
+    
+                    grdViewResult.Visibility = Visibility.Collapsed;
+                    btnExportPrint.Visibility = Visibility.Visible;
 
-                    Application.Current?.Shutdown();
+                    btnAddVoter.Visibility = Visibility.Collapsed;
+                    btnImportVoters.Visibility = Visibility.Collapsed;
+                    btnEditVoter.Visibility = Visibility.Collapsed;
+                    btnDeleteVoter.Visibility = Visibility.Collapsed;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                grdViewResult.Visibility = Visibility.Collapsed;
-                btnExportPrint.Visibility = Visibility.Visible;
+                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
 
-                btnAddVoter.Visibility = Visibility.Collapsed;
-                btnEditVoter.Visibility = Visibility.Collapsed;
-                btnDeleteVoter.Visibility = Visibility.Collapsed;
+                Application.Current?.Shutdown();
             }
         }
 
@@ -444,7 +448,8 @@ namespace StudentElection.Main
 
         private async Task SortVoterAsync()
         {
-            lvVoter.ItemsSource = await _voterService.GetVotersAsync(_currentElection.Id);
+            var voters = await _voterService.GetVotersAsync(_currentElection.Id);
+            lvVoter.ItemsSource = voters;
 
             //TODO: SORT
             //if (_columnClicked.Header.ToString().Contains(gvVoter.Columns[0].Header.ToString().Replace('▲', ' ').Replace('▼', ' ').TrimStart()) || _columnClicked.Header == null)
@@ -586,13 +591,6 @@ namespace StudentElection.Main
                 _cvVoter.Filter = FilterVoter;
 
                 RefreshVoterCountLabel();
-
-                if (_currentElection.CandidatesFinalizedAt.HasValue && !_currentElection.ClosedAt.HasValue)
-                {
-                    //TODO: RESULTS ARE AVAILABLE COUNT OF TOTAL VOTERS VOTED
-                    //lblResultsAvailable.Content = string.Format("Results are available ({0:#,##0} of {1:#,##0} voters voted)", Voters.Dictionary.Count, Ballots.Dictionary.Count);
-
-                }
             }
             catch (Exception ex)
             {
@@ -1146,14 +1144,13 @@ namespace StudentElection.Main
                             item.wrpCandidate.ItemWidth = item.ActualWidth;
                         };
                         control.DataContext = voteResult;
-                        control.recCandidate.Height = 120;
 
-                        //double quotient = candidate.VoteCount / (double)candidate.PositionVoteCount;
+                        double quotient = voteResult.VoteCount / (double)voteResult.PositionVoteCount;
 
-                        //if (!double.IsNaN(quotient))
-                        //{
-                        //    control.recCandidate.Height = 120 * quotient;
-                        //}
+                        if (!double.IsNaN(quotient))
+                        {
+                            control.recCandidate.Height = 120 * quotient;
+                        }
 
                         item.wrpCandidate.Children.Add(control);
                     }

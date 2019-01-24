@@ -53,6 +53,10 @@ namespace StudentElection.MSAccess.Repositories
             using (var tableAdapter = new UserTableAdapter())
             {
                 var row = tableAdapter.GetUser(userId).FirstOrDefault();
+                if (row == null)
+                {
+                    return null;
+                }
 
                 var model = new UserModel();
                 Mapper.Map(row, model);

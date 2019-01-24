@@ -392,7 +392,9 @@ namespace StudentElection.Dialogs
                 var position = cmbPosition.SelectedItem as PositionModel;
                 var candidatesByPosition = await _candidateService.GetCandidatesByPositionAsync(position.Id);
 
-                if (candidatesByPosition.Any(c => c.Id != Candidate.Id && c.PartyId == Candidate.PartyId))
+                var partyId = (int)lblParty.Tag;
+                if ((Candidate == null && candidatesByPosition.Any(c => c.PartyId == partyId))
+                    || (Candidate != null && candidatesByPosition.Any(c => c.Id != Candidate.Id && c.PartyId == partyId)))
                 {
                     G.EndWait(this);
                     var result = MessageBox.Show($"There's already a candidate for { position.Title }.\n\nContinue adding this candidate?",
@@ -434,7 +436,7 @@ namespace StudentElection.Dialogs
                     YearLevel = int.Parse(cmbYearLevel.Text),
                     Section = txtSection.Text,
                     PositionId = position.Id,
-                    PartyId = (int)lblParty.Tag,
+                    PartyId = partyId,
                     Alias = txtAlias.Text,
                     PictureFileName = newFileName
                 };

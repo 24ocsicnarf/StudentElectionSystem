@@ -106,6 +106,10 @@ namespace StudentElection.MSAccess.Repositories
             using (var tableAdapter = new PositionTableAdapter())
             {
                 var row = tableAdapter.GetPositions(positionId).SingleOrDefault();
+                if (row == null)
+                {
+                    return null;
+                }
 
                 var model = new PositionModel();
                 Mapper.Map(row, model);
@@ -121,6 +125,10 @@ namespace StudentElection.MSAccess.Repositories
             using (var tableAdapter = new PositionTableAdapter())
             {
                 var row = tableAdapter.GetPositionsByTitle(electionId, positionTitle).SingleOrDefault();
+                if (row == null)
+                {
+                    return null;
+                }
 
                 var model = new PositionModel();
                 Mapper.Map(row, model);

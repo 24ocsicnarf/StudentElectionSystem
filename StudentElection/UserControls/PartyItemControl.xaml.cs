@@ -179,16 +179,6 @@ namespace StudentElection.UserControls
                 {
                     var candidate = control.DataContext as CandidateModel;
                     candidate.Party = party;
-
-                    //var candidate = new CandidateModel
-                    //{
-                    //    Alias = temp.Alias,
-                    //    Party = party,
-                    //    //TODO: PictureByte = temp.PictureByte,
-                    //    Position = temp.Position,
-                    //    //TODO: PositionVoteCount = temp.PositionVoteCount,
-                    //    //TODO: VoteCount = temp.VoteCount
-                    //};
                     control.DataContext = candidate;
                 }
                 await window.LoadVotersAsync();
@@ -305,14 +295,15 @@ namespace StudentElection.UserControls
 
             G.EndWait(_maintenanceWindow);
             _maintenanceWindow.Opacity = 1;
-
-            if (e.Cancelled)
+            
+            if (e.Error != null || e.Result is Exception)
+            {
+                var exception = e.Error ?? e.Result as Exception;
+                MessageBox.Show($"{ exception.GetBaseException().Message } \n\n { "No candidates imported" }", "Import error", MessageBoxButton.OK, MessageBoxImage.Stop);
+            }
+            else if (e.Cancelled)
             {
                 MessageBox.Show("Import cancelled.\n\nNo candidates imported", "Import cancelled", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else if (e.Error != null)
-            {
-                MessageBox.Show($"{ e.Error.GetBaseException().Message } \n\n { "No candidates imported" }", "Import error", MessageBoxButton.OK, MessageBoxImage.Stop);
             }
             else
             {
@@ -344,72 +335,83 @@ namespace StudentElection.UserControls
             var stream = e.Argument as System.IO.Stream;
             var importedCandidates = new List<CandidateModel>();
 
-            using (stream)
+            try
             {
-                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                using (stream)
                 {
-                    int count = 0;
-
-                    reader.Read();
-                    while (reader.Read())
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
                     {
-                        count++;
-                        _backgroundWorker.ReportProgress(0, count);
+                        int count = 0;
 
-                        var newCandidate = new CandidateModel();
-                        newCandidate.PartyId = _party.Id;
-                        newCandidate.FirstName = reader.GetString(0);
-                        newCandidate.MiddleName = reader.GetString(1);
-                        newCandidate.LastName = reader.GetString(2);
-                        newCandidate.Suffix = reader.GetString(3);
-                        newCandidate.Birthdate = reader.IsDBNull(4) ? default(DateTime?) : reader.GetDateTime(4);
-
-                        var sexText = reader.GetString(5);
-                        if (sexText.Equals("male", StringComparison.OrdinalIgnoreCase))
+                        reader.Read();
+                        while (reader.Read())
                         {
-                            newCandidate.Sex = Sex.Male;
-                        }
-                        else if (sexText.Equals("female", StringComparison.OrdinalIgnoreCase))
-                        {
-                            newCandidate.Sex = Sex.Female;
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Must be 'male' or 'female'", nameof(newCandidate.Sex));
-                        }
+                            count++;
+                            _backgroundWorker.ReportProgress(0, count);
 
-                        var yearLevelText = reader.GetValue(6);
-                        if (int.TryParse(yearLevelText?.ToString(), out int yearLevel))
-                        {
-                            newCandidate.YearLevel = yearLevel;
+                            var newCandidate = new CandidateModel();
+                            newCandidate.PartyId = _party.Id;
+                            newCandidate.FirstName = reader.GetString(0);
+                            newCandidate.MiddleName = reader.GetString(1);
+                            newCandidate.LastName = reader.GetString(2);
+                            newCandidate.Suffix = reader.GetString(3);
+                            newCandidate.Birthdate = reader.IsDBNull(4) ? default(DateTime?) : reader.GetDateTime(4);
+
+                            var sexText = reader.GetString(5);
+                            if (sexText.Equals("male", StringComparison.OrdinalIgnoreCase))
+                            {
+                                newCandidate.Sex = Sex.Male;
+                            }
+                            else if (sexText.Equals("female", StringComparison.OrdinalIgnoreCase))
+                            {
+                                newCandidate.Sex = Sex.Female;
+                            }
+                            else
+                            {
+                                e.Result = new ArgumentException("Must be 'male' or 'female'", nameof(newCandidate.Sex));
+                                return;
+                            }
+
+                            var yearLevelText = reader.GetValue(6);
+                            if (int.TryParse(yearLevelText?.ToString(), out int yearLevel))
+                            {
+                                newCandidate.YearLevel = yearLevel;
+                            }
+                            else
+                            {
+                                e.Result = new ArgumentException("Invalid year level", nameof(newCandidate.YearLevel));
+                                return;
+                            }
+
+                            newCandidate.Section = reader.GetString(7);
+                            newCandidate.Alias = reader.GetString(8);
+                            newCandidate.PictureFileName = reader.GetString(9);
+
+                            var positionTitle = reader.GetString(10);
+                            var position = await _positionService.GetPositionByTitleAsync(_party.ElectionId, positionTitle);
+                            if (position == null)
+                            {
+                                e.Result = new ArgumentException($"Position '{ positionTitle }' does not exist", nameof(newCandidate.Position));
+                                return;
+                            }
+
+                            newCandidate.PositionId = position.Id;
+
+                            await _candidateService.ValidateAsync(_party.ElectionId, newCandidate);
+
+                            importedCandidates.Add(newCandidate);
                         }
-                        else
-                        {
-                            throw new ArgumentException("Invalid year level", nameof(newCandidate.YearLevel));
-                        }
-
-                        newCandidate.Section = reader.GetString(7);
-                        newCandidate.Alias = reader.GetString(8);
-                        newCandidate.PictureFileName = reader.GetString(9);
-
-                        var positionTitle = reader.GetString(10);
-                        var position = await _positionService.GetPositionByTitleAsync(_party.ElectionId, positionTitle);
-                        if (position == null)
-                        {
-                            throw new ArgumentException($"Position '{ positionTitle }' does not exist", nameof(newCandidate.Position));
-                        }
-
-                        newCandidate.PositionId = position.Id;
-
-                        await _candidateService.ValidateAsync(_party.ElectionId, newCandidate);
-
-                        importedCandidates.Add(newCandidate);
                     }
                 }
-            }
 
-            _backgroundWorker.ReportProgress(100, importedCandidates.Count);
-            await _candidateService.ImportCandidatesAsync(importedCandidates);
+                _backgroundWorker.ReportProgress(100, importedCandidates.Count);
+                await _candidateService.ImportCandidatesAsync(importedCandidates);
+            }
+            catch (Exception ex)
+            {
+                e.Result = ex;
+                return;
+            }
 
             e.Result = importedCandidates.Count;
         }

@@ -33,6 +33,10 @@ namespace StudentElection.MSAccess.Repositories
             using (var tableAdapter = new VoterTableAdapter())
             {
                 var row = tableAdapter.GetVotersById(voterId).SingleOrDefault();
+                if (row == null)
+                {
+                    return null;
+                }
 
                 var model = new VoterModel();
                 Mapper.Map(row, model);
