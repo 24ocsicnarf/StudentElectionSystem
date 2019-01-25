@@ -187,7 +187,7 @@ namespace StudentElection.Dialogs
                     dtBirthdate.Value = Candidate.Birthdate.Value;
                 }
                 cmbSex.SelectedIndex = (int)Candidate.Sex - 1;
-                cmbYearLevel.Text = Candidate.YearLevel.ToString();
+                cmbYearLevel.SelectedItem = Candidate.YearLevel.ToString();
                 txtSection.Text = Candidate.Section;
                 txtAlias.Text = Candidate.Alias;
 
@@ -203,23 +203,9 @@ namespace StudentElection.Dialogs
                         }
                     }
                 }
-
+                
                 btnAdd.Text = "UPDATE";
-
-                //if (lblName.Width > 255)
-                //{
-                //    lblName.Width = 255;
-                //    lblName.AutoSize = false;
-
-                //    ttpCandidate.SetToolTip(lblName, Candidate.FullName);
-                //}
-                //else
-                //{
-                //    ttpCandidate.SetToolTip(lblName, null);
-                //}
             }
-
-            await LoadPositionsAsync();
             
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += (s, ev) =>
             {
@@ -241,29 +227,18 @@ namespace StudentElection.Dialogs
         {
             try
             {
-                //var positionIds = Candidates.Dictionary.Values.Where(x => x.Party.ID == Convert.ToInt32(lblParty.Tag)).Select(x => x.Position.ID);
-                //var positionRows = Positions.Dictionary.Values.Where(x => !positionIds.Contains(x.ID) || (x.ID == Candidate?.Position.ID && lblTitle.Text.StartsWith("E"))).OrderBy(x => x.Order);
-
-                var positionRows = await _positionService.GetPositionsAsync(_currentElection.Id);
-
-                if (positionRows.Count() == 0 && lblTitle.Text.StartsWith("A"))
+                int? yearLevel = cmbYearLevel.SelectedIndex >= 0 ? int.Parse(cmbYearLevel.Text) : default(int?);
+                if (yearLevel == null)
                 {
-                    var result = MessageBox.Show("There are no positions available. Do you want to create one?", "No Position", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+                    var positionRows = await _positionService.GetPositionsAsync(_currentElection.Id);
 
-                    Close();
-
-                    if (result == DialogResult.Yes)
-                    {
-                        IsLoadPosition = true;
-                    }
-
-                    IsCanceled = true;
+                    cmbPosition.DataSource = positionRows.ToList();
                 }
-
-                cmbPosition.Items.Clear();
-                foreach (var position in positionRows)
+                else
                 {
-                    cmbPosition.Items.Add(position);
+                    var positionRows = await _positionService.GetPositionsByYearLevelAsync(_currentElection.Id, yearLevel.Value);
+
+                    cmbPosition.DataSource = positionRows.ToList();
                 }
 
                 if (Candidate == null)
@@ -277,15 +252,6 @@ namespace StudentElection.Dialogs
             catch (Exception ex)
             {
                 MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
-
-                if (Application.MessageLoop)
-                {
-                    Application.Exit();
-                }
-                else
-                {
-                    Environment.Exit(1);
-                }
             }
         }
 
@@ -317,9 +283,7 @@ namespace StudentElection.Dialogs
 
         private async void btnPosition_Click(object sender, EventArgs e)
         {
-            //G.WaitLang(this);
             var form = new PositionForm();
-
             form.ShowDialog();
 
             await LoadPositionsAsync();
@@ -371,8 +335,9 @@ namespace StudentElection.Dialogs
                 cmbPosition.Focus();
                 return;
             }
-
-            //txtAlias.Text = txtAlias.Text.ToUpper();
+            
+            var yearLevel = int.Parse(cmbYearLevel.Text);
+            var position = cmbPosition.SelectedItem as PositionModel;
 
             try
             {
@@ -389,7 +354,6 @@ namespace StudentElection.Dialogs
                     return;
                 }
 
-                var position = cmbPosition.SelectedItem as PositionModel;
                 var candidatesByPosition = await _candidateService.GetCandidatesByPositionAsync(position.Id);
 
                 var partyId = (int)lblParty.Tag;
@@ -433,7 +397,7 @@ namespace StudentElection.Dialogs
                     Suffix = txtSuffix.Text,
                     Sex = (Sex)(cmbSex.SelectedIndex + 1),
                     Birthdate = dtBirthdate.Checked ? dtBirthdate.Value.Date : default(DateTime?),
-                    YearLevel = int.Parse(cmbYearLevel.Text),
+                    YearLevel = yearLevel,
                     Section = txtSection.Text,
                     PositionId = position.Id,
                     PartyId = partyId,
@@ -487,6 +451,31 @@ namespace StudentElection.Dialogs
             }
 
             return false;
+        }
+
+        private async void cmbYearLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                cmbPosition.Enabled = false;
+                cmbPosition.Cursor = Cursors.WaitCursor;
+
+                var previousSelected = cmbPosition.SelectedItem as PositionModel ?? Candidate?.Position;
+                var yearLevel = int.Parse(cmbYearLevel.Text);
+                var positionsByYearLevel = await _positionService.GetPositionsByYearLevelAsync(_currentElection.Id, yearLevel);
+                cmbPosition.DataSource = positionsByYearLevel.ToList();
+
+                cmbPosition.SelectedItem = null;
+                if (previousSelected != null && (previousSelected.YearLevel == null || previousSelected.YearLevel == yearLevel))
+                {
+                    cmbPosition.SelectedValue = previousSelected.Id;
+                }
+            }
+            finally
+            {
+                cmbPosition.Enabled = true;
+                cmbPosition.Cursor = Cursors.Default;
+            }
         }
     }
 }

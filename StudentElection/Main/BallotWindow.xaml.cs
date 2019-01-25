@@ -43,26 +43,26 @@ namespace StudentElection.Main
 
             InitializeComponent();
 
-            lblInstruction1.ToolTip = new TextBlock()
+            tbkInstruction1.ToolTip = new TextBlock
             {
-                Text = lblInstruction1.Content.ToString(),
+                Text = tbkInstruction1.Text,
                 TextWrapping = TextWrapping.Wrap
             };
-            ToolTipService.SetShowDuration(lblInstruction1, int.MaxValue);
+            ToolTipService.SetShowDuration(tbkInstruction1, int.MaxValue);
 
-            lblInstruction2.ToolTip = new TextBlock()
+            tbkInstruction2.ToolTip = new TextBlock
             {
-                Text = lblInstruction2.Content.ToString(),
+                Text = tbkInstruction2.Text,
                 TextWrapping = TextWrapping.Wrap
             };
-            ToolTipService.SetShowDuration(lblInstruction2, int.MaxValue);
+            ToolTipService.SetShowDuration(tbkInstruction2, int.MaxValue);
 
-            lblInstruction3.ToolTip = new TextBlock()
+            tbkInstruction3.ToolTip = new TextBlock
             {
-                Text = lblInstruction3.Content.ToString(),
+                Text = tbkInstruction3.Text,
                 TextWrapping = TextWrapping.Wrap
             };
-            ToolTipService.SetShowDuration(lblInstruction3, int.MaxValue);
+            ToolTipService.SetShowDuration(tbkInstruction3, int.MaxValue);
 
             G.ChangeWindowSize(this);
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += (s, ev) =>
@@ -75,20 +75,6 @@ namespace StudentElection.Main
         {
             try
             {
-                //var ballotRows = Ballots.Dictionary.Values.OrderBy(x => Convert.ToInt32(x.Code.Substring(x.Code.IndexOf('-') + 1)));
-
-                //var id = 0;
-                //if (ballotRows.Count() != 0)
-                //{
-                //    var code = Convert.ToString(ballotRows.Last().Code);
-                //    id = Convert.ToInt32(Convert.ToInt32(code.Substring(code.IndexOf('-') + 1))) + 1;
-                //}
-                //else
-                //{
-                //    id = 1;
-                //}
-
-                _currentElection = await _electionService.GetCurrentElectionAsync();
                 _ballot = await _ballotService.GetBallotAsync(_currentElection, _voter);
 
                 tbkBallotCode.Text = _ballot.Code;
@@ -112,7 +98,7 @@ namespace StudentElection.Main
 
             try
             {
-                var positions = await _positionService.GetPositionsAsync(_currentElection.Id);
+                var positions = await _positionService.GetPositionsByYearLevelAsync(_currentElection.Id, _voter.YearLevel);
                 var positionRows = positions.OrderBy(p => p.Rank);
 
                 stkCandidates.Children.Clear();
@@ -179,15 +165,12 @@ namespace StudentElection.Main
                             var selectedCandidate = (s as CandidateBallotControl).DataContext as CandidateModel;
                             var winnersCount = selectedCandidate.Position.WinnersCount;
 
-                            //var c = (byte)(255 - 31 - (176 * ((double)selectedCount / winnersCount)));
-                            var selectedPartyBrush = new SolidColorBrush(Color.FromRgb(136, 136, 136));
-
                             if (!control.IsSelected)
                             {
                                 var selectedCandidates = item.wrpCandidate.Children.Cast<CandidateBallotControl>()
                                     .Where(cbc => cbc.IsSelected).Select(cbc => cbc.DataContext as CandidateModel);
                                 var selectedCount = selectedCandidates.Count();
-                                
+
                                 if (selectedCount == winnersCount)
                                 {
                                     return;
@@ -195,6 +178,9 @@ namespace StudentElection.Main
 
                                 control.Select();
                                 selectedCount++;
+
+                                //var c = (byte)(224 - (88 * ((double)selectedCount / winnersCount)));
+                                //var selectedPartyBrush = new SolidColorBrush(Color.FromRgb(c, c, c));
 
                                 var circle = item.stkVotes.Children.Cast<Rectangle>()
                                     .FirstOrDefault(r => r.Tag == null);
@@ -216,7 +202,7 @@ namespace StudentElection.Main
                                     item.Tag = candidate;
                                 }
                                 
-                                item.bdrPartyVoted.BorderBrush = selectedPartyBrush;
+                                //item.bdrPartyVoted.BorderBrush = selectedPartyBrush;
                             }
                             else
                             {
@@ -235,13 +221,16 @@ namespace StudentElection.Main
                                     .Where(cbc => cbc.IsSelected).Select(cbc => cbc.DataContext as CandidateModel);
                                 var selectedCount = selectedCandidates.Count();
 
+                                //var c = (byte)(224 - (88 * ((double)selectedCount / winnersCount)));
+                                //var selectedPartyBrush = new SolidColorBrush(Color.FromRgb(c, c, c));
+
                                 if (selectedCount > 1)
                                 {
                                     item.tbkName.Text = $"{ selectedCount } selected";
 
                                     item.Tag = selectedCandidates;
 
-                                    item.bdrPartyVoted.BorderBrush = selectedPartyBrush;
+                                    //item.bdrPartyVoted.BorderBrush = selectedPartyBrush;
                                 }
                                 else if (selectedCount == 1)
                                 {
@@ -250,7 +239,7 @@ namespace StudentElection.Main
 
                                     item.Tag = sc;
 
-                                    item.bdrPartyVoted.BorderBrush = selectedPartyBrush;
+                                    //item.bdrPartyVoted.BorderBrush = selectedPartyBrush;
                                 }
                                 else
                                 {
@@ -259,8 +248,6 @@ namespace StudentElection.Main
                                     {
                                         Position = (item.Tag as CandidateModel).Position
                                     };
-
-                                    item.bdrPartyVoted.BorderBrush = new SolidColorBrush(Color.FromRgb(224, 224, 224));
                                 }
                             }
 
@@ -500,6 +487,8 @@ namespace StudentElection.Main
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            _currentElection = await _electionService.GetCurrentElectionAsync();
+
             await SetBallotAsync(_voter);
         }
     }

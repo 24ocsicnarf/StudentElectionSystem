@@ -79,7 +79,7 @@
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" >
                                 <StackPanel Orientation="Horizontal" Height="32" >
                                     <Label Content="Voter ID" Padding="4" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                    <TextBox x:Name="txtStudentId" TextWrapping="NoWrap" Width="168" VerticalContentAlignment="Center" Margin="4" CharacterCasing="Upper" MaxLength="12" MaxLines="1" />
+                                    <TextBox x:Name="txtStudentId" TextWrapping="NoWrap" Width="168" VerticalContentAlignment="Center" Margin="4" CharacterCasing="Upper" MaxLines="1" />
                                 </StackPanel>
                                 <Button x:Name="btnVote" FontWeight="Bold" BorderBrush="{x:Null}" Content="VOTE" Width="75" Height="24" Margin="4" Click="btnVote_Click" HorizontalAlignment="Right">
                                     <Button.Style>

@@ -23,7 +23,7 @@ namespace StudentElection
     {
         public static string ImageFolderPath { get; private set; }
 
-        private async void Application_Startup(object sender, StartupEventArgs e)
+        private void Application_Startup(object sender, StartupEventArgs e)
         {
             //AppDomain.CurrentDomain.AssemblyResolve += (s, args) => {
             //    var resourceName = string.Format("{0}.{1}.{2}.dll", nameof(StudentElection), "Dependencies", new AssemblyName(args.Name).Name);
@@ -42,17 +42,15 @@ namespace StudentElection
             {
                 Directory.CreateDirectory(ImageFolderPath);
             }
-            
-            Mapper.Initialize(c =>
-            {
-                c.AddProfiles(typeof(MSAccessProfile),
-                    typeof(PostgreSQLProfile));
-            });
+
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
         }
 
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show($"{ e.Exception.GetBaseException().Message }", "Unexpected error", MessageBoxButton.OK, MessageBoxImage.Stop);
+            MessageBox.Show($"{ e.Exception.GetBaseException().Message }", "Unexpected error", MessageBoxButton.OK, MessageBoxImage.Error);
+
         }
     }
 }

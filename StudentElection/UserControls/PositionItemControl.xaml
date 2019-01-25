@@ -9,7 +9,7 @@
     <UserControl.Resources>
         <Converters:ToUpperValueConverter x:Key="toUpperValueConverter" />
     </UserControl.Resources>
-    <Grid Background="#FFE0E0E0" Margin="0,4">
+    <Grid x:Name="grdBackground" Background="#FFE0E0E0" Margin="0,4">
         <Border x:Name="bdrPartyVoted" BorderThickness="4" BorderBrush="#FFE0E0E0">
             <StackPanel>
                 <Grid Margin="4">

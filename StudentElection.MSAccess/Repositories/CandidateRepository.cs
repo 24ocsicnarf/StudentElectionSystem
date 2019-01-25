@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace StudentElection.MSAccess.Repositories
 {
-    public class CandidateRepository : ICandidateRepository
+    public class CandidateRepository : Repository, ICandidateRepository
     {
         public async Task<CandidateModel> GetCandidateDetailsAsync(int candidateId)
         {
@@ -20,9 +20,10 @@ namespace StudentElection.MSAccess.Repositories
 
             using (var tableAdapter = new CandidateTableAdapter())
             {
-                return tableAdapter.GetCandidateDetails(candidateId)
-                    .AsQueryable<DataRow>()
-                    .ProjectTo<CandidateModel>()
+                var candidateDetails = tableAdapter.GetCandidateDetails(candidateId)
+                    .AsQueryable<DataRow>();
+
+                return _mapper.ProjectTo<CandidateModel>(candidateDetails)
                     .SingleOrDefault();
             }
         }
@@ -33,9 +34,10 @@ namespace StudentElection.MSAccess.Repositories
 
             using (var tableAdapter = new CandidateTableAdapter())
             {
-                return tableAdapter.GetCandidateDetailsListByParty(partyId)
-                    .AsQueryable<DataRow>()
-                    .ProjectTo<CandidateModel>();
+                var candidateDetails = tableAdapter.GetCandidateDetailsListByParty(partyId)
+                    .AsQueryable<DataRow>();
+
+                return _mapper.ProjectTo<CandidateModel>(candidateDetails);
             }
         }
 
@@ -45,9 +47,10 @@ namespace StudentElection.MSAccess.Repositories
 
             using (var tableAdapter = new CandidateTableAdapter())
             {
-                return tableAdapter.GetCandidateDetailsListByPosition(positionId)
-                    .AsQueryable<DataRow>()
-                    .ProjectTo<CandidateModel>();
+                var candidateDetails = tableAdapter.GetCandidateDetailsListByPosition(positionId)
+                    .AsQueryable<DataRow>();
+
+                return _mapper.ProjectTo<CandidateModel>(candidateDetails);
             }
         }
 
@@ -156,7 +159,7 @@ namespace StudentElection.MSAccess.Repositories
                     foreach (var candidate in candidates)
                     {
                         var newRow = dataSet.Candidate.NewCandidateRow();
-                        Mapper.Map(candidate, newRow);
+                        _mapper.Map(candidate, newRow);
 
                         newRow.ID = id;
                         if (candidate.Birthdate == null)

@@ -11,6 +11,7 @@ namespace StudentElection.Repository.Interfaces
     {
         Task<VoterModel> GetVoterAsync(int voterId);
         Task<IEnumerable<VoterModel>> GetVotersAsync(int electionId);
+        Task<IEnumerable<VoterModel>> GetVoterDetailsListAsync(int electionId);
         Task<VoterModel> GetVoterByVinAsync(int electionId, string vin);
         Task<bool> IsVinExistingAsync(int electionId, string vin, VoterModel voter);
         Task InsertVoterAsync(VoterModel voter);

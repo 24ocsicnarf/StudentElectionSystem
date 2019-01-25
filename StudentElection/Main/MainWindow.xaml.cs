@@ -245,8 +245,6 @@ namespace StudentElection.Main
                 EndWait(this);
 
                 MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
-
-                Application.Current?.Shutdown();
             }
         }
 

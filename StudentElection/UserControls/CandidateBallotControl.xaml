@@ -8,11 +8,11 @@
     <Grid x:Name="grdBackground" Background="#FFE0E0E0" Margin="2">
         <Border x:Name="bdrChosen" BorderBrush="#00404040" BorderThickness="4">
             <StackPanel Orientation="Horizontal" Margin="2">
-                <Rectangle x:Name="recEgg" Height="25" Width="35" RadiusX="25" RadiusY="25" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Left" Margin="4,0,2,0" Fill="#00F0F0F0" />
-                <Border x:Name="bdrImage" Width="64" Height="84" HorizontalAlignment="Left" BorderThickness="2" BorderBrush="{Binding Path=Party.ColorBrush}" VerticalAlignment="Center" Background="White" Margin="4,0">
+                <Rectangle x:Name="recEgg" Height="24" Width="36" RadiusX="24" RadiusY="24" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Left" Margin="4" Fill="#00F0F0F0" />
+                <Border x:Name="bdrImage" Width="64" Height="84" HorizontalAlignment="Left" BorderThickness="2" BorderBrush="{Binding Path=Party.ColorBrush}" VerticalAlignment="Center" Background="White" Margin="4 0">
                     <Image x:Name="imgCandidate" RenderOptions.BitmapScalingMode="Fant" />
                 </Border>
-                <StackPanel x:Name="stkInfo">
+                <StackPanel x:Name="stkInfo" Margin="4 0">
                     <Grid>
                         <Viewbox x:Name="vbName" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Margin="4,2">
                             <TextBlock x:Name="tbkName" Text="{Binding Path=FullName}" LineStackingStrategy="BlockLineHeight" LineHeight="20" FontSize="20" Foreground="Black" HorizontalAlignment="Left" VerticalAlignment="Center" SizeChanged="tbkName_SizeChanged">
@@ -43,7 +43,7 @@
                         </Viewbox>
                     </Grid>
                     <Grid>
-                        <Viewbox x:Name="vbParty" HorizontalAlignment="Left" VerticalAlignment="Center" Height="15" Margin="4,2">
+                        <Viewbox x:Name="vbParty" HorizontalAlignment="Left" VerticalAlignment="Center" Height="15" Margin="4 2">
                             <Grid>
                                 <TextBlock x:Name="tbkParty" Text="{Binding Path=Party.Title}" LineStackingStrategy="BlockLineHeight" LineHeight="15" FontSize="15" Foreground="#FF404040" HorizontalAlignment="Left" VerticalAlignment="Center" SizeChanged="tbkParty_SizeChanged">
                                     <TextBlock.ToolTip>

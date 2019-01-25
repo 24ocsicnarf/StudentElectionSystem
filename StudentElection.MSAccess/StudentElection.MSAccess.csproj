@@ -60,6 +60,7 @@
     <Compile Include="Repositories\ElectionRepository.cs" />
     <Compile Include="Repositories\PartyRepository.cs" />
     <Compile Include="Repositories\PositionRepository.cs" />
+    <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Repositories\VoterRepository.cs" />
     <Compile Include="StudentElectionDataSet.cs">

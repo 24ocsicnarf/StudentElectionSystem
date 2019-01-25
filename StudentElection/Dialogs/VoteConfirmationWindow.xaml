@@ -8,12 +8,37 @@
         Title="VoteConfirmationWindow" Height="360" Width="540" Background="White" SnapsToDevicePixels="True" ResizeMode="NoResize" WindowStyle="None" FontFamily="Tahoma" FontSize="14.667" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Loaded="Window_Loaded" ContentRendered="Window_ContentRendered">
     <Grid>
         <DockPanel>
-            <Label DockPanel.Dock="Top" Opacity="0.87" Content="You have voted for the following:" FontSize="20" FontWeight="Normal"  Margin="8 4"/>
-            <DockPanel  DockPanel.Dock="Bottom"  Margin="4">
-                <Label x:Name="lblInstructions" DockPanel.Dock="Left" Opacity="0.87" HorizontalAlignment="Left" Content="Click 'CAST' to confirm your votes.&#x0a;Click 'BACK' to close this window and change your votes." FontSize="12"  />
-                <StackPanel x:Name="stkScrollDown" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="12 4">
-                    <TextBlock Text="Scroll down to the bottom" FontWeight="Bold"/>
-                </StackPanel>
+            <Grid DockPanel.Dock="Top"  Margin="8 4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Opacity="0.87" Content="Check your votes" FontSize="20" FontWeight="Bold"/>
+                <Button x:Name="btnChange" Grid.Column="1" DockPanel.Dock="Right" Content="CLOSE" FontWeight="Bold" BorderBrush="{x:Null}" Margin="0 4" Width="80" Click="btnChange_Click">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Background" Value="#00000000"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,4" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#49000000"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+            <DockPanel  DockPanel.Dock="Bottom" Height="40" Margin="4">
+                <Label x:Name="lblInstructions" DockPanel.Dock="Left" Opacity="0.87" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Click 'CAST' to confirm your votes" FontSize="14"  />
+                <TextBlock x:Name="tbkScrollDown" DockPanel.Dock="Right"  Opacity="0.87" VerticalAlignment="Center" Margin="12 4" FontWeight="Bold"/>
                 <StackPanel x:Name="stkButtons" Visibility="Collapsed" DockPanel.Dock="Right"  Orientation="Horizontal" HorizontalAlignment="Right" >
                     <Button x:Name="btnCast"  Content="CAST" FontWeight="Bold" BorderBrush="{x:Null}" Margin="4" Width="80" Click="btnCast_Click">
                         <Button.Style>
@@ -36,28 +61,8 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button x:Name="btnChange" Content="BACK" FontWeight="Bold" BorderBrush="{x:Null}" Margin="4" Width="80" Click="btnChange_Click">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}">
-                                <Setter Property="Background" Value="#00000000"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type Button}">
-                                            <Border Background="{TemplateBinding Background}">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,4" />
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#49000000"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
                 </StackPanel>
+                
             </DockPanel>
             <ScrollViewer x:Name="svCandidates" VerticalScrollBarVisibility="Auto" Margin="8 0" Background="WhiteSmoke" ScrollChanged="SvCandidates_ScrollChanged">
                 <StackPanel x:Name="stkCandidates">

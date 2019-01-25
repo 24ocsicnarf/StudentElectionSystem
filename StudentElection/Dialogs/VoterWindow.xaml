@@ -11,7 +11,7 @@
             <DockPanel Margin="4">
                 <StackPanel DockPanel.Dock="Top" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                     <StackPanel>
-                        <Label x:Name="lblTitle" DockPanel.Dock="Left" Content="Create Voter" FontWeight="Bold" FontSize="18" Foreground="#FF1B5E20" />
+                        <Label x:Name="lblTitle" DockPanel.Dock="Left" Content="Add Voter" FontWeight="Bold" FontSize="18" Foreground="#FF1B5E20" />
                         <Label Height="8" />
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -24,7 +24,7 @@
                                     <ColumnDefinition Width="5*" />
                                 </Grid.ColumnDefinitions>
                                 <Label Content="Voter ID*" Grid.Column="0" HorizontalAlignment="Left" FontSize="12" />
-                                <TextBox x:Name="txtVoterID" FontFamily="Arial Narrow" Grid.Column="1" TextWrapping="NoWrap" Text="" HorizontalAlignment="Stretch" Margin="2,2" FontSize="14.667" MaxLength="12" MaxLines="1" CharacterCasing="Upper" />
+                                <TextBox x:Name="txtVoterID" Grid.Column="1" TextWrapping="NoWrap" Text="" HorizontalAlignment="Stretch" Margin="2,2" FontSize="14.667" MaxLines="1" CharacterCasing="Upper" />
                             </Grid>
                         </Grid>
                         <Label Height="8" />

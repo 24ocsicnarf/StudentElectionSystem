@@ -13,7 +13,7 @@ using static StudentElection.MSAccess.StudentElectionDataSet;
 
 namespace StudentElection.MSAccess.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : Repository, IUserRepository
     {
         public async Task AddUserAsync(UserModel user)
         {
@@ -59,7 +59,7 @@ namespace StudentElection.MSAccess.Repositories
                 }
 
                 var model = new UserModel();
-                Mapper.Map(row, model);
+                _mapper.Map(row, model);
 
                 return model;
             }
@@ -82,7 +82,7 @@ namespace StudentElection.MSAccess.Repositories
                 }
 
                 var model = new UserModel();
-                Mapper.Map(row, model);
+                _mapper.Map(row, model);
 
                 return model;
             }
@@ -94,9 +94,10 @@ namespace StudentElection.MSAccess.Repositories
 
             using (var tableAdapter = new UserTableAdapter())
             {
-                return tableAdapter.GetData()
-                    .AsQueryable()
-                    .ProjectTo<UserModel>()
+                var users = tableAdapter.GetData()
+                    .AsQueryable();
+
+                return _mapper.ProjectTo<UserModel>(users)
                     .AsEnumerable();
             }
         }

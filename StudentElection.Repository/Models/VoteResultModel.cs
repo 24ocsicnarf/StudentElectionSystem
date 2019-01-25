@@ -1,5 +1,4 @@
-﻿using Project.Library.Enums;
-using Project.Library.Helpers;
+﻿using Project.Library.Helpers;
 using Project.Library.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -34,7 +33,7 @@ namespace StudentElection.Repository.Models
         public int PartyArgb { get; set; }
         public string ServerTag { get; set; }
 
-        public string FullName => DataHelper.GetPersonFullName(this, PersonNameFormat.LastNameFirst,
+        public string FullName => DataHelper.GetPersonFullName(this, DataHelper.PersonNameFormat.LastNameFirst,
             System.Windows.Controls.CharacterCasing.Upper);
 
         public System.Drawing.Color PartyColor

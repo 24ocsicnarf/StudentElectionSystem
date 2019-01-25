@@ -14,6 +14,7 @@ namespace StudentElection.Repository.Models
         public string Title { get; set; }
         public int WinnersCount { get; set; }
         public int Rank { get; set; }
+        public int? YearLevel { get; set; }
         public int ElectionId { get; set; }
 
         public override string ToString()

@@ -38,7 +38,7 @@ namespace StudentElection.UserControls
         public void Select()
         {
             recEgg.Fill = new SolidColorBrush(Colors.Black);
-            grdBackground.Background = new SolidColorBrush(Color.FromArgb(255, 248, 248, 248));
+            grdBackground.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
 
             IsSelected = true;
 
@@ -104,7 +104,7 @@ namespace StudentElection.UserControls
 
         private void ResizeNameTextBlock()
         {
-            var actualWidth = ActualWidth - 133;
+            var actualWidth = ActualWidth - 148;
             if (tbkName.ActualWidth > actualWidth * 1.5)
             {
                 tbkName.Width = actualWidth * 1.5;
@@ -136,7 +136,7 @@ namespace StudentElection.UserControls
 
         private void ResizeAliasTextBlock()
         {
-            var actualWidth = ActualWidth - 133;
+            var actualWidth = ActualWidth - 148;
             if (tbkAlias.ActualWidth > actualWidth * 1.5)
             {
                 tbkAlias.Width = actualWidth * 1.5;
@@ -183,7 +183,7 @@ namespace StudentElection.UserControls
 
         private void ResizePartyTextBlock()
         {
-            var actualWidth = ActualWidth - 133;
+            var actualWidth = ActualWidth - 148;
             if (tbkParty.ActualWidth > actualWidth * 1.5)
             {
                 tbkParty.Width = actualWidth * 1.5;

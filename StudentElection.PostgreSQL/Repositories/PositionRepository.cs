@@ -111,5 +111,10 @@ namespace StudentElection.PostgreSQL.Repositories
                 return model;
             }
         }
+
+        public Task<IEnumerable<PositionModel>> GetPositionsByYearLevelAsync(int electionId, int yearLevel)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

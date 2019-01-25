@@ -1008,6 +1008,8 @@ namespace StudentElection.MSAccess {
             
             private global::System.Data.DataColumn columnWinnersCount;
             
+            private global::System.Data.DataColumn columnYearLevel;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public PositionDataTable() {
@@ -1083,6 +1085,14 @@ namespace StudentElection.MSAccess {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn YearLevelColumn {
+                get {
+                    return this.columnYearLevel;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1118,14 +1128,15 @@ namespace StudentElection.MSAccess {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public PositionRow AddPositionRow(string Title, ElectionRow parentElectionRowByElectionPosition, int Rank, int WinnersCount) {
+            public PositionRow AddPositionRow(string Title, ElectionRow parentElectionRowByElectionPosition, int Rank, int WinnersCount, int YearLevel) {
                 PositionRow rowPositionRow = ((PositionRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         Title,
                         null,
                         Rank,
-                        WinnersCount};
+                        WinnersCount,
+                        YearLevel};
                 if ((parentElectionRowByElectionPosition != null)) {
                     columnValuesArray[2] = parentElectionRowByElectionPosition[0];
                 }
@@ -1163,6 +1174,7 @@ namespace StudentElection.MSAccess {
                 this.columnElectionId = base.Columns["ElectionId"];
                 this.columnRank = base.Columns["Rank"];
                 this.columnWinnersCount = base.Columns["WinnersCount"];
+                this.columnYearLevel = base.Columns["YearLevel"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1178,6 +1190,8 @@ namespace StudentElection.MSAccess {
                 base.Columns.Add(this.columnRank);
                 this.columnWinnersCount = new global::System.Data.DataColumn("WinnersCount", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnWinnersCount);
+                this.columnYearLevel = new global::System.Data.DataColumn("YearLevel", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnYearLevel);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnID}, true));
                 this.columnID.AutoIncrement = true;
@@ -2087,8 +2101,6 @@ namespace StudentElection.MSAccess {
             
             private global::System.Data.DataColumn columnFirstName;
             
-            private global::System.Data.DataColumn columnMidldeName;
-            
             private global::System.Data.DataColumn columnLastName;
             
             private global::System.Data.DataColumn columnSuffix;
@@ -2104,6 +2116,8 @@ namespace StudentElection.MSAccess {
             private global::System.Data.DataColumn columnSection;
             
             private global::System.Data.DataColumn columnElectionId;
+            
+            private global::System.Data.DataColumn columnMiddleName;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
@@ -2151,14 +2165,6 @@ namespace StudentElection.MSAccess {
             public global::System.Data.DataColumn FirstNameColumn {
                 get {
                     return this.columnFirstName;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public global::System.Data.DataColumn MidldeNameColumn {
-                get {
-                    return this.columnMidldeName;
                 }
             }
             
@@ -2228,6 +2234,14 @@ namespace StudentElection.MSAccess {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn MiddleNameColumn {
+                get {
+                    return this.columnMiddleName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -2263,12 +2277,11 @@ namespace StudentElection.MSAccess {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public VoterRow AddVoterRow(string FirstName, string MidldeName, string LastName, string Suffix, int Sex, System.DateTime Birthdate, string Vin, int YearLevel, string Section, ElectionRow parentElectionRowByElectionVoter) {
+            public VoterRow AddVoterRow(string FirstName, string LastName, string Suffix, int Sex, System.DateTime Birthdate, string Vin, int YearLevel, string Section, ElectionRow parentElectionRowByElectionVoter, string MiddleName) {
                 VoterRow rowVoterRow = ((VoterRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         FirstName,
-                        MidldeName,
                         LastName,
                         Suffix,
                         Sex,
@@ -2276,9 +2289,10 @@ namespace StudentElection.MSAccess {
                         Vin,
                         YearLevel,
                         Section,
-                        null};
+                        null,
+                        MiddleName};
                 if ((parentElectionRowByElectionVoter != null)) {
-                    columnValuesArray[10] = parentElectionRowByElectionVoter[0];
+                    columnValuesArray[9] = parentElectionRowByElectionVoter[0];
                 }
                 rowVoterRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowVoterRow);
@@ -2311,7 +2325,6 @@ namespace StudentElection.MSAccess {
             internal void InitVars() {
                 this.columnID = base.Columns["ID"];
                 this.columnFirstName = base.Columns["FirstName"];
-                this.columnMidldeName = base.Columns["MidldeName"];
                 this.columnLastName = base.Columns["LastName"];
                 this.columnSuffix = base.Columns["Suffix"];
                 this.columnSex = base.Columns["Sex"];
@@ -2320,6 +2333,7 @@ namespace StudentElection.MSAccess {
                 this.columnYearLevel = base.Columns["YearLevel"];
                 this.columnSection = base.Columns["Section"];
                 this.columnElectionId = base.Columns["ElectionId"];
+                this.columnMiddleName = base.Columns["MiddleName"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2329,8 +2343,6 @@ namespace StudentElection.MSAccess {
                 base.Columns.Add(this.columnID);
                 this.columnFirstName = new global::System.Data.DataColumn("FirstName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnFirstName);
-                this.columnMidldeName = new global::System.Data.DataColumn("MidldeName", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnMidldeName);
                 this.columnLastName = new global::System.Data.DataColumn("LastName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLastName);
                 this.columnSuffix = new global::System.Data.DataColumn("Suffix", typeof(string), null, global::System.Data.MappingType.Element);
@@ -2347,6 +2359,8 @@ namespace StudentElection.MSAccess {
                 base.Columns.Add(this.columnSection);
                 this.columnElectionId = new global::System.Data.DataColumn("ElectionId", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnElectionId);
+                this.columnMiddleName = new global::System.Data.DataColumn("MiddleName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMiddleName);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnID}, true));
                 this.columnID.AutoIncrement = true;
@@ -2355,11 +2369,11 @@ namespace StudentElection.MSAccess {
                 this.columnID.AllowDBNull = false;
                 this.columnID.Unique = true;
                 this.columnFirstName.MaxLength = 255;
-                this.columnMidldeName.MaxLength = 255;
                 this.columnLastName.MaxLength = 255;
                 this.columnSuffix.MaxLength = 255;
                 this.columnVin.MaxLength = 255;
                 this.columnSection.MaxLength = 255;
+                this.columnMiddleName.MaxLength = 255;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4308,11 +4322,11 @@ namespace StudentElection.MSAccess {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public string Title {
                 get {
-                    try {
-                        return ((string)(this[this.tablePosition.TitleColumn]));
+                    if (this.IsTitleNull()) {
+                        return null;
                     }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Title\' in table \'Position\' is DBNull.", e);
+                    else {
+                        return ((string)(this[this.tablePosition.TitleColumn]));
                     }
                 }
                 set {
@@ -4365,6 +4379,22 @@ namespace StudentElection.MSAccess {
                 }
                 set {
                     this[this.tablePosition.WinnersCountColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int YearLevel {
+                get {
+                    try {
+                        return ((int)(this[this.tablePosition.YearLevelColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'YearLevel\' in table \'Position\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePosition.YearLevelColumn] = value;
                 }
             }
             
@@ -4425,6 +4455,18 @@ namespace StudentElection.MSAccess {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public void SetWinnersCountNull() {
                 this[this.tablePosition.WinnersCountColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsYearLevelNull() {
+                return this.IsNull(this.tablePosition.YearLevelColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetYearLevelNull() {
+                this[this.tablePosition.YearLevelColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5037,22 +5079,6 @@ namespace StudentElection.MSAccess {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public string MidldeName {
-                get {
-                    if (this.IsMidldeNameNull()) {
-                        return null;
-                    }
-                    else {
-                        return ((string)(this[this.tableVoter.MidldeNameColumn]));
-                    }
-                }
-                set {
-                    this[this.tableVoter.MidldeNameColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public string LastName {
                 get {
                     if (this.IsLastNameNull()) {
@@ -5181,6 +5207,22 @@ namespace StudentElection.MSAccess {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public string MiddleName {
+                get {
+                    if (this.IsMiddleNameNull()) {
+                        return null;
+                    }
+                    else {
+                        return ((string)(this[this.tableVoter.MiddleNameColumn]));
+                    }
+                }
+                set {
+                    this[this.tableVoter.MiddleNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public ElectionRow ElectionRow {
                 get {
                     return ((ElectionRow)(this.GetParentRow(this.Table.ParentRelations["ElectionVoter"])));
@@ -5200,18 +5242,6 @@ namespace StudentElection.MSAccess {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public void SetFirstNameNull() {
                 this[this.tableVoter.FirstNameColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public bool IsMidldeNameNull() {
-                return this.IsNull(this.tableVoter.MidldeNameColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public void SetMidldeNameNull() {
-                this[this.tableVoter.MidldeNameColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5308,6 +5338,18 @@ namespace StudentElection.MSAccess {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public void SetElectionIdNull() {
                 this[this.tableVoter.ElectionIdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsMiddleNameNull() {
+                return this.IsNull(this.tableVoter.MiddleNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetMiddleNameNull() {
+                this[this.tableVoter.MiddleNameColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7314,6 +7356,7 @@ namespace StudentElection.MSAccess.StudentElectionDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("ElectionId", "ElectionId");
             tableMapping.ColumnMappings.Add("Rank", "Rank");
             tableMapping.ColumnMappings.Add("WinnersCount", "WinnersCount");
+            tableMapping.ColumnMappings.Add("YearLevel", "YearLevel");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.OleDb.OleDbCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
@@ -7322,22 +7365,24 @@ namespace StudentElection.MSAccess.StudentElectionDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Original, false, null));
             this._adapter.InsertCommand = new global::System.Data.OleDb.OleDbCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO `Position` (`Title`, `WinnersCount`, `Rank`, `ElectionId`) VALUES (?," +
-                " ?, ?, ?)";
+            this._adapter.InsertCommand.CommandText = "INSERT INTO `Position` (`Title`, `WinnersCount`, `Rank`, `ElectionId`, `YearLevel" +
+                "`) VALUES (?, ?, ?, ?, ?)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Title", global::System.Data.OleDb.OleDbType.VarWChar, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Title", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("WinnersCount", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "WinnersCount", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Rank", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Rank", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("YearLevel", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "YearLevel", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand = new global::System.Data.OleDb.OleDbCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
             this._adapter.UpdateCommand.CommandText = "UPDATE       [Position]\r\nSET                Title = ?, WinnersCount = ?, Rank = ?" +
-                ", ElectionId = ?\r\nWHERE        (ID = ?)";
+                ", ElectionId = ?, YearLevel = ?\r\nWHERE        (ID = ?)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Title", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Title", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("WinnersCount", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "WinnersCount", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Rank", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Rank", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("YearLevel", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "YearLevel", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Original_ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Original, false, null));
         }
         
@@ -7351,11 +7396,11 @@ namespace StudentElection.MSAccess.StudentElectionDataSetTableAdapters {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.OleDb.OleDbCommand[5];
+            this._commandCollection = new global::System.Data.OleDb.OleDbCommand[6];
             this._commandCollection[0] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT        ID, Title, WinnersCount, Rank, ElectionId\r\nFROM            [Positio" +
-                "n]\r\nWHERE        (ElectionId = ?)\r\nORDER BY Rank";
+            this._commandCollection[0].CommandText = "SELECT        ID, Title, WinnersCount, Rank, ElectionId, YearLevel\r\nFROM         " +
+                "   [Position]\r\nWHERE        (ElectionId = ?)\r\nORDER BY Rank";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[0].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[1] = new global::System.Data.OleDb.OleDbCommand();
@@ -7366,22 +7411,31 @@ namespace StudentElection.MSAccess.StudentElectionDataSetTableAdapters {
             this._commandCollection[1].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[2] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[2].Connection = this.Connection;
-            this._commandCollection[2].CommandText = "SELECT ElectionId, ID, Rank, Title, WinnersCount FROM [Position] WHERE (ID = ?)";
+            this._commandCollection[2].CommandText = "SELECT ElectionId, ID, Rank, Title, WinnersCount, YearLevel FROM [Position] WHERE" +
+                " (ID = ?)";
             this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[2].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[3] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[3].Connection = this.Connection;
-            this._commandCollection[3].CommandText = "SELECT        ID, Title, WinnersCount, Rank, ElectionId\r\nFROM            [Positio" +
-                "n]\r\nWHERE        (ElectionId = ?) AND (Title = ?)\r\nORDER BY Rank";
+            this._commandCollection[3].CommandText = "SELECT ElectionId, ID, Rank, Title, WinnersCount, YearLevel FROM [Position] WHERE" +
+                " (ElectionId = ?) AND (Title = ?) ORDER BY Rank";
             this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[3].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[3].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Title", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Title", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[4] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[4].Connection = this.Connection;
-            this._commandCollection[4].CommandText = "UPDATE       [Position]\r\nSET                Rank = ?\r\nWHERE        (ID = ?)";
+            this._commandCollection[4].CommandText = "SELECT        ID, Title, WinnersCount, Rank, ElectionId, YearLevel\r\nFROM         " +
+                "   [Position]\r\nWHERE        (ElectionId = ?) AND (YearLevel IS NULL OR\r\n        " +
+                "                 YearLevel = ?)\r\nORDER BY Rank";
             this._commandCollection[4].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[4].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Rank", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Rank", global::System.Data.DataRowVersion.Current, false, null));
-            this._commandCollection[4].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Original_ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Original, false, null));
+            this._commandCollection[4].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
+            this._commandCollection[4].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("YearLevel", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "YearLevel", global::System.Data.DataRowVersion.Current, false, null));
+            this._commandCollection[5] = new global::System.Data.OleDb.OleDbCommand();
+            this._commandCollection[5].Connection = this.Connection;
+            this._commandCollection[5].CommandText = "UPDATE       [Position]\r\nSET                Rank = ?\r\nWHERE        (ID = ?)";
+            this._commandCollection[5].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[5].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Rank", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Rank", global::System.Data.DataRowVersion.Current, false, null));
+            this._commandCollection[5].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Original_ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Original, false, null));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7459,7 +7513,7 @@ namespace StudentElection.MSAccess.StudentElectionDataSetTableAdapters {
                 this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
             }
             if ((Title == null)) {
-                throw new global::System.ArgumentNullException("Title");
+                this.Adapter.SelectCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.SelectCommand.Parameters[1].Value = ((string)(Title));
@@ -7484,10 +7538,58 @@ namespace StudentElection.MSAccess.StudentElectionDataSetTableAdapters {
                 this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
             }
             if ((Title == null)) {
-                throw new global::System.ArgumentNullException("Title");
+                this.Adapter.SelectCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.SelectCommand.Parameters[1].Value = ((string)(Title));
+            }
+            StudentElectionDataSet.PositionDataTable dataTable = new StudentElectionDataSet.PositionDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillPositionsByYearLevel(StudentElectionDataSet.PositionDataTable dataTable, global::System.Nullable<int> ElectionId, global::System.Nullable<int> YearLevel) {
+            this.Adapter.SelectCommand = this.CommandCollection[4];
+            if ((ElectionId.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ElectionId.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
+            }
+            if ((YearLevel.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[1].Value = ((int)(YearLevel.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[1].Value = global::System.DBNull.Value;
+            }
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual StudentElectionDataSet.PositionDataTable GetPositionsByYearLevel(global::System.Nullable<int> ElectionId, global::System.Nullable<int> YearLevel) {
+            this.Adapter.SelectCommand = this.CommandCollection[4];
+            if ((ElectionId.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ElectionId.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
+            }
+            if ((YearLevel.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[1].Value = ((int)(YearLevel.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             StudentElectionDataSet.PositionDataTable dataTable = new StudentElectionDataSet.PositionDataTable();
             this.Adapter.Fill(dataTable);
@@ -7549,7 +7651,7 @@ namespace StudentElection.MSAccess.StudentElectionDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(string Title, int WinnersCount, int Rank, global::System.Nullable<int> ElectionId) {
+        public virtual int Insert(string Title, int WinnersCount, int Rank, global::System.Nullable<int> ElectionId, global::System.Nullable<int> YearLevel) {
             if ((Title == null)) {
                 throw new global::System.ArgumentNullException("Title");
             }
@@ -7563,6 +7665,12 @@ namespace StudentElection.MSAccess.StudentElectionDataSetTableAdapters {
             }
             else {
                 this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            if ((YearLevel.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[4].Value = ((int)(YearLevel.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -7584,7 +7692,7 @@ namespace StudentElection.MSAccess.StudentElectionDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string Title, int WinnersCount, int Rank, int ElectionId, int Original_ID) {
+        public virtual int Update(string Title, int WinnersCount, int Rank, global::System.Nullable<int> ElectionId, global::System.Nullable<int> YearLevel, int Original_ID) {
             if ((Title == null)) {
                 throw new global::System.ArgumentNullException("Title");
             }
@@ -7593,8 +7701,19 @@ namespace StudentElection.MSAccess.StudentElectionDataSetTableAdapters {
             }
             this.Adapter.UpdateCommand.Parameters[1].Value = ((int)(WinnersCount));
             this.Adapter.UpdateCommand.Parameters[2].Value = ((int)(Rank));
-            this.Adapter.UpdateCommand.Parameters[3].Value = ((int)(ElectionId));
-            this.Adapter.UpdateCommand.Parameters[4].Value = ((int)(Original_ID));
+            if ((ElectionId.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((int)(ElectionId.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            if ((YearLevel.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[4].Value = ((int)(YearLevel.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
+            }
+            this.Adapter.UpdateCommand.Parameters[5].Value = ((int)(Original_ID));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -7650,7 +7769,7 @@ namespace StudentElection.MSAccess.StudentElectionDataSetTableAdapters {
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, false)]
         public virtual int UpdateRankQuery(global::System.Nullable<int> Rank, int Original_ID) {
-            global::System.Data.OleDb.OleDbCommand command = this.CommandCollection[4];
+            global::System.Data.OleDb.OleDbCommand command = this.CommandCollection[5];
             if ((Rank.HasValue == true)) {
                 command.Parameters[0].Value = ((int)(Rank.Value));
             }
@@ -8308,30 +8427,30 @@ HAVING        (Party.ElectionId = ?)";
             this._commandCollection[2].Connection = this.Connection;
             this._commandCollection[2].CommandText = @"SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
                          Candidate.PositionId, Candidate.PartyId, [Position].Title AS PositionTitle, [Position].WinnersCount AS PositionWinnersCount, [Position].Rank AS PositionRank, [Position].ElectionId AS PositionElectionId, Party.Title AS PartyTitle, 
-                         Party.ShortName AS PartyShortName, Party.Argb AS PartyArgb, Party.ElectionId AS PartyElectionId
+                         Party.ShortName AS PartyShortName, Party.Argb AS PartyArgb, Party.ElectionId AS PartyElectionId, [Position].YearLevel AS PositionYearLevel
+FROM            ((Candidate INNER JOIN
+                         Party ON Candidate.PartyId = Party.ID) INNER JOIN
+                         [Position] ON Candidate.PositionId = [Position].ID)
+WHERE        (Candidate.ID = ?)";
+            this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[2].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Current, false, null));
+            this._commandCollection[3] = new global::System.Data.OleDb.OleDbCommand();
+            this._commandCollection[3].Connection = this.Connection;
+            this._commandCollection[3].CommandText = @"SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
+                         Candidate.PositionId, Candidate.PartyId, [Position].Title AS PositionTitle, [Position].WinnersCount AS PositionWinnersCount, [Position].Rank AS PositionRank, [Position].YearLevel AS PositionYearLevel, 
+                         [Position].ElectionId AS PositionElectionId, Party.Title AS PartyTitle, Party.ShortName AS PartyShortName, Party.Argb AS PartyArgb, Party.ElectionId AS PartyElectionId
 FROM            ((Candidate INNER JOIN
                          Party ON Candidate.PartyId = Party.ID) INNER JOIN
                          [Position] ON Candidate.PositionId = [Position].ID)
 WHERE        (Candidate.PartyId = ?)
 ORDER BY [Position].Rank";
-            this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[2].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("PartyId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "PartyId", global::System.Data.DataRowVersion.Current, false, null));
-            this._commandCollection[3] = new global::System.Data.OleDb.OleDbCommand();
-            this._commandCollection[3].Connection = this.Connection;
-            this._commandCollection[3].CommandText = @"SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
-                         Candidate.PositionId, Candidate.PartyId, Party.ElectionId
-FROM            ((Candidate INNER JOIN
-                         Party ON Candidate.PartyId = Party.ID) INNER JOIN
-                         Election ON Party.ElectionId = Election.ID)
-WHERE         (Party.ElectionId = ?) AND (Candidate.Alias = ?)";
             this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[3].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
-            this._commandCollection[3].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Alias", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Alias", global::System.Data.DataRowVersion.Current, false, null));
+            this._commandCollection[3].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("PartyId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "PartyId", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[4] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[4].Connection = this.Connection;
             this._commandCollection[4].CommandText = @"SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
-                         Candidate.PositionId, Candidate.PartyId, [Position].Title AS PositionTitle, [Position].WinnersCount AS PositionWinnersCount, [Position].Rank AS PositionRank, [Position].ElectionId AS PositionElectionId, Party.Title AS PartyTitle, 
-                         Party.ShortName AS PartyShortName, Party.Argb AS PartyArgb, Party.ElectionId AS PartyElectionId
+                         Candidate.PositionId, Candidate.PartyId, [Position].Title AS PositionTitle, [Position].WinnersCount AS PositionWinnersCount, [Position].Rank AS PositionRank, [Position].YearLevel AS PositionYearLevel, 
+                         [Position].ElectionId AS PositionElectionId, Party.Title AS PartyTitle, Party.ShortName AS PartyShortName, Party.Argb AS PartyArgb, Party.ElectionId AS PartyElectionId
 FROM            ((Candidate INNER JOIN
                          Party ON Candidate.PartyId = Party.ID) INNER JOIN
                          [Position] ON Candidate.PositionId = [Position].ID)
@@ -8341,14 +8460,14 @@ WHERE        (Candidate.PositionId = ?)";
             this._commandCollection[5] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[5].Connection = this.Connection;
             this._commandCollection[5].CommandText = @"SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
-                         Candidate.PositionId, Candidate.PartyId, [Position].Title AS PositionTitle, [Position].WinnersCount AS PositionWinnersCount, [Position].Rank AS PositionRank, [Position].ElectionId AS PositionElectionId, Party.Title AS PartyTitle, 
-                         Party.ShortName AS PartyShortName, Party.Argb AS PartyArgb, Party.ElectionId AS PartyElectionId
+                         Candidate.PositionId, Candidate.PartyId, Party.ElectionId
 FROM            ((Candidate INNER JOIN
                          Party ON Candidate.PartyId = Party.ID) INNER JOIN
-                         [Position] ON Candidate.PositionId = [Position].ID)
-WHERE        (Candidate.ID = ?)";
+                         Election ON Party.ElectionId = Election.ID)
+WHERE         (Party.ElectionId = ?) AND (Candidate.Alias = ?)";
             this._commandCollection[5].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[5].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Current, false, null));
+            this._commandCollection[5].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
+            this._commandCollection[5].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Alias", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Alias", global::System.Data.DataRowVersion.Current, false, null));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -8379,14 +8498,9 @@ WHERE        (Candidate.ID = ?)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
-        public virtual int FillBy(StudentElectionDataSet.CandidateDataTable dataTable, global::System.Nullable<int> PartyId) {
+        public virtual int FillCandidateDetails(StudentElectionDataSet.CandidateDataTable dataTable, int ID) {
             this.Adapter.SelectCommand = this.CommandCollection[2];
-            if ((PartyId.HasValue == true)) {
-                this.Adapter.SelectCommand.Parameters[0].Value = ((int)(PartyId.Value));
-            }
-            else {
-                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
-            }
+            this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ID));
             if ((this.ClearBeforeFill == true)) {
                 dataTable.Clear();
             }
@@ -8398,14 +8512,9 @@ WHERE        (Candidate.ID = ?)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
-        public virtual StudentElectionDataSet.CandidateDataTable GetCandidateDetailsListByParty(global::System.Nullable<int> PartyId) {
+        public virtual StudentElectionDataSet.CandidateDataTable GetCandidateDetails(int ID) {
             this.Adapter.SelectCommand = this.CommandCollection[2];
-            if ((PartyId.HasValue == true)) {
-                this.Adapter.SelectCommand.Parameters[0].Value = ((int)(PartyId.Value));
-            }
-            else {
-                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
-            }
+            this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ID));
             StudentElectionDataSet.CandidateDataTable dataTable = new StudentElectionDataSet.CandidateDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;
@@ -8415,8 +8524,60 @@ WHERE        (Candidate.ID = ?)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
-        public virtual int FillBy1(StudentElectionDataSet.CandidateDataTable dataTable, global::System.Nullable<int> ElectionId, string Alias) {
+        public virtual int FillCandidateDetailsListByParty(StudentElectionDataSet.CandidateDataTable dataTable, int PartyId) {
             this.Adapter.SelectCommand = this.CommandCollection[3];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((int)(PartyId));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual StudentElectionDataSet.CandidateDataTable GetCandidateDetailsListByParty(int PartyId) {
+            this.Adapter.SelectCommand = this.CommandCollection[3];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((int)(PartyId));
+            StudentElectionDataSet.CandidateDataTable dataTable = new StudentElectionDataSet.CandidateDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillCandidateDetailsListByPosition(StudentElectionDataSet.CandidateDataTable dataTable, int PositionId) {
+            this.Adapter.SelectCommand = this.CommandCollection[4];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((int)(PositionId));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual StudentElectionDataSet.CandidateDataTable GetCandidateDetailsListByPosition(int PositionId) {
+            this.Adapter.SelectCommand = this.CommandCollection[4];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((int)(PositionId));
+            StudentElectionDataSet.CandidateDataTable dataTable = new StudentElectionDataSet.CandidateDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillCandidatesByAlias(StudentElectionDataSet.CandidateDataTable dataTable, global::System.Nullable<int> ElectionId, string Alias) {
+            this.Adapter.SelectCommand = this.CommandCollection[5];
             if ((ElectionId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ElectionId.Value));
             }
@@ -8424,7 +8585,7 @@ WHERE        (Candidate.ID = ?)";
                 this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
             }
             if ((Alias == null)) {
-                this.Adapter.SelectCommand.Parameters[1].Value = global::System.DBNull.Value;
+                throw new global::System.ArgumentNullException("Alias");
             }
             else {
                 this.Adapter.SelectCommand.Parameters[1].Value = ((string)(Alias));
@@ -8441,7 +8602,7 @@ WHERE        (Candidate.ID = ?)";
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual StudentElectionDataSet.CandidateDataTable GetCandidatesByAlias(global::System.Nullable<int> ElectionId, string Alias) {
-            this.Adapter.SelectCommand = this.CommandCollection[3];
+            this.Adapter.SelectCommand = this.CommandCollection[5];
             if ((ElectionId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ElectionId.Value));
             }
@@ -8449,73 +8610,11 @@ WHERE        (Candidate.ID = ?)";
                 this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
             }
             if ((Alias == null)) {
-                this.Adapter.SelectCommand.Parameters[1].Value = global::System.DBNull.Value;
+                throw new global::System.ArgumentNullException("Alias");
             }
             else {
                 this.Adapter.SelectCommand.Parameters[1].Value = ((string)(Alias));
             }
-            StudentElectionDataSet.CandidateDataTable dataTable = new StudentElectionDataSet.CandidateDataTable();
-            this.Adapter.Fill(dataTable);
-            return dataTable;
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
-        public virtual int FillBy2(StudentElectionDataSet.CandidateDataTable dataTable, global::System.Nullable<int> PositionId) {
-            this.Adapter.SelectCommand = this.CommandCollection[4];
-            if ((PositionId.HasValue == true)) {
-                this.Adapter.SelectCommand.Parameters[0].Value = ((int)(PositionId.Value));
-            }
-            else {
-                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
-            }
-            if ((this.ClearBeforeFill == true)) {
-                dataTable.Clear();
-            }
-            int returnValue = this.Adapter.Fill(dataTable);
-            return returnValue;
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
-        public virtual StudentElectionDataSet.CandidateDataTable GetCandidateDetailsListByPosition(global::System.Nullable<int> PositionId) {
-            this.Adapter.SelectCommand = this.CommandCollection[4];
-            if ((PositionId.HasValue == true)) {
-                this.Adapter.SelectCommand.Parameters[0].Value = ((int)(PositionId.Value));
-            }
-            else {
-                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
-            }
-            StudentElectionDataSet.CandidateDataTable dataTable = new StudentElectionDataSet.CandidateDataTable();
-            this.Adapter.Fill(dataTable);
-            return dataTable;
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
-        public virtual int FillBy3(StudentElectionDataSet.CandidateDataTable dataTable, int ID) {
-            this.Adapter.SelectCommand = this.CommandCollection[5];
-            this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ID));
-            if ((this.ClearBeforeFill == true)) {
-                dataTable.Clear();
-            }
-            int returnValue = this.Adapter.Fill(dataTable);
-            return returnValue;
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
-        public virtual StudentElectionDataSet.CandidateDataTable GetCandidateDetails(int ID) {
-            this.Adapter.SelectCommand = this.CommandCollection[5];
-            this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ID));
             StudentElectionDataSet.CandidateDataTable dataTable = new StudentElectionDataSet.CandidateDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;
@@ -8877,7 +8976,6 @@ WHERE        (Candidate.ID = ?)";
             tableMapping.DataSetTable = "Voter";
             tableMapping.ColumnMappings.Add("ID", "ID");
             tableMapping.ColumnMappings.Add("FirstName", "FirstName");
-            tableMapping.ColumnMappings.Add("MidldeName", "MidldeName");
             tableMapping.ColumnMappings.Add("LastName", "LastName");
             tableMapping.ColumnMappings.Add("Suffix", "Suffix");
             tableMapping.ColumnMappings.Add("Sex", "Sex");
@@ -8886,6 +8984,7 @@ WHERE        (Candidate.ID = ?)";
             tableMapping.ColumnMappings.Add("YearLevel", "YearLevel");
             tableMapping.ColumnMappings.Add("Section", "Section");
             tableMapping.ColumnMappings.Add("ElectionId", "ElectionId");
+            tableMapping.ColumnMappings.Add("MiddleName", "MiddleName");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.OleDb.OleDbCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
@@ -8894,12 +8993,12 @@ WHERE        (Candidate.ID = ?)";
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Original, false, null));
             this._adapter.InsertCommand = new global::System.Data.OleDb.OleDbCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO `Voter` (`FirstName`, `MidldeName`, `LastName`, `Suffix`, `Sex`, `Bir" +
+            this._adapter.InsertCommand.CommandText = "INSERT INTO `Voter` (`FirstName`, `MiddleName`, `LastName`, `Suffix`, `Sex`, `Bir" +
                 "thdate`, `Vin`, `YearLevel`, `Section`, `ElectionId`) VALUES (?, ?, ?, ?, ?, ?, " +
                 "?, ?, ?, ?)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("FirstName", global::System.Data.OleDb.OleDbType.VarWChar, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "FirstName", global::System.Data.DataRowVersion.Current, false, null));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("MidldeName", global::System.Data.OleDb.OleDbType.VarWChar, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "MidldeName", global::System.Data.DataRowVersion.Current, false, null));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("MiddleName", global::System.Data.OleDb.OleDbType.VarWChar, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "MiddleName", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("LastName", global::System.Data.OleDb.OleDbType.VarWChar, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "LastName", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Suffix", global::System.Data.OleDb.OleDbType.VarWChar, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Suffix", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Sex", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Sex", global::System.Data.DataRowVersion.Current, false, null));
@@ -8910,12 +9009,12 @@ WHERE        (Candidate.ID = ?)";
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand = new global::System.Data.OleDb.OleDbCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = "UPDATE       Voter\r\nSET                FirstName = ?, MidldeName = ?, LastName = " +
+            this._adapter.UpdateCommand.CommandText = "UPDATE       Voter\r\nSET                FirstName = ?, MiddleName = ?, LastName = " +
                 "?, Suffix = ?, Sex = ?, Birthdate = ?, Vin = ?, YearLevel = ?, [Section] = ?, El" +
                 "ectionId = ?\r\nWHERE        (ID = ?)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("FirstName", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "FirstName", global::System.Data.DataRowVersion.Current, false, null));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("MidldeName", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "MidldeName", global::System.Data.DataRowVersion.Current, false, null));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("MiddleName", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "MiddleName", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("LastName", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "LastName", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Suffix", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Suffix", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Sex", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Sex", global::System.Data.DataRowVersion.Current, false, null));
@@ -8937,12 +9036,14 @@ WHERE        (Candidate.ID = ?)";
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.OleDb.OleDbCommand[5];
+            this._commandCollection = new global::System.Data.OleDb.OleDbCommand[6];
             this._commandCollection[0] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, YearLeve" +
-                "l, [Section], ElectionId FROM Voter";
+            this._commandCollection[0].CommandText = "SELECT        ID, FirstName, MiddleName, LastName, Suffix, Sex, Birthdate, Vin, Y" +
+                "earLevel, [Section], ElectionId\r\nFROM            Voter\r\nWHERE        (ElectionId" +
+                " = ?)";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[0].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[1] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[1].Connection = this.Connection;
             this._commandCollection[1].CommandText = "SELECT        COUNT(*) AS [Count]\r\nFROM            (Voter RIGHT OUTER JOIN\r\n     " +
@@ -8958,25 +9059,35 @@ WHERE        (Candidate.ID = ?)";
             this._commandCollection[2].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[3] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[3].Connection = this.Connection;
-            this._commandCollection[3].CommandText = "SELECT ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, YearLeve" +
-                "l, [Section], ElectionId FROM Voter WHERE (ID = ?)";
+            this._commandCollection[3].CommandText = @"SELECT        Voter.ID, Voter.FirstName, Voter.MiddleName, Voter.LastName, Voter.Suffix, Voter.Sex, Voter.Birthdate, Voter.Vin, Voter.YearLevel, Voter.[Section], Voter.ElectionId, Ballot.ID AS BallotId, Ballot.Code AS BallotCode, 
+                         Ballot.EnteredAt AS BallotEnteredAt, Ballot.CastedAt AS BallotCastedAt, Ballot.VoterId AS BallotVoterId
+FROM            (Voter LEFT OUTER JOIN
+                         Ballot ON Voter.ID = Ballot.VoterId)
+WHERE        (Voter.ElectionId = ?)";
             this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[3].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Current, false, null));
+            this._commandCollection[3].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[4] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[4].Connection = this.Connection;
-            this._commandCollection[4].CommandText = "SELECT ID, FirstName, MidldeName, LastName, Suffix, Sex, Birthdate, Vin, YearLeve" +
-                "l, [Section], ElectionId FROM Voter WHERE (Vin = ?) AND (ElectionId = ?)";
+            this._commandCollection[4].CommandText = "SELECT Birthdate, ElectionId, FirstName, ID, LastName, MiddleName, [Section], Sex" +
+                ", Suffix, Vin, YearLevel FROM Voter WHERE (ID = ?)";
             this._commandCollection[4].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[4].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Vin", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Vin", global::System.Data.DataRowVersion.Current, false, null));
-            this._commandCollection[4].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
+            this._commandCollection[4].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Current, false, null));
+            this._commandCollection[5] = new global::System.Data.OleDb.OleDbCommand();
+            this._commandCollection[5].Connection = this.Connection;
+            this._commandCollection[5].CommandText = "SELECT Birthdate, ElectionId, FirstName, ID, LastName, MiddleName, [Section], Sex" +
+                ", Suffix, Vin, YearLevel FROM Voter WHERE (Vin = ?) AND (ElectionId = ?)";
+            this._commandCollection[5].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[5].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Vin", global::System.Data.OleDb.OleDbType.WChar, 255, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "Vin", global::System.Data.DataRowVersion.Current, false, null));
+            this._commandCollection[5].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, true)]
-        public virtual int Fill(StudentElectionDataSet.VoterDataTable dataTable) {
+        public virtual int Fill(StudentElectionDataSet.VoterDataTable dataTable, int ElectionId) {
             this.Adapter.SelectCommand = this.CommandCollection[0];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ElectionId));
             if ((this.ClearBeforeFill == true)) {
                 dataTable.Clear();
             }
@@ -8988,8 +9099,35 @@ WHERE        (Candidate.ID = ?)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
-        public virtual StudentElectionDataSet.VoterDataTable GetData() {
+        public virtual StudentElectionDataSet.VoterDataTable GetData(int ElectionId) {
             this.Adapter.SelectCommand = this.CommandCollection[0];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ElectionId));
+            StudentElectionDataSet.VoterDataTable dataTable = new StudentElectionDataSet.VoterDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillVoterDetailsList(StudentElectionDataSet.VoterDataTable dataTable, int ElectionId) {
+            this.Adapter.SelectCommand = this.CommandCollection[3];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ElectionId));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual StudentElectionDataSet.VoterDataTable GetVoterDetailsList(int ElectionId) {
+            this.Adapter.SelectCommand = this.CommandCollection[3];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ElectionId));
             StudentElectionDataSet.VoterDataTable dataTable = new StudentElectionDataSet.VoterDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;
@@ -9000,7 +9138,7 @@ WHERE        (Candidate.ID = ?)";
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
         public virtual int FillVotersById(StudentElectionDataSet.VoterDataTable dataTable, int ID) {
-            this.Adapter.SelectCommand = this.CommandCollection[3];
+            this.Adapter.SelectCommand = this.CommandCollection[4];
             this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ID));
             if ((this.ClearBeforeFill == true)) {
                 dataTable.Clear();
@@ -9014,7 +9152,7 @@ WHERE        (Candidate.ID = ?)";
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual StudentElectionDataSet.VoterDataTable GetVotersById(int ID) {
-            this.Adapter.SelectCommand = this.CommandCollection[3];
+            this.Adapter.SelectCommand = this.CommandCollection[4];
             this.Adapter.SelectCommand.Parameters[0].Value = ((int)(ID));
             StudentElectionDataSet.VoterDataTable dataTable = new StudentElectionDataSet.VoterDataTable();
             this.Adapter.Fill(dataTable);
@@ -9026,7 +9164,7 @@ WHERE        (Candidate.ID = ?)";
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
         public virtual int FillVotersByVin(StudentElectionDataSet.VoterDataTable dataTable, string Vin, global::System.Nullable<int> ElectionId) {
-            this.Adapter.SelectCommand = this.CommandCollection[4];
+            this.Adapter.SelectCommand = this.CommandCollection[5];
             if ((Vin == null)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
             }
@@ -9051,7 +9189,7 @@ WHERE        (Candidate.ID = ?)";
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual StudentElectionDataSet.VoterDataTable GetVotersByVin(string Vin, global::System.Nullable<int> ElectionId) {
-            this.Adapter.SelectCommand = this.CommandCollection[4];
+            this.Adapter.SelectCommand = this.CommandCollection[5];
             if ((Vin == null)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
             }
@@ -9124,21 +9262,21 @@ WHERE        (Candidate.ID = ?)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(string FirstName, string MidldeName, string LastName, string Suffix, global::System.Nullable<int> Sex, global::System.Nullable<global::System.DateTime> Birthdate, string Vin, global::System.Nullable<int> YearLevel, string Section, global::System.Nullable<int> ElectionId) {
+        public virtual int Insert(string FirstName, string MiddleName, string LastName, string Suffix, int Sex, global::System.Nullable<global::System.DateTime> Birthdate, string Vin, int YearLevel, string Section, int ElectionId) {
             if ((FirstName == null)) {
-                this.Adapter.InsertCommand.Parameters[0].Value = global::System.DBNull.Value;
+                throw new global::System.ArgumentNullException("FirstName");
             }
             else {
                 this.Adapter.InsertCommand.Parameters[0].Value = ((string)(FirstName));
             }
-            if ((MidldeName == null)) {
+            if ((MiddleName == null)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(MidldeName));
+                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(MiddleName));
             }
             if ((LastName == null)) {
-                this.Adapter.InsertCommand.Parameters[2].Value = global::System.DBNull.Value;
+                throw new global::System.ArgumentNullException("LastName");
             }
             else {
                 this.Adapter.InsertCommand.Parameters[2].Value = ((string)(LastName));
@@ -9149,12 +9287,7 @@ WHERE        (Candidate.ID = ?)";
             else {
                 this.Adapter.InsertCommand.Parameters[3].Value = ((string)(Suffix));
             }
-            if ((Sex.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[4].Value = ((int)(Sex.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
-            }
+            this.Adapter.InsertCommand.Parameters[4].Value = ((int)(Sex));
             if ((Birthdate.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[5].Value = ((System.DateTime)(Birthdate.Value));
             }
@@ -9162,29 +9295,19 @@ WHERE        (Candidate.ID = ?)";
                 this.Adapter.InsertCommand.Parameters[5].Value = global::System.DBNull.Value;
             }
             if ((Vin == null)) {
-                this.Adapter.InsertCommand.Parameters[6].Value = global::System.DBNull.Value;
+                throw new global::System.ArgumentNullException("Vin");
             }
             else {
                 this.Adapter.InsertCommand.Parameters[6].Value = ((string)(Vin));
             }
-            if ((YearLevel.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[7].Value = ((int)(YearLevel.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[7].Value = global::System.DBNull.Value;
-            }
+            this.Adapter.InsertCommand.Parameters[7].Value = ((int)(YearLevel));
             if ((Section == null)) {
-                this.Adapter.InsertCommand.Parameters[8].Value = global::System.DBNull.Value;
+                throw new global::System.ArgumentNullException("Section");
             }
             else {
                 this.Adapter.InsertCommand.Parameters[8].Value = ((string)(Section));
             }
-            if ((ElectionId.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[9].Value = ((int)(ElectionId.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[9].Value = global::System.DBNull.Value;
-            }
+            this.Adapter.InsertCommand.Parameters[9].Value = ((int)(ElectionId));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -9205,21 +9328,21 @@ WHERE        (Candidate.ID = ?)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string FirstName, string MidldeName, string LastName, string Suffix, global::System.Nullable<int> Sex, global::System.Nullable<global::System.DateTime> Birthdate, string Vin, global::System.Nullable<int> YearLevel, string Section, global::System.Nullable<int> ElectionId, int Original_ID) {
+        public virtual int Update(string FirstName, string MiddleName, string LastName, string Suffix, int Sex, global::System.Nullable<global::System.DateTime> Birthdate, string Vin, int YearLevel, string Section, int ElectionId, int Original_ID) {
             if ((FirstName == null)) {
-                this.Adapter.UpdateCommand.Parameters[0].Value = global::System.DBNull.Value;
+                throw new global::System.ArgumentNullException("FirstName");
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[0].Value = ((string)(FirstName));
             }
-            if ((MidldeName == null)) {
+            if ((MiddleName == null)) {
                 this.Adapter.UpdateCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(MidldeName));
+                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(MiddleName));
             }
             if ((LastName == null)) {
-                this.Adapter.UpdateCommand.Parameters[2].Value = global::System.DBNull.Value;
+                throw new global::System.ArgumentNullException("LastName");
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[2].Value = ((string)(LastName));
@@ -9230,12 +9353,7 @@ WHERE        (Candidate.ID = ?)";
             else {
                 this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(Suffix));
             }
-            if ((Sex.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((int)(Sex.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
-            }
+            this.Adapter.UpdateCommand.Parameters[4].Value = ((int)(Sex));
             if ((Birthdate.HasValue == true)) {
                 this.Adapter.UpdateCommand.Parameters[5].Value = ((System.DateTime)(Birthdate.Value));
             }
@@ -9243,29 +9361,19 @@ WHERE        (Candidate.ID = ?)";
                 this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
             }
             if ((Vin == null)) {
-                this.Adapter.UpdateCommand.Parameters[6].Value = global::System.DBNull.Value;
+                throw new global::System.ArgumentNullException("Vin");
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[6].Value = ((string)(Vin));
             }
-            if ((YearLevel.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((int)(YearLevel.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
-            }
+            this.Adapter.UpdateCommand.Parameters[7].Value = ((int)(YearLevel));
             if ((Section == null)) {
-                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
+                throw new global::System.ArgumentNullException("Section");
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[8].Value = ((string)(Section));
             }
-            if ((ElectionId.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[9].Value = ((int)(ElectionId.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
-            }
+            this.Adapter.UpdateCommand.Parameters[9].Value = ((int)(ElectionId));
             this.Adapter.UpdateCommand.Parameters[10].Value = ((int)(Original_ID));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -9286,9 +9394,14 @@ WHERE        (Candidate.ID = ?)";
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        public virtual global::System.Nullable<int> CountVotedVotersQuery(int ElectionId) {
+        public virtual global::System.Nullable<int> CountVotedVotersQuery(global::System.Nullable<int> ElectionId) {
             global::System.Data.OleDb.OleDbCommand command = this.CommandCollection[1];
-            command.Parameters[0].Value = ((int)(ElectionId));
+            if ((ElectionId.HasValue == true)) {
+                command.Parameters[0].Value = ((int)(ElectionId.Value));
+            }
+            else {
+                command.Parameters[0].Value = global::System.DBNull.Value;
+            }
             global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
             if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -9315,9 +9428,14 @@ WHERE        (Candidate.ID = ?)";
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        public virtual global::System.Nullable<int> CountVotersQuery(int ElectionId) {
+        public virtual global::System.Nullable<int> CountVotersQuery(global::System.Nullable<int> ElectionId) {
             global::System.Data.OleDb.OleDbCommand command = this.CommandCollection[2];
-            command.Parameters[0].Value = ((int)(ElectionId));
+            if ((ElectionId.HasValue == true)) {
+                command.Parameters[0].Value = ((int)(ElectionId.Value));
+            }
+            else {
+                command.Parameters[0].Value = global::System.DBNull.Value;
+            }
             global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
             if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -10855,8 +10973,8 @@ HAVING        (Election.ID = ?)";
             this._commandCollection = new global::System.Data.OleDb.OleDbCommand[1];
             this._commandCollection[0] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = @"SELECT        PositionRank, VoteCount, LastName, FirstName, Suffix, MiddleName, CandidateId, PositionVoteCount, YearLevel, [Section], Birthdate, Sex, PartyId, PositionId, Alias, PictureFileName, PositionTitle, PartyTitle, PartyShortName, 
-                         PartyArgb, ElectionId, ServerTag
+            this._commandCollection[0].CommandText = @"SELECT        PositionRank, VoteCount, LastName, FirstName, Suffix, MiddleName, CandidateId, YearLevel, [Section], Birthdate, Sex, PartyId, PositionId, Alias, PictureFileName, PositionTitle, PartyTitle, PartyShortName, PartyArgb, ElectionId, 
+                         ServerTag, PositionVoteCount
 FROM            VoteResult
 WHERE        (ElectionId = ?)";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;

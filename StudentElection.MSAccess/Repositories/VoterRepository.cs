@@ -5,26 +5,43 @@ using StudentElection.Repository.Interfaces;
 using StudentElection.Repository.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace StudentElection.MSAccess.Repositories
 {
-    public class VoterRepository : IVoterRepository
+    public class VoterRepository : Repository, IVoterRepository
     {
         public async Task<IEnumerable<VoterModel>> GetVotersAsync(int electionId)
+        {
+            await Task.CompletedTask;
+            
+            using (var tableAdapter = new VoterTableAdapter())
+            {
+                var users = tableAdapter.GetData(electionId)
+                    .AsQueryable();
+
+                return _mapper.ProjectTo<VoterModel>(users)
+                    .AsEnumerable();
+            }
+        }
+
+        public async Task<IEnumerable<VoterModel>> GetVoterDetailsListAsync(int electionId)
         {
             await Task.CompletedTask;
 
             using (var tableAdapter = new VoterTableAdapter())
             {
-                return tableAdapter.GetData()
-                    .AsQueryable()
-                    .ProjectTo<VoterModel>()
+                var users = tableAdapter.GetVoterDetailsList(electionId)
+                    .AsQueryable<DataRow>();
+
+                return _mapper.ProjectTo<VoterModel>(users)
                     .AsEnumerable();
             }
         }
+
 
         public async Task<VoterModel> GetVoterAsync(int voterId)
         {
@@ -39,7 +56,7 @@ namespace StudentElection.MSAccess.Repositories
                 }
 
                 var model = new VoterModel();
-                Mapper.Map(row, model);
+                _mapper.Map(row, model);
 
                 return model;
             }
@@ -127,7 +144,7 @@ namespace StudentElection.MSAccess.Repositories
                 }
 
                 var model = new VoterModel();
-                Mapper.Map(row, model);
+                _mapper.Map(row, model);
 
                 return model;
             }
@@ -147,7 +164,7 @@ namespace StudentElection.MSAccess.Repositories
                     foreach (var voter in voters)
                     {
                         var newRow = dataSet.Voter.NewVoterRow();
-                        Mapper.Map(voter, newRow);
+                        _mapper.Map(voter, newRow);
 
                         newRow.ID = id;
                         if (voter.Birthdate == null)

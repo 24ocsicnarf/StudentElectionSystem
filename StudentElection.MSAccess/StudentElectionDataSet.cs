@@ -4,6 +4,10 @@
 
     partial class StudentElectionDataSet
     {
+        partial class VoterDataTable
+        {
+        }
+
         partial class UserDataTable
         {
         }

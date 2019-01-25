@@ -16,7 +16,7 @@ namespace StudentElection.Repository.Models
         public string LastName { get; set; }
         public string Suffix { get; set; }
         public Sex Sex { get; set; }
-        public Nullable<System.DateTime> Birthdate { get; set; }
+        public DateTime? Birthdate { get; set; }
         public string Vin { get; set; }
         public int YearLevel { get; set; }
         public string Section { get; set; }
@@ -26,5 +26,7 @@ namespace StudentElection.Repository.Models
         public ElectionModel Election { get; set; }
         
         public string FullName => $"{ this.LastName }, { this.FirstName } { this.Suffix } { this.MiddleName }".Trim();
+        public bool IsVoted => this.Ballot?.Id > 0;
+
     }
 }

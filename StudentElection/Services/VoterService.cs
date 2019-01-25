@@ -18,10 +18,15 @@ namespace StudentElection.Services
             _voterRepository = RepositoryFactory.Get<IVoterRepository>();
         }
 
-        //public async Task<int> GetCandidatesCount(int electionId)
-        //{
-        //    return await _voterRepository.G(electionId);
-        //}
+        public async Task<IEnumerable<VoterModel>> GetVotersAsync(int electionId)
+        {
+            return await _voterRepository.GetVotersAsync(electionId);
+        }
+
+        public async Task<IEnumerable<VoterModel>> GetVoterDetailsListAsync(int electionId)
+        {
+            return await _voterRepository.GetVoterDetailsListAsync(electionId);
+        }
 
         public async Task<VoterModel> GetVoterAsync(int voterId)
         {
@@ -36,11 +41,6 @@ namespace StudentElection.Services
         public async Task<int> CountVotersAsync(int electionId)
         {
             return await _voterRepository.CountVotersAsync(electionId);
-        }
-
-        public async Task<IEnumerable<VoterModel>> GetVotersAsync(int electionId)
-        {
-            return await _voterRepository.GetVotersAsync(electionId);
         }
 
         public async Task<bool> IsVinExistingAsync(int electionId, string vin, VoterModel voter)

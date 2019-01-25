@@ -36,13 +36,13 @@
             this.label7 = new System.Windows.Forms.Label();
             this.lblParty = new System.Windows.Forms.Label();
             this.cmbPosition = new System.Windows.Forms.ComboBox();
+            this.positionModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.ofdImage = new System.Windows.Forms.OpenFileDialog();
             this.pbImage = new System.Windows.Forms.PictureBox();
             this.ttpCandidate = new System.Windows.Forms.ToolTip(this.components);
             this.pbBorder = new System.Windows.Forms.PictureBox();
-            this.btnPosition = new System.Windows.Forms.Button();
             this.txtFirstName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -56,13 +56,12 @@
             this.cmbYearLevel = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.txtSection = new System.Windows.Forms.TextBox();
-            this.positionModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dtBirthdate = new System.Windows.Forms.DateTimePicker();
             this.label10 = new System.Windows.Forms.Label();
             this.cmbSex = new System.Windows.Forms.ComboBox();
+            ((System.ComponentModel.ISupportInitialize)(this.positionModelBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbBorder)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.positionModelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTitle
@@ -133,6 +132,8 @@
             // cmbPosition
             // 
             this.cmbPosition.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.cmbPosition.DataSource = this.positionModelBindingSource;
+            this.cmbPosition.DisplayMember = "Title";
             this.cmbPosition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPosition.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmbPosition.ForeColor = System.Drawing.Color.Black;
@@ -141,6 +142,11 @@
             this.cmbPosition.Name = "cmbPosition";
             this.cmbPosition.Size = new System.Drawing.Size(248, 22);
             this.cmbPosition.TabIndex = 10;
+            this.cmbPosition.ValueMember = "Id";
+            // 
+            // positionModelBindingSource
+            // 
+            this.positionModelBindingSource.DataSource = typeof(StudentElection.Repository.Models.PositionModel);
             // 
             // btnAdd
             // 
@@ -193,23 +199,6 @@
             this.pbBorder.Size = new System.Drawing.Size(94, 124);
             this.pbBorder.TabIndex = 7;
             this.pbBorder.TabStop = false;
-            // 
-            // btnPosition
-            // 
-            this.btnPosition.BackColor = System.Drawing.Color.Transparent;
-            this.btnPosition.BackgroundImage = global::StudentElection.Properties.Resources.add;
-            this.btnPosition.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnPosition.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnPosition.FlatAppearance.BorderSize = 0;
-            this.btnPosition.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPosition.Font = new System.Drawing.Font("Tahoma", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPosition.Location = new System.Drawing.Point(85, 240);
-            this.btnPosition.Name = "btnPosition";
-            this.btnPosition.Size = new System.Drawing.Size(22, 22);
-            this.btnPosition.TabIndex = 3;
-            this.btnPosition.UseVisualStyleBackColor = false;
-            this.btnPosition.Visible = false;
-            this.btnPosition.Click += new System.EventHandler(this.btnPosition_Click);
             // 
             // txtFirstName
             // 
@@ -332,6 +321,7 @@
             this.cmbYearLevel.Name = "cmbYearLevel";
             this.cmbYearLevel.Size = new System.Drawing.Size(52, 22);
             this.cmbYearLevel.TabIndex = 7;
+            this.cmbYearLevel.SelectedIndexChanged += new System.EventHandler(this.cmbYearLevel_SelectedIndexChanged);
             // 
             // label9
             // 
@@ -351,10 +341,6 @@
             this.txtSection.Name = "txtSection";
             this.txtSection.Size = new System.Drawing.Size(136, 22);
             this.txtSection.TabIndex = 8;
-            // 
-            // positionModelBindingSource
-            // 
-            this.positionModelBindingSource.DataSource = typeof(StudentElection.Repository.Models.PositionModel);
             // 
             // dtBirthdate
             // 
@@ -402,7 +388,6 @@
             this.Controls.Add(this.dtBirthdate);
             this.Controls.Add(this.cmbSex);
             this.Controls.Add(this.cmbYearLevel);
-            this.Controls.Add(this.btnPosition);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.cmbPosition);
@@ -433,9 +418,9 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "CandidateForm";
             this.Load += new System.EventHandler(this.CandidateForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.positionModelBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbBorder)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.positionModelBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -456,7 +441,6 @@
         private System.Windows.Forms.OpenFileDialog ofdImage;
         private System.Windows.Forms.ToolTip ttpCandidate;
         private System.Windows.Forms.PictureBox pbBorder;
-        private System.Windows.Forms.Button btnPosition;
         private System.Windows.Forms.TextBox txtFirstName;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;

@@ -1,9 +1,11 @@
 namespace StudentElection.Repository.Models
 {
+    using Project.Library.Helpers;
+    using Project.Library.Interfaces;
     using System;
     using System.Collections.Generic;
-    
-    public partial class UserModel
+
+    public partial class UserModel : IPersonName
     {
         public UserModel()
         {
@@ -22,6 +24,6 @@ namespace StudentElection.Repository.Models
     
         public ICollection<AuditLogModel> AuditLogs { get; set; }
 
-        public string FullName => $"{ this.FirstName } { this.MiddleName } { this.LastName } { this.Suffix }";
+        public string FullName => DataHelper.GetPersonFullName(this, DataHelper.PersonNameFormat.FirstNameFirst);
     }
 }

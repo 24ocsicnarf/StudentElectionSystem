@@ -46,6 +46,10 @@ namespace StudentElection.Dialogs
             _window = (Tag as MaintenanceWindow);
 
             await LoadPositionsAsync();
+
+            nudNumberOfWinners.Value = Math.Min(2, nudNumberOfWinners.Maximum);
+            nudNumberOfWinners.Value = 1;
+            cmbWhoCanVote.SelectedIndex = 0;
         }
 
         private async Task LoadPositionsAsync()
@@ -79,26 +83,12 @@ namespace StudentElection.Dialogs
 
         private async void btnAdd_Click(object sender, EventArgs e)
         {
-            int numberOfWinners = 1;
-
-            //if (dgPositions.Rows.Count == 20)
-            //{
-            //    MessageBox.Show("Up to 20 positions only.", "Position", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            //    return;
-            //}
-            
             if (txtPosition.Text.IsBlank())
             {
                 MessageBox.Show("Please provide a position title.", "no position".ToTitleCase(), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtPosition.Focus();
 
                 return;
-            }
-
-            if (int.TryParse(txtNumberOfWinners.Text, out int winners)) 
-            {
-                numberOfWinners = winners;
             }
 
             txtPosition.Text = txtPosition.Text.ToTitleCase();
@@ -119,10 +109,12 @@ namespace StudentElection.Dialogs
                 return;
             }
 
+            var whoCanVote = cmbWhoCanVote.SelectedIndex;
             var position = new PositionModel
             {
                 Title = txtPosition.Text,
-                WinnersCount = numberOfWinners,
+                WinnersCount = (int)nudNumberOfWinners.Value,
+                YearLevel = whoCanVote == 0 ? default(int?) : whoCanVote,
                 ElectionId = _currentElection.Id
             };
 
@@ -252,7 +244,8 @@ namespace StudentElection.Dialogs
         private void SetToAddSettings()
         {
             txtPosition.Clear();
-            txtNumberOfWinners.Clear();
+            nudNumberOfWinners.ResetText();
+            cmbWhoCanVote.SelectedIndex = 0;
             btnAdd.Text = "ADD";
             btnCancel.Visible = false;
 
@@ -260,14 +253,17 @@ namespace StudentElection.Dialogs
             btnUp.Enabled = dgPositions.SelectedRows.Count > 0 && dgPositions.SelectedRows[0].Index >= 0;
             btnDown.Enabled = dgPositions.SelectedRows.Count > 0 && dgPositions.SelectedRows[0].Index >= 0 && dgPositions.SelectedRows[0].Index + 1 < dgPositions.Rows.Count;
             dgPositions.Enabled = true;
-
-            //btnAdd.Location = new Point(186, 336);
+            
+            btnAdd.Location = new Point(226, 366);
         }
 
         private void SetToUpdateSettings()
         {
-            txtPosition.Text = (dgPositions.SelectedRows[0].DataBoundItem as PositionModel).Title;
-            txtNumberOfWinners.Text = (dgPositions.SelectedRows[0].DataBoundItem as PositionModel).WinnersCount.ToString();
+            var position = (dgPositions.SelectedRows[0].DataBoundItem as PositionModel);
+            txtPosition.Text = position.Title;
+            nudNumberOfWinners.Value = Math.Min(position.WinnersCount + 1, nudNumberOfWinners.Maximum);
+            nudNumberOfWinners.Value = position.WinnersCount;
+            cmbWhoCanVote.SelectedIndex = position.YearLevel ?? 0;
             btnAdd.Text = "UPDATE";
             btnCancel.Visible = true;
 
@@ -277,8 +273,8 @@ namespace StudentElection.Dialogs
 
             dgPositions.Enabled = false;
 
-            //btnAdd.Location = new Point(104, 306);
-            //btnCancel.Location = new Point(176, 306);
+            btnAdd.Location = new Point(154, 366);
+            btnCancel.Location = new Point(226, 366);
 
             txtPosition.Focus();
         }
@@ -332,14 +328,9 @@ namespace StudentElection.Dialogs
             return false;
         }
 
-        private void txtPosition_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void dgPositions_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dgPositions.SelectedRows[0].Index > 0)
+            if (dgPositions.SelectedRows[0].Index >= 0)
             {
                 SetToUpdateSettings();
 
@@ -360,6 +351,39 @@ namespace StudentElection.Dialogs
                 btnUp.Enabled = dgPositions.SelectedRows[0].Index > 0;
                 btnDown.Enabled = dgPositions.SelectedRows[0].Index < dgPositions.Rows.Count - 1;
                 btnDelete.Enabled = true;
+            }
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dgPositions_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            var dgv = (DataGridView)sender;
+
+            int whoCanVoteColumnIndex = 3;
+
+            if (e.ColumnIndex == whoCanVoteColumnIndex
+                && e.RowIndex >= 0)
+            {
+                var yearLevel = (int?)dgv[whoCanVoteColumnIndex, e.RowIndex].Value;
+                if (yearLevel == null)
+                {
+                    e.Value = "All year levels";
+                    e.FormattingApplied = true;
+                }
+                else
+                {
+                    e.Value = $"Grade { yearLevel } only";
+                    e.FormattingApplied = true;
+                }
             }
         }
     }

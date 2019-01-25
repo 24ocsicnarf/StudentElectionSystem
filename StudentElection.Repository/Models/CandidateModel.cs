@@ -1,7 +1,6 @@
 namespace StudentElection.Repository.Models
 {
     using Project.Library;
-    using Project.Library.Enums;
     using Project.Library.Extensions;
     using Project.Library.Helpers;
     using Project.Library.Interfaces;
@@ -39,7 +38,7 @@ namespace StudentElection.Repository.Models
         public PositionModel Position { get; set; }
         public ICollection<VoteModel> Votes { get; set; }
 
-        public string FullName => DataHelper.GetPersonFullName(this, PersonNameFormat.LastNameFirst,
+        public string FullName => DataHelper.GetPersonFullName(this, DataHelper.PersonNameFormat.LastNameFirst,
             System.Windows.Controls.CharacterCasing.Upper);
     }
 }

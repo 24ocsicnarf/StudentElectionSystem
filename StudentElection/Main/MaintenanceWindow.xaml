@@ -6,7 +6,8 @@
         xmlns:base="clr-namespace:StudentElection"
         xmlns:local="clr-namespace:StudentElection.Main"
         xmlns:p="clr-namespace:StudentElection.Properties"
-        xmlns:UserControls="clr-namespace:StudentElection.UserControls"  x:Class="StudentElection.Main.MaintenanceWindow"
+        xmlns:UserControls="clr-namespace:StudentElection.UserControls"
+    xmlns:syncfusion="http://schemas.syncfusion.com/wpf" x:Class="StudentElection.Main.MaintenanceWindow"
         mc:Ignorable="d"
         Title="Maintenance" FontFamily="Tahoma" FontSize="14.667" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Closing="Window_Closing" WindowStyle="None" Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown" UseLayoutRounding="True" >
     <Window.Resources>
@@ -47,7 +48,7 @@
     <Border x:Name="bdrMaintenance" BorderBrush="#808080" BorderThickness="4">
         <Grid>
             <DockPanel >
-                <Border x:Name="border" DockPanel.Dock="Top" HorizontalAlignment="Stretch" BorderBrush="#F5F5F5F5" BorderThickness="8,4" MouseLeftButtonDown="border_MouseLeftButtonDown" PreviewMouseLeftButtonUp="border_PreviewMouseLeftButtonUp" Cursor="Arrow">
+                <Border x:Name="border" DockPanel.Dock="Top" HorizontalAlignment="Stretch" BorderBrush="#F5F5F5F5" BorderThickness="8,4" MouseLeftButtonDown="border_MouseLeftButtonDown" Cursor="Arrow">
                     <DockPanel x:Name="dckTitleBar" Background="{Binding BorderBrush, ElementName=border}" Cursor="Arrow" >
                         <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
                             <Label x:Name="lblMachineTag" Content="Server Tag" FontSize="14" ToolTip="A unique name of this voting server" Cursor="Arrow" />
@@ -289,25 +290,21 @@
                                 <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto"  Grid.Row="0" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Margin="2" Visibility="Visible">
                                     <StackPanel x:Name="stkResults"/>
                                 </ScrollViewer>
-                                <!--<syncfusion:SfDataGrid x:Name="dgResults" ShowBusyIndicator="False" ColumnSizer="AutoWithLastColumnFill" syncfusion:ScrollableContentViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="0 1" Margin="4" ScrollMode="None" AllowTriStateSorting="True" AllowGrouping="False" AutoGenerateColumns="False" EnableDataVirtualization="True" SortColumnsChanged="dgResults_SortColumnsChanged" QueryRowHeight="dgResults_QueryRowHeight" Visibility="Hidden">
+                                <syncfusion:SfDataGrid x:Name="dgResults"
+                                                       ColumnSizer="AutoWithLastColumnFill"
+                                                       AllowFiltering="False"
+                                                       AllowTriStateSorting="True"
+                                                       AllowGrouping="False"
+                                                       AutoGenerateColumns="False"
+                                                       EnableDataVirtualization="True"
+                                                       Visibility="Collapsed">
                                     <syncfusion:SfDataGrid.SortColumnDescriptions>
                                         <syncfusion:SortColumnDescription ColumnName="PositionRank"/>
+                                        <syncfusion:SortColumnDescription ColumnName="VoteCount" SortDirection="Descending"/>
                                         <syncfusion:SortColumnDescription ColumnName="FullName"/>
                                         <syncfusion:SortColumnDescription ColumnName="Alias"/>
                                     </syncfusion:SfDataGrid.SortColumnDescriptions>
                                     <syncfusion:SfDataGrid.Columns>
-                                        --><!--<syncfusion:GridTemplateColumn Width="50" MappingName="" AllowSorting="False" AllowFiltering="False">
-                                            <syncfusion:GridTemplateColumn.CellTemplate>
-                                                <ItemContainerTemplate>
-                                                    <Border Width="45" Height="60" Margin="2" BorderThickness="1" BorderBrush="{Binding PartyColorBrush}">
-                                                        <Border.Background>
-                                                            <ImageBrush ImageSource="{Binding PictureSource}" RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="LowQuality" Stretch="UniformToFill"/>
-                                                        </Border.Background>
-                                                    </Border>
-                                                </ItemContainerTemplate>
-                                            </syncfusion:GridTemplateColumn.CellTemplate>
-                                        </syncfusion:GridTemplateColumn>--><!--
-                                        <syncfusion:GridTextColumn HeaderText="Position Rank" MappingName="PositionRank" IsHidden="True" MinimumWidth="100"/>
                                         <syncfusion:GridTextColumn HeaderText="Position" MappingName="PositionTitle" MinimumWidth="100"/>
                                         <syncfusion:GridTextColumn HeaderText="Candidate" MappingName="FullName" MinimumWidth="100"/>
                                         <syncfusion:GridTextColumn HeaderText="Alias" MappingName="Alias" MinimumWidth="50"/>
@@ -316,7 +313,7 @@
                                         <syncfusion:GridTextColumn HeaderText="Party" MappingName="PartyTitle" MinimumWidth="50"/>
                                         <syncfusion:GridTextColumn HeaderText="Vote Count" MappingName="VoteCount" TextAlignment="Right" MinimumWidth="40"/>
                                     </syncfusion:SfDataGrid.Columns>
-                                </syncfusion:SfDataGrid>-->
+                                </syncfusion:SfDataGrid>
                             </DockPanel>
                         </Grid>
                     </TabItem>
@@ -501,38 +498,62 @@
                                                 </Style>
                                             </Button.Style>
                                         </Button>
-                                        <CheckBox x:Name="chkVoted" DockPanel.Dock="Right" Content="Show voted only" HorizontalAlignment="Right"  VerticalAlignment="Center" VerticalContentAlignment="Center" Visibility="Collapsed" Margin="12,0" Foreground="#dd000000"/>
                                     </DockPanel>
                                     <DockPanel DockPanel.Dock="Top" >
                                         <Label HorizontalAlignment="Left"  Content="Voters" FontWeight="Bold" FontSize="18"  />
-                                        <Label x:Name="lblVoterInfo" HorizontalAlignment="Left" Content="dsdsds" FontSize="14.667" Visibility="Collapsed" VerticalAlignment="Center" Foreground="#cc000000" Cursor="Hand" PreviewMouseLeftButtonUp="lblVoterInfo_PreviewMouseLeftButtonUp" FontFamily="Arial Narrow" />
-                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="Collapsed">
-                                            <Label Content="Filter" VerticalAlignment="Center" />
-                                            <TextBox x:Name="txtVoterFilter" Width="180" Height="Auto" VerticalAlignment="Center" MaxLines="1" MaxLength="20" TextChanged="txtVoterFilter_TextChanged" />
+                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="Visible">
+                                            <CheckBox x:Name="chkVoted" DockPanel.Dock="Right" Content="Show voted only" HorizontalAlignment="Right"  VerticalAlignment="Center" VerticalContentAlignment="Center" Visibility="Visible" Margin="4,0" Foreground="#dd000000" Click="ChkVoted_Click"/>
+                                            <Rectangle Fill="LightGray" Width="1" Height="20" Margin="4 0"/>
+                                            <Label Content="Search" VerticalAlignment="Center" />
+                                            <TextBox x:Name="txtVoterFilter" Width="120" VerticalContentAlignment="Center" Height="24" MaxLines="1" MaxLength="20" TextChanged="txtVoterFilter_TextChanged" />
                                         </StackPanel>
                                     </DockPanel>
-                                    <ListView x:Name="lvVoter" FontSize="12" Foreground="#FF191919" FontWeight="Regular" SelectionChanged="lvVoter_SelectionChanged" SelectionMode="Single" PreviewMouseMove="lvVoter_PreviewMouseMove" PreviewMouseLeftButtonDown="lvVoter_PreviewMouseLeftButtonDown" PreviewMouseUp="lvVoter_PreviewMouseUp" PreviewKeyUp="lvVoter_PreviewKeyUp">
-                                        <ListView.Resources>
-                                            <Style TargetType="{x:Type ListViewItem}">
+                                    <syncfusion:SfDataGrid x:Name="dgVoters"
+                                                           Background="White"
+                                                           ColumnSizer="AutoLastColumnFill"
+                                                           AllowFiltering="False"
+                                                           AllowTriStateSorting="True"
+                                                           AllowGrouping="True"
+                                                           AutoGenerateColumns="False"
+                                                           NavigationMode="Row"
+                                                           SelectionUnit="Row"
+                                                           SelectionMode="Single"
+                                                           ScrollMode="Async"
+                                                           AllowResizingColumns="True"
+                                                           EnableDataVirtualization="True" SelectionChanged="dgVoters_SelectionChanged">
+                                        <syncfusion:SfDataGrid.RowStyle>
+                                            <Style TargetType="syncfusion:VirtualizingCellsControl">
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding IsVoted}" Value="True">
-                                                        <Setter Property="FontWeight" Value="Regular" />
                                                         <Setter Property="Foreground" Value="#FF009966" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </ListView.Resources>
-                                        <ListView.View>
-                                            <GridView x:Name="gvVoter">
-                                                <GridViewColumn Header="Voter ID" Width="90" DisplayMemberBinding="{Binding Vin}" />
-                                                <GridViewColumn Header="Name" Width="300" DisplayMemberBinding="{Binding FullName}"/>
-                                                <GridViewColumn Header="Year Level" Width="80" DisplayMemberBinding="{Binding YearLevel}"/>
-                                                <GridViewColumn Header="Section" Width="120" DisplayMemberBinding="{Binding Section}"/>
-                                                <GridViewColumn Header="Sex" Width="80" DisplayMemberBinding="{Binding Sex}"/>
-                                                <GridViewColumn Header="Birthdate" Width="120" DisplayMemberBinding="{Binding Birthdate, StringFormat=yyyy-MM-dd}"/>
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
+                                        </syncfusion:SfDataGrid.RowStyle>
+                                        <syncfusion:SfDataGrid.TableSummaryRowStyle>
+                                            <Style TargetType="syncfusion:TableSummaryRowControl">
+                                                <Setter Property="Background" Value="WhiteSmoke"/>
+                                            </Style>
+                                        </syncfusion:SfDataGrid.TableSummaryRowStyle>
+                                        <syncfusion:SfDataGrid.TableSummaryRows>
+                                            <syncfusion:GridTableSummaryRow Title="Number of voters: {VoterCount}" ShowSummaryInRow="True" >
+                                                <syncfusion:GridSummaryRow.SummaryColumns>
+                                                    <syncfusion:GridSummaryColumn Name="VoterCount"
+                                                                                  Format="'{Count:d}'"
+                                                                                  MappingName="Vin"
+                                                                                  SummaryType="CountAggregate" />
+                                                </syncfusion:GridSummaryRow.SummaryColumns>
+                                            </syncfusion:GridTableSummaryRow>
+                                        </syncfusion:SfDataGrid.TableSummaryRows>
+                                        <syncfusion:SfDataGrid.Columns>
+                                            <syncfusion:GridTextColumn HeaderText="Voter ID" ValueBinding="{Binding Vin}" MinimumWidth="90"/>
+                                            <syncfusion:GridTextColumn HeaderText="Name" ValueBinding="{Binding FullName}" MinimumWidth="200" ColumnSizer="AutoLastColumnFill"/>
+                                            <syncfusion:GridTextColumn HeaderText="Year Level" ValueBinding="{Binding YearLevel}" TextAlignment="Center" MinimumWidth="100"/>
+                                            <syncfusion:GridTextColumn HeaderText="Section" ValueBinding="{Binding Section}" MinimumWidth="120"/>
+                                            <syncfusion:GridTextColumn HeaderText="Sex" ValueBinding="{Binding Sex}" TextAlignment="Center" MinimumWidth="80"/>
+                                            <syncfusion:GridTextColumn HeaderText="Birthdate" ValueBinding="{Binding Birthdate, StringFormat=yyyy-MM-dd}" TextAlignment="Center" MinimumWidth="120"/>
+                                        </syncfusion:SfDataGrid.Columns>
+                                    </syncfusion:SfDataGrid>
                                 </DockPanel>
                             </Grid>
                         </Grid>

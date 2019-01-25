@@ -13,7 +13,7 @@ using static StudentElection.MSAccess.StudentElectionDataSet;
 
 namespace StudentElection.MSAccess.Repositories
 {
-    public class PositionRepository : IPositionRepository
+    public class PositionRepository : Repository, IPositionRepository
     {
         public async Task<IEnumerable<PositionModel>> GetPositionsAsync(int electionId)
         {
@@ -21,10 +21,10 @@ namespace StudentElection.MSAccess.Repositories
 
             using (var tableAdapter = new PositionTableAdapter())
             {
-                return tableAdapter.GetData(electionId)
-                    .AsQueryable()
-                    .ProjectTo<PositionModel>()
-                    .AsEnumerable();
+                var positions = tableAdapter.GetData(electionId)
+                    .AsQueryable();
+
+                return _mapper.ProjectTo<PositionModel>(positions);
             }
         }
 
@@ -38,7 +38,8 @@ namespace StudentElection.MSAccess.Repositories
                     model.Title,
                     model.WinnersCount,
                     model.Rank,
-                    model.ElectionId
+                    model.ElectionId,
+                    model.YearLevel
                 );
             }
         }
@@ -54,6 +55,7 @@ namespace StudentElection.MSAccess.Repositories
                     model.WinnersCount,
                     model.Rank,
                     model.ElectionId,
+                    model.YearLevel,
                     model.Id
                 );
             }
@@ -112,7 +114,7 @@ namespace StudentElection.MSAccess.Repositories
                 }
 
                 var model = new PositionModel();
-                Mapper.Map(row, model);
+                _mapper.Map(row, model);
 
                 return model;
             }
@@ -131,9 +133,22 @@ namespace StudentElection.MSAccess.Repositories
                 }
 
                 var model = new PositionModel();
-                Mapper.Map(row, model);
+                _mapper.Map(row, model);
 
                 return model;
+            }
+        }
+
+        public async Task<IEnumerable<PositionModel>> GetPositionsByYearLevelAsync(int electionId, int yearLevel)
+        {
+            await Task.CompletedTask;
+
+            using (var tableAdapter = new PositionTableAdapter())
+            {
+                var positions = tableAdapter.GetPositionsByYearLevel(electionId, yearLevel)
+                    .AsQueryable();
+
+                return _mapper.ProjectTo<PositionModel>(positions);
             }
         }
     }

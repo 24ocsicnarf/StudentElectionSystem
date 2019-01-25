@@ -20,6 +20,7 @@ using StudentElection.Services;
 using Humanizer;
 using Humanizer.Localisation;
 using System.Windows.Controls.Primitives;
+using System.Windows.Threading;
 //using StudentElection.StudentElectionDataSetTableAdapters;
 
 namespace StudentElection.Dialogs
@@ -41,8 +42,9 @@ namespace StudentElection.Dialogs
             InitializeComponent();
 
             stkButtons.Visibility = Visibility.Collapsed;
-            stkScrollDown.Visibility = Visibility.Collapsed;
-            lblInstructions.Visibility = Visibility.Hidden;
+            tbkScrollDown.Visibility = Visibility.Collapsed;
+            lblInstructions.Visibility = Visibility.Collapsed;
+            svCandidates.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
 
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += (s, ev) =>
             {
@@ -130,7 +132,7 @@ namespace StudentElection.Dialogs
                 {
                     stkCandidates.Children.Add(new Rectangle
                     {
-                        Height = 10,
+                        Height = 12,
                     });
                 }
 
@@ -138,7 +140,7 @@ namespace StudentElection.Dialogs
             }
             stkCandidates.Children.Add(new Rectangle
             {
-                Height = 10,
+                Height = 12,
             });
         }
 
@@ -155,23 +157,32 @@ namespace StudentElection.Dialogs
             {
                 stkButtons.Visibility = Visibility.Visible;
                 lblInstructions.Visibility = Visibility.Visible;
-                stkScrollDown.Visibility = Visibility.Collapsed;
+                tbkScrollDown.Visibility = Visibility.Collapsed;
             }
         }
 
-        private void Window_ContentRendered(object sender, EventArgs e)
+        private async void Window_ContentRendered(object sender, EventArgs e)
         {
-            if (svCandidates.ComputedVerticalScrollBarVisibility == Visibility.Collapsed)
+            tbkScrollDown.Text = string.Empty;
+            tbkScrollDown.Visibility = Visibility.Visible;
+
+            if (stkCandidates.ActualHeight < svCandidates.ViewportHeight)
             {
+                await Task.Delay(3000);
+
                 stkButtons.Visibility = Visibility.Visible;
                 lblInstructions.Visibility = Visibility.Visible;
-                stkScrollDown.Visibility = Visibility.Collapsed;
+                tbkScrollDown.Visibility = Visibility.Collapsed;
+
+                svCandidates.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             }
             else
             {
+                tbkScrollDown.Text = "Scroll down to the bottom of the list";
                 stkButtons.Visibility = Visibility.Collapsed;
-                lblInstructions.Visibility = Visibility.Hidden;
-                stkScrollDown.Visibility = Visibility.Visible;
+                lblInstructions.Visibility = Visibility.Collapsed;
+                tbkScrollDown.Visibility = Visibility.Visible;
+                svCandidates.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             }
         }
     }

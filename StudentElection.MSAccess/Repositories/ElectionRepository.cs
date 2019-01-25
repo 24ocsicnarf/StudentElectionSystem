@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace StudentElection.MSAccess.Repositories
 {
-    public class ElectionRepository : IElectionRepository
+    public class ElectionRepository : Repository, IElectionRepository
     {
         public async Task CloseElectionAsync(int electionId, DateTime dateTime)
         {
@@ -45,7 +45,7 @@ namespace StudentElection.MSAccess.Repositories
                 }
 
                 var model = new ElectionModel();
-                Mapper.Map(row, model);
+                _mapper.Map(row, model);
 
                 return model;
             }

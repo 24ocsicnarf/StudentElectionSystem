@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+﻿using AutoMapper.QueryableExtensions;
 using StudentElection.MSAccess.StudentElectionDataSetTableAdapters;
 using StudentElection.Repository.Interfaces;
 using StudentElection.Repository.Models;
@@ -13,7 +12,7 @@ using static StudentElection.MSAccess.StudentElectionDataSet;
 
 namespace StudentElection.MSAccess.Repositories
 {
-    public class BallotRepository : IBallotRepository
+    public class BallotRepository : Repository, IBallotRepository
     {
         public async Task<BallotModel> GetBallotAsync(int ballotId)
         {
@@ -28,7 +27,7 @@ namespace StudentElection.MSAccess.Repositories
                 }
 
                 var model = new BallotModel();
-                Mapper.Map(row, model);
+                _mapper.Map(row, model);
 
                 return model;
             }
@@ -47,7 +46,7 @@ namespace StudentElection.MSAccess.Repositories
                 }
 
                 var model = new BallotModel();
-                Mapper.Map(row, model);
+                _mapper.Map(row, model);
 
                 return model;
             }
@@ -126,10 +125,10 @@ namespace StudentElection.MSAccess.Repositories
 
             using (var tableAdapter = new VoteResultTableAdapter())
             {
-                return tableAdapter.GetVoteResults(electionId)
-                    .AsQueryable()
-                    .ProjectTo<VoteResultModel>()
-                    .AsEnumerable();
+                var voteResults = tableAdapter.GetVoteResults(electionId)
+                       .AsQueryable();
+
+                return _mapper.ProjectTo<VoteResultModel>(voteResults);
             }
         }
 

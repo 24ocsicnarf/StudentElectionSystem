@@ -59,5 +59,10 @@ namespace StudentElection.Services
         {
             await _positionRepository.MoveRankAsync(selectedPosition, closestPosition);
         }
+
+        public async Task<IEnumerable<PositionModel>> GetPositionsByYearLevelAsync(int electionId, int yearLevel)
+        {
+            return await _positionRepository.GetPositionsByYearLevelAsync(electionId, yearLevel);
+        }
     }
 }

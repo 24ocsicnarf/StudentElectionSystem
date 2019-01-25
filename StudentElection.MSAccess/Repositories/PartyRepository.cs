@@ -13,7 +13,7 @@ using static StudentElection.MSAccess.StudentElectionDataSet;
 
 namespace StudentElection.MSAccess.Repositories
 {
-    public class PartyRepository : IPartyRepository
+    public class PartyRepository : Repository, IPartyRepository
     {
         public async Task<IEnumerable<PartyModel>> GetPartiesAsync(int electionId)
         {
@@ -21,10 +21,10 @@ namespace StudentElection.MSAccess.Repositories
 
             using (var tableAdapter = new PartyTableAdapter())
             {
-                return tableAdapter.GetData(electionId)
-                    .AsQueryable()
-                    .ProjectTo<PartyModel>()
-                    .AsEnumerable();
+                var parties = tableAdapter.GetData(electionId)
+                    .AsQueryable();
+
+                return _mapper.ProjectTo<PartyModel>(parties);
             }
         }
 
@@ -51,7 +51,7 @@ namespace StudentElection.MSAccess.Repositories
                 }
 
                 var model = new PartyModel();
-                Mapper.Map(row, model);
+                _mapper.Map(row, model);
 
                 return model;
             }

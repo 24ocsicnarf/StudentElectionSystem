@@ -10,6 +10,7 @@ namespace StudentElection.Repository.Interfaces
     public interface IPositionRepository
     {
         Task<IEnumerable<PositionModel>> GetPositionsAsync(int electionId);
+        Task<IEnumerable<PositionModel>> GetPositionsByYearLevelAsync(int electionId, int yearLevel);
         Task<int> GetPositionsCountAsync(int electionId);
         Task<PositionModel> GetPositionAsync(int positionId);
         Task<PositionModel> GetPositionByTitleAsync(int electionId, string positionTitle);

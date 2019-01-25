@@ -9,12 +9,12 @@
     <Grid Background="Black">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="7*" MinWidth="640" MaxWidth="1280"/>
+            <ColumnDefinition Width="7*" MinWidth="768" MaxWidth="1280"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="10*" MinHeight="480" MaxHeight="1440"/>
+            <RowDefinition Height="10*" MinHeight="540" MaxHeight="1280"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="1" Grid.Column="1" BorderBrush="Gray" BorderThickness="4" Background="White">
@@ -28,15 +28,15 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel x:Name="stkInstructions" Grid.Column="0" HorizontalAlignment="Stretch" Margin="2" >
                             <Label Content="INSTRUCTIONS:"  VerticalAlignment="Center" FontWeight="Bold" FontSize="12" Padding="0.5,0,0,1.5" />
-                            <Label x:Name="lblInstruction1" Content="• To vote, click the candidate to blacken the oval next to their image."  VerticalAlignment="Center" Padding="0.5" FontSize="11.5">
+                            <TextBlock x:Name="tbkInstruction1" Text="• To vote, click a candidate to blacken the oval next to their picture." TextTrimming="WordEllipsis" VerticalAlignment="Center" Padding="0.5" FontSize="12">
 
-                            </Label>
-                            <Label x:Name="lblInstruction2" Content= "• To remove a vote, click the voted candidate or click 'RESET' to clear ALL the votes."  VerticalAlignment="Center" Padding="0.5" FontSize="11.5" >
+                            </TextBlock>
+                            <TextBlock x:Name="tbkInstruction2" Text= "• To remove a vote, click the voted candidate or click 'RESET' to clear ALL the votes." TextTrimming="WordEllipsis"  VerticalAlignment="Center" Padding="0.5" FontSize="12" >
 
-                            </Label>
-                            <Label x:Name="lblInstruction3" Content= "• When finished voting, click 'NEXT' and check your votes."  VerticalAlignment="Center" Padding="0.5" FontSize="11.5" >
+                            </TextBlock>
+                            <TextBlock x:Name="tbkInstruction3" Text= "• When finished voting, click 'NEXT' and check your votes." TextTrimming="WordEllipsis"  VerticalAlignment="Center" Padding="0.5" FontSize="12" >
 
-                            </Label>
+                            </TextBlock>
                         </StackPanel>
                         <StackPanel  Grid.Column="2"  HorizontalAlignment="Stretch">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >

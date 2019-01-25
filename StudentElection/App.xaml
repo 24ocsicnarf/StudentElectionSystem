@@ -2,8 +2,19 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:StudentElection"
+             xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              StartupUri="Main/MainWindow.xaml" Startup="Application_Startup" DispatcherUnhandledException="Application_DispatcherUnhandledException">
     <Application.Resources>
         <BitmapImage x:Key="defaultCandidateImage" UriSource="Resources/default_candidate.png" />
+
+        <Style TargetType="syncfusion:GridHeaderCellControl">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="BorderThickness" Value="0 0 1 1"/>
+        </Style>
+        <Style TargetType="syncfusion:GridCell">
+            <Setter Property="BorderThickness" Value="0 0 1 1"/>
+            <Setter Property="BorderBrush" Value="WhiteSmoke"/>
+        </Style>
     </Application.Resources>
+    
 </Application>
