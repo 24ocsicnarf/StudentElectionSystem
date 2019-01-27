@@ -12,26 +12,27 @@ using System.Threading.Tasks;
 
 namespace StudentElection.PostgreSQL.Repositories
 {
-    public class PositionRepository : IPositionRepository
+    public class PositionRepository : Repository, IPositionRepository
     {
         public async Task<IEnumerable<PositionModel>> GetPositionsAsync(int electionId)
         {
             using (var context = new StudentElectionContext())
             {
-                return await context.Positions
-                    .Where(p => p.ElectionId == electionId)
-                    .OrderBy(p => p.Rank)
-                    .ProjectTo<PositionModel>().ToListAsync();
+                var positions = context.Positions.Where(p => p.ElectionId == electionId)
+                    .OrderBy(p => p.Rank);
+
+                return await _mapper.ProjectTo<PositionModel>(positions)
+                    .ToListAsync();
             }
         }
 
         public async Task InsertPositionAsync(PositionModel model)
         {
+            var position = new Position();
+            _mapper.Map(model, position);
+
             using (var context = new StudentElectionContext())
             {
-                var position = new Position();
-                Mapper.Map(model, position);
-
                 context.Positions.Add(position);
 
                 await context.SaveChangesAsync();
@@ -43,7 +44,7 @@ namespace StudentElection.PostgreSQL.Repositories
             using (var context = new StudentElectionContext())
             {
                 var position = await context.Positions.SingleOrDefaultAsync(p => p.Id == model.Id);
-                Mapper.Map(model, position);
+                _mapper.Map(model, position);
 
                 await context.SaveChangesAsync();
             }
@@ -88,11 +89,14 @@ namespace StudentElection.PostgreSQL.Repositories
         {
             using (var context = new StudentElectionContext())
             {
-                var position = await context.Positions
-                    .SingleOrDefaultAsync(p => p.Id == positionId);
+                var position = await context.Positions.SingleOrDefaultAsync(p => p.Id == positionId);
+                if (position == null)
+                {
+                    return null;
+                }
 
                 var model = new PositionModel();
-                Mapper.Map(position, model);
+                _mapper.Map(position, model);
 
                 return model;
             }
@@ -104,17 +108,28 @@ namespace StudentElection.PostgreSQL.Repositories
             {
                 var position = await context.Positions
                     .SingleOrDefaultAsync(p => p.ElectionId == electionId && p.Title.ToLower() == positionTitle.ToLower());
+                if (position == null)
+                {
+                    return null;
+                }
 
                 var model = new PositionModel();
-                Mapper.Map(position, model);
+                _mapper.Map(position, model);
 
                 return model;
             }
         }
 
-        public Task<IEnumerable<PositionModel>> GetPositionsByYearLevelAsync(int electionId, int yearLevel)
+        public async Task<IEnumerable<PositionModel>> GetPositionsByYearLevelAsync(int electionId, int yearLevel)
         {
-            throw new NotImplementedException();
+            using (var context = new StudentElectionContext())
+            {
+                var positions = context.Positions
+                    .Where(p => p.ElectionId == electionId && p.YearLevel == yearLevel);
+
+                return await _mapper.ProjectTo<PositionModel>(positions)
+                    .ToListAsync();
+            }
         }
     }
 }

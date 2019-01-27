@@ -14,6 +14,6 @@ namespace StudentElection.Repository.Interfaces
         Task InsertPartyAsync(PartyModel model);
         Task UpdatePartyAsync(PartyModel model);
         Task DeletePartyAsync(PartyModel model);
-        Task<int> GetPartiesCount(int electionId);
+        Task<int> GetPartiesCountAsync(int electionId);
     }
 }

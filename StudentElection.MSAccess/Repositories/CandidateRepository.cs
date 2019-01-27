@@ -133,7 +133,7 @@ namespace StudentElection.MSAccess.Repositories
             }
         }
 
-        public async Task<int> GetCandidatesCount(int electionId)
+        public async Task<int> GetCandidatesCountAsync(int electionId)
         {
             await Task.CompletedTask;
 

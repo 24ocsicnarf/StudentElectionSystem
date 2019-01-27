@@ -11,14 +11,14 @@ using StudentElection.Repository.Models;
 
 namespace StudentElection.PostgreSQL.Repositories
 {
-    public class ElectionRepository : IElectionRepository
+    public class ElectionRepository : Repository, IElectionRepository
     {
         public async Task<int> AddElectionAsync(ElectionModel model)
         {
             using (var context = new StudentElectionContext())
             {
                 var election = new Election();
-                Mapper.Map(model, election);
+                _mapper.Map(model, election);
 
                 context.Elections.Add(election);
 
@@ -55,9 +55,13 @@ namespace StudentElection.PostgreSQL.Repositories
                 var election = await context.Elections
                     .OrderByDescending(e => e.TookPlaceOn)
                     .ThenByDescending(e => e.Id).FirstOrDefaultAsync();
+                if (election == null)
+                {
+                    return null;
+                }
 
                 var model = new ElectionModel();
-                Mapper.Map(election, model);
+                _mapper.Map(election, model);
 
                 return model;
             }

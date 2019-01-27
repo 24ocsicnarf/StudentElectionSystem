@@ -13,7 +13,7 @@ namespace StudentElection.Repository.Interfaces
         Task<IEnumerable<CandidateModel>> GetCandidateDetailsListByPartyAsync(int partyId);
         Task<IEnumerable<CandidateModel>> GetCandidateDetailsListByPositionAsync(int positionId);
         Task<CandidateModel> GetCandidateDetailsAsync(int candidateId);
-        Task<int> GetCandidatesCount(int electionId);
+        Task<int> GetCandidatesCountAsync(int electionId);
         Task<bool> IsAliasExistingAsync(int electionId, string alias, CandidateModel editingCandidate);
         Task InsertCandidateAsync(CandidateModel candidate);
         Task InsertCandidatesAsync(IEnumerable<CandidateModel> candidates);

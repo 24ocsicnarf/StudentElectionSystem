@@ -25,6 +25,7 @@ namespace StudentElection.PostgreSQL.Model
         public int WinnersCount { get; set; }
         public int Rank { get; set; }
         public int ElectionId { get; set; }
+        public Nullable<int> YearLevel { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Candidate> Candidates { get; set; }

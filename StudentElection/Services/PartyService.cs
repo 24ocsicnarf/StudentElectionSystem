@@ -45,7 +45,7 @@ namespace StudentElection.Services
 
         public async Task<int> GetPartiesCount(int electionId)
         {
-            return await _partyRepository.GetPartiesCount(electionId);
+            return await _partyRepository.GetPartiesCountAsync(electionId);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace StudentElection.MSAccess.Repositories
             }
         }
 
-        public async Task<int> GetPartiesCount(int electionId)
+        public async Task<int> GetPartiesCountAsync(int electionId)
         {
             await Task.CompletedTask;
 

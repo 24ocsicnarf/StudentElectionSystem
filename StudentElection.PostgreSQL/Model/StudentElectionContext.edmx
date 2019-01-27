@@ -55,7 +55,7 @@
           <Property Name="TookPlaceOn" Type="date" Nullable="false" />
           <Property Name="CandidatesFinalizedAt" Type="timestamp" />
           <Property Name="ClosedAt" Type="timestamp" />
-          <Property Name="Tag" Type="text" Nullable="false" />
+          <Property Name="ServerTag" Type="text" Nullable="false" />
         </EntityType>
         <EntityType Name="Party">
           <Key>
@@ -76,6 +76,7 @@
           <Property Name="WinnersCount" Type="int4" Nullable="false" />
           <Property Name="Rank" Type="int4" Nullable="false" />
           <Property Name="ElectionId" Type="int4" Nullable="false" />
+          <Property Name="YearLevel" Type="int4" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -330,10 +331,10 @@
           <Property Name="TookPlaceOn" Type="DateTime" Precision="0" Nullable="false" />
           <Property Name="CandidatesFinalizedAt" Type="DateTime" Precision="6" />
           <Property Name="ClosedAt" Type="DateTime" Precision="6" />
-          <Property Name="ServerTag" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Parties" Relationship="Self.Party_Election" FromRole="Election" ToRole="Party" />
           <NavigationProperty Name="Positions" Relationship="Self.Position_Election" FromRole="Election" ToRole="Position" />
           <NavigationProperty Name="Voters" Relationship="Self.Voter_Election" FromRole="Election" ToRole="Voter" />
+          <Property Name="ServerTag" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Party">
           <Key>
@@ -358,6 +359,7 @@
           <Property Name="ElectionId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Candidates" Relationship="Self.Candidate_Position" FromRole="Position" ToRole="Candidate" />
           <NavigationProperty Name="Election" Relationship="Self.Position_Election" FromRole="Position" ToRole="Election" />
+          <Property Name="YearLevel" Type="Int32" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -609,13 +611,13 @@
           <EntitySetMapping Name="Elections">
             <EntityTypeMapping TypeName="StudentElectionModel.Election">
               <MappingFragment StoreEntitySet="Election">
+                <ScalarProperty Name="ServerTag" ColumnName="ServerTag" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="TookPlaceOn" ColumnName="TookPlaceOn" />
                 <ScalarProperty Name="CandidatesFinalizedAt" ColumnName="CandidatesFinalizedAt" />
                 <ScalarProperty Name="ClosedAt" ColumnName="ClosedAt" />
-                <ScalarProperty Name="ServerTag" ColumnName="Tag" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -633,6 +635,7 @@
           <EntitySetMapping Name="Positions">
             <EntityTypeMapping TypeName="StudentElectionModel.Position">
               <MappingFragment StoreEntitySet="Position">
+                <ScalarProperty Name="YearLevel" ColumnName="YearLevel" />
                 <ScalarProperty Name="WinnersCount" ColumnName="WinnersCount" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Title" ColumnName="Title" />

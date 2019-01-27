@@ -22,7 +22,7 @@ namespace StudentElection.Services
 
         public async Task<int> GetCandidatesCount(int electionId)
         {
-            return await _candidateRepository.GetCandidatesCount(electionId);
+            return await _candidateRepository.GetCandidatesCountAsync(electionId);
         }
 
         public async Task<IEnumerable<CandidateModel>> GetCandidatesByPartyAsync(int partyId)

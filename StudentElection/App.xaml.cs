@@ -37,7 +37,15 @@ namespace StudentElection
             //};
 
             //TODO: pano ung sa server???????????????
-            ImageFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Images");
+            if (StudentElection.Properties.Database.Default.DatabaseType == "file")
+            {
+                ImageFolderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Images");
+            }
+            else
+            {
+                ImageFolderPath = Path.Combine(Path.GetDirectoryName(StudentElection.Properties.Database.Default.ServerLocation), "Images");
+            }
+
             if (!Directory.Exists(ImageFolderPath))
             {
                 Directory.CreateDirectory(ImageFolderPath);

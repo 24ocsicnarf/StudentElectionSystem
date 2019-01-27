@@ -12,15 +12,15 @@ using System.Threading.Tasks;
 
 namespace StudentElection.PostgreSQL.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : Repository, IUserRepository
     {
         public async Task AddUserAsync(UserModel model)
         {
+            var user = new User();
+            _mapper.Map(model, user);
+
             using (var context = new StudentElectionContext())
             {
-                var user = new User();
-                Mapper.Map(model, user);
-
                 context.Users.Add(user);
 
                 await context.SaveChangesAsync();
@@ -43,8 +43,13 @@ namespace StudentElection.PostgreSQL.Repositories
             using (var context = new StudentElectionContext())
             {
                 var user = await context.Users.SingleOrDefaultAsync(u => u.Id == userId);
+                if (user == null)
+                {
+                    return null;
+                }
+
                 var model = new UserModel();
-                Mapper.Map(user, model);
+                _mapper.Map(user, model);
 
                 return model;
             }
@@ -55,8 +60,13 @@ namespace StudentElection.PostgreSQL.Repositories
             using (var context = new StudentElectionContext())
             {
                 var user = await context.Users.SingleOrDefaultAsync(u => u.UserName == username);
+                if (user == null)
+                {
+                    return null;
+                }
+
                 var model = new UserModel();
-                Mapper.Map(user, model);
+                _mapper.Map(user, model);
 
                 return model;
             }
@@ -66,7 +76,10 @@ namespace StudentElection.PostgreSQL.Repositories
         {
             using (var context = new StudentElectionContext())
             {
-                return await context.Users.ProjectTo<UserModel>().ToListAsync();
+                var users = context.Users;
+                
+                return await _mapper.ProjectTo<UserModel>(users)
+                    .ToListAsync();
             }
         }
 
@@ -79,7 +92,7 @@ namespace StudentElection.PostgreSQL.Repositories
             }
             else
             {
-                return user.Id != editingUser.Id && user != null;
+                return user != null && user.Id != editingUser.Id;
             }
         }
 
@@ -88,7 +101,7 @@ namespace StudentElection.PostgreSQL.Repositories
             using (var context = new StudentElectionContext())
             {
                 var user = await context.Users.SingleOrDefaultAsync(u => u.Id == model.Id);
-                Mapper.Map(model, user);
+                _mapper.Map(model, user);
 
                 context.Users.Add(user);
 
