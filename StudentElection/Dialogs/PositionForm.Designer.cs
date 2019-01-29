@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PositionForm));
             this.txtPosition = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnDown = new System.Windows.Forms.Button();
@@ -40,18 +41,19 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.label3 = new System.Windows.Forms.Label();
             this.dgPositions = new System.Windows.Forms.DataGridView();
-            this.nudNumberOfWinners = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
-            this.cmbWhoCanVote = new System.Windows.Forms.ComboBox();
-            this.positionModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.titleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.WinnersCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.YearLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rankDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.positionModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.nudNumberOfWinners = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.cmbWhoCanVote = new System.Windows.Forms.ComboBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgPositions)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudNumberOfWinners)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionModelBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNumberOfWinners)).BeginInit();
             this.SuspendLayout();
             // 
             // txtPosition
@@ -196,6 +198,50 @@
             this.dgPositions.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgPositions_CellFormatting);
             this.dgPositions.SelectionChanged += new System.EventHandler(this.dgPositions_SelectionChanged);
             // 
+            // idDataGridViewTextBoxColumn
+            // 
+            this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
+            this.idDataGridViewTextBoxColumn.HeaderText = "Id";
+            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
+            this.idDataGridViewTextBoxColumn.ReadOnly = true;
+            this.idDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // titleDataGridViewTextBoxColumn
+            // 
+            this.titleDataGridViewTextBoxColumn.DataPropertyName = "Title";
+            this.titleDataGridViewTextBoxColumn.HeaderText = "Position Title";
+            this.titleDataGridViewTextBoxColumn.Name = "titleDataGridViewTextBoxColumn";
+            this.titleDataGridViewTextBoxColumn.ReadOnly = true;
+            this.titleDataGridViewTextBoxColumn.Width = 120;
+            // 
+            // WinnersCount
+            // 
+            this.WinnersCount.DataPropertyName = "WinnersCount";
+            this.WinnersCount.HeaderText = "No. of Winners";
+            this.WinnersCount.Name = "WinnersCount";
+            this.WinnersCount.ReadOnly = true;
+            this.WinnersCount.Width = 60;
+            // 
+            // YearLevel
+            // 
+            this.YearLevel.DataPropertyName = "YearLevel";
+            this.YearLevel.HeaderText = "Who can vote?";
+            this.YearLevel.Name = "YearLevel";
+            this.YearLevel.ReadOnly = true;
+            this.YearLevel.Width = 90;
+            // 
+            // rankDataGridViewTextBoxColumn
+            // 
+            this.rankDataGridViewTextBoxColumn.DataPropertyName = "Rank";
+            this.rankDataGridViewTextBoxColumn.HeaderText = "Rank";
+            this.rankDataGridViewTextBoxColumn.Name = "rankDataGridViewTextBoxColumn";
+            this.rankDataGridViewTextBoxColumn.ReadOnly = true;
+            this.rankDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // positionModelBindingSource
+            // 
+            this.positionModelBindingSource.DataSource = typeof(StudentElection.Repository.Models.PositionModel);
+            // 
             // nudNumberOfWinners
             // 
             this.nudNumberOfWinners.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -228,6 +274,8 @@
             this.label4.Size = new System.Drawing.Size(91, 14);
             this.label4.TabIndex = 5;
             this.label4.Text = "Who can vote?";
+            this.toolTip1.SetToolTip(this.label4, "In addition, you can only add candidates with the year level of the selected vote" +
+        "rs");
             this.label4.Click += new System.EventHandler(this.label3_Click);
             // 
             // cmbWhoCanVote
@@ -238,7 +286,7 @@
             this.cmbWhoCanVote.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmbWhoCanVote.FormattingEnabled = true;
             this.cmbWhoCanVote.Items.AddRange(new object[] {
-            "All year levels",
+            "All",
             "Grade 1 only",
             "Grade 2 only",
             "Grade 3 only",
@@ -256,50 +304,11 @@
             this.cmbWhoCanVote.Name = "cmbWhoCanVote";
             this.cmbWhoCanVote.Size = new System.Drawing.Size(163, 22);
             this.cmbWhoCanVote.TabIndex = 2;
+            this.toolTip1.SetToolTip(this.cmbWhoCanVote, resources.GetString("cmbWhoCanVote.ToolTip"));
             // 
-            // positionModelBindingSource
+            // toolTip1
             // 
-            this.positionModelBindingSource.DataSource = typeof(StudentElection.Repository.Models.PositionModel);
-            // 
-            // idDataGridViewTextBoxColumn
-            // 
-            this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
-            this.idDataGridViewTextBoxColumn.HeaderText = "Id";
-            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
-            this.idDataGridViewTextBoxColumn.ReadOnly = true;
-            this.idDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // titleDataGridViewTextBoxColumn
-            // 
-            this.titleDataGridViewTextBoxColumn.DataPropertyName = "Title";
-            this.titleDataGridViewTextBoxColumn.HeaderText = "Position Title";
-            this.titleDataGridViewTextBoxColumn.Name = "titleDataGridViewTextBoxColumn";
-            this.titleDataGridViewTextBoxColumn.ReadOnly = true;
-            this.titleDataGridViewTextBoxColumn.Width = 150;
-            // 
-            // WinnersCount
-            // 
-            this.WinnersCount.DataPropertyName = "WinnersCount";
-            this.WinnersCount.HeaderText = "No. of Winners";
-            this.WinnersCount.Name = "WinnersCount";
-            this.WinnersCount.ReadOnly = true;
-            this.WinnersCount.Width = 60;
-            // 
-            // YearLevel
-            // 
-            this.YearLevel.DataPropertyName = "YearLevel";
-            this.YearLevel.HeaderText = "Who can vote?";
-            this.YearLevel.Name = "YearLevel";
-            this.YearLevel.ReadOnly = true;
-            this.YearLevel.Width = 90;
-            // 
-            // rankDataGridViewTextBoxColumn
-            // 
-            this.rankDataGridViewTextBoxColumn.DataPropertyName = "Rank";
-            this.rankDataGridViewTextBoxColumn.HeaderText = "Rank";
-            this.rankDataGridViewTextBoxColumn.Name = "rankDataGridViewTextBoxColumn";
-            this.rankDataGridViewTextBoxColumn.ReadOnly = true;
-            this.rankDataGridViewTextBoxColumn.Visible = false;
+            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             // 
             // PositionForm
             // 
@@ -331,8 +340,8 @@
             this.Text = "Position";
             this.Load += new System.EventHandler(this.PositionForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgPositions)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudNumberOfWinners)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionModelBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNumberOfWinners)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -360,5 +369,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn WinnersCount;
         private System.Windows.Forms.DataGridViewTextBoxColumn YearLevel;
         private System.Windows.Forms.DataGridViewTextBoxColumn rankDataGridViewTextBoxColumn;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

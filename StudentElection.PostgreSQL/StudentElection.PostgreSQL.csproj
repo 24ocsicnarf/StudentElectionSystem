@@ -110,10 +110,16 @@
     <Compile Include="Model\Voter.cs">
       <DependentUpon>StudentElectionContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\Voter.ext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\BallotRepository.cs" />
+    <Compile Include="Repositories\CandidateRepository.cs" />
     <Compile Include="Repositories\ElectionRepository.cs" />
+    <Compile Include="Repositories\PartyRepository.cs" />
     <Compile Include="Repositories\PositionRepository.cs" />
+    <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="Repositories\VoterRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\StudentElection\App.config">

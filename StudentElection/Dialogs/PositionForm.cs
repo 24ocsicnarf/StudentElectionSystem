@@ -244,7 +244,9 @@ namespace StudentElection.Dialogs
         private void SetToAddSettings()
         {
             txtPosition.Clear();
-            nudNumberOfWinners.ResetText();
+
+            nudNumberOfWinners.Value = Math.Min(nudNumberOfWinners.Value + 1, nudNumberOfWinners.Maximum);
+            nudNumberOfWinners.Value = 1;
             cmbWhoCanVote.SelectedIndex = 0;
             btnAdd.Text = "ADD";
             btnCancel.Visible = false;

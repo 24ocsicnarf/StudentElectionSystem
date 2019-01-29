@@ -15,7 +15,7 @@
                         <Border x:Name="bdrImage" Width="92" Height="122" HorizontalAlignment="Right" VerticalAlignment="Top" Background="White" BorderBrush="{Binding Path=PartyColorBrush}" BorderThickness="1" Margin="-1,-1" >
                             <Image x:Name="imgCandidate"  RenderOptions.BitmapScalingMode="Fant" />
                         </Border>
-                        <Border Background="#CC000000" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="24">
+                        <Border Background="#BB000000" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="28">
                             <TextBlock x:Name="tbkRank" Text="2" Padding="4 0" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Foreground="White" FontSize="18" TextAlignment="Center" LineHeight="20" LineStackingStrategy="BlockLineHeight"/>
                         </Border>
                     </Grid>

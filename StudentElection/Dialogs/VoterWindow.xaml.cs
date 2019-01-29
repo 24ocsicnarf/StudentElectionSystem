@@ -195,9 +195,8 @@ namespace StudentElection.Dialogs
             catch (Exception ex)
             {
                 G.EndWait(this);
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
 
-                Application.Current?.Shutdown();
+                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 

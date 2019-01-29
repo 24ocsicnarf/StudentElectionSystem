@@ -54,6 +54,21 @@
                         </Style>
                     </Button.Style>
                 </Button>
+                <Button x:Name="btnConnectToServer" Visibility="Visible" DockPanel.Dock="Right" VerticalAlignment="Center" Padding="0" Background="Transparent" BorderThickness="0" Cursor="Hand" Click="btnConnectToServer_Click">
+                    <Button.Content>
+                        <TextBlock FontSize="10" Text="Connect to server"  Foreground="Black" TextDecorations="Underline"/>
+                    </Button.Content>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Foreground" Value="DimGray" />
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="Blue" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="btnCopyright" DockPanel.Dock="Right" Content="© 2019" Foreground="DimGray" FontSize="12" VerticalAlignment="Center" Padding="0" Background="Transparent" BorderThickness="0" Cursor="Hand" Click="btnCopyright_Click">
                         <Button.Style>

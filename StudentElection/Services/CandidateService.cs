@@ -89,6 +89,11 @@ namespace StudentElection.Services
                 throw new ArgumentException("No section provided");
             }
 
+            if (candidate.Alias.IsBlank())
+            {
+                throw new ArgumentException("No alias provided");
+            }
+
             if (await IsAliasExistingAsync(electionId, candidate.Alias, null))
             {
                 throw new InvalidOperationException($"Alias '{ candidate.Alias }' already exists");

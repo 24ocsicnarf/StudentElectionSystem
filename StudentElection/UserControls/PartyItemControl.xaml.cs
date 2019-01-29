@@ -131,8 +131,6 @@ namespace StudentElection.UserControls
                     G.EndWait(window);
 
                     MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
-
-                    Application.Current?.Shutdown();
                 }
             }
             
@@ -254,41 +252,48 @@ namespace StudentElection.UserControls
         {
             var fileDialog = new OpenFileDialog
             {
-                Title = $"Import candidates from { _party.Title.Titleize() } ({ _party.ShortName })",
+                Title = $"Import candidates for { _party.Title.Titleize() } ({ _party.ShortName })",
                 Filter = "Excel Files|*.xls;*.xlsx;"
             };
 
             if (fileDialog.ShowDialog() == true)
             {
-                _backgroundWorker = new BackgroundWorker
+                try
                 {
-                    WorkerReportsProgress = true,
-                    WorkerSupportsCancellation = true
-                };
-                
-                _backgroundWorker.DoWork += BackgroundWorker_DoWork;
-                _backgroundWorker.ProgressChanged += _backgroundWorker_ProgressChanged;
-                _backgroundWorker.RunWorkerCompleted += _backgroundWorker_RunWorkerCompleted;
-                _backgroundWorker.RunWorkerAsync(fileDialog.OpenFile());
+                    _backgroundWorker = new BackgroundWorker
+                    {
+                        WorkerReportsProgress = true,
+                        WorkerSupportsCancellation = true
+                    };
 
-                _progressWindow = new ProgressWindow();
-                _progressWindow.btnCancel.Click += delegate
+                    _backgroundWorker.DoWork += BackgroundWorker_DoWork;
+                    _backgroundWorker.ProgressChanged += _backgroundWorker_ProgressChanged;
+                    _backgroundWorker.RunWorkerCompleted += _backgroundWorker_RunWorkerCompleted;
+                    _backgroundWorker.RunWorkerAsync(fileDialog.OpenFile());
+
+                    _progressWindow = new ProgressWindow();
+                    _progressWindow.btnCancel.Click += delegate
+                    {
+                        _backgroundWorker.CancelAsync();
+                    };
+                    _progressWindow.progressBar.IsIndeterminate = true;
+
+                    var parentWindow = Window.GetWindow(this);
+                    _maintenanceWindow = parentWindow as MaintenanceWindow;
+
+                    G.WaitLang(_maintenanceWindow);
+                    _maintenanceWindow.Opacity = 0.5;
+
+                    _progressWindow.Owner = _maintenanceWindow;
+                    _progressWindow.ShowDialog();
+                }
+                catch (Exception ex)
                 {
-                    _backgroundWorker.CancelAsync();
-                };
-                _progressWindow.progressBar.IsIndeterminate = true;
-
-                var parentWindow = Window.GetWindow(this);
-                _maintenanceWindow = parentWindow as MaintenanceWindow;
-                
-                G.WaitLang(_maintenanceWindow);
-                _maintenanceWindow.Opacity = 0.5;
-
-                _progressWindow.Owner = _maintenanceWindow;
-                _progressWindow.ShowDialog();
+                    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                }
             }
         }
-
+        
         private async void _backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             _progressWindow.Close();
@@ -330,10 +335,12 @@ namespace StudentElection.UserControls
             }
         }
 
-        private async void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             var stream = e.Argument as System.IO.Stream;
             var importedCandidates = new List<CandidateModel>();
+
+            int count = 0;
 
             try
             {
@@ -341,8 +348,6 @@ namespace StudentElection.UserControls
                 {
                     using (var reader = ExcelReaderFactory.CreateReader(stream))
                     {
-                        int count = 0;
-
                         reader.Read();
                         while (reader.Read())
                         {
@@ -368,7 +373,7 @@ namespace StudentElection.UserControls
                             }
                             else
                             {
-                                e.Result = new ArgumentException("Must be 'male' or 'female'", nameof(newCandidate.Sex));
+                                e.Result = new ArgumentException($"Must be 'male' or 'female'\n\nRow number: { count + 1 }");
                                 return;
                             }
 
@@ -379,7 +384,7 @@ namespace StudentElection.UserControls
                             }
                             else
                             {
-                                e.Result = new ArgumentException("Invalid year level", nameof(newCandidate.YearLevel));
+                                e.Result = new ArgumentException("Invalid year level\n\nRow number: { count + 1 }");
                                 return;
                             }
 
@@ -388,16 +393,25 @@ namespace StudentElection.UserControls
                             newCandidate.PictureFileName = reader.GetString(9);
 
                             var positionTitle = reader.GetString(10);
-                            var position = await _positionService.GetPositionByTitleAsync(_party.ElectionId, positionTitle);
+                            PositionModel position = null;
+                            _positionService.GetPositionByTitleAsync(_party.ElectionId, positionTitle).ContinueWith((t) =>
+                            {
+                                position = t.Result;
+                            }).Wait();
+
                             if (position == null)
                             {
-                                e.Result = new ArgumentException($"Position '{ positionTitle }' does not exist", nameof(newCandidate.Position));
+                                e.Result = new ArgumentException($"Position '{ positionTitle }' does not exist\n\nRow number: { count + 1 }");
                                 return;
                             }
-
+                            else if (position.YearLevel != null && position.YearLevel != yearLevel)
+                            {
+                                e.Result = new ArgumentException($"Only Grade { position.YearLevel } candidates can be addded in the position '{ positionTitle }'; this candidate is in Grade { yearLevel }\n\nRow number: { count + 1 }");
+                                return;
+                            }
                             newCandidate.PositionId = position.Id;
 
-                            await _candidateService.ValidateAsync(_party.ElectionId, newCandidate);
+                            _candidateService.ValidateAsync(_party.ElectionId, newCandidate).Wait();
 
                             importedCandidates.Add(newCandidate);
                         }
@@ -405,15 +419,15 @@ namespace StudentElection.UserControls
                 }
 
                 _backgroundWorker.ReportProgress(100, importedCandidates.Count);
-                await _candidateService.ImportCandidatesAsync(importedCandidates);
+                _candidateService.ImportCandidatesAsync(importedCandidates).Wait();
+
+                e.Result = importedCandidates.Count;
             }
             catch (Exception ex)
             {
-                e.Result = ex;
+                e.Result = new Exception($"{ ex.GetBaseException().Message }\n\nRow number: { count + 1 }");
                 return;
             }
-
-            e.Result = importedCandidates.Count;
         }
     }
 }

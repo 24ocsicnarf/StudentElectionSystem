@@ -357,8 +357,7 @@ namespace StudentElection.Dialogs
                 var candidatesByPosition = await _candidateService.GetCandidatesByPositionAsync(position.Id);
 
                 var partyId = (int)lblParty.Tag;
-                if ((Candidate == null && candidatesByPosition.Any(c => c.PartyId == partyId))
-                    || (Candidate != null && candidatesByPosition.Any(c => c.Id != Candidate.Id && c.PartyId == partyId)))
+                if ((Candidate == null && candidatesByPosition.Any(c => c.PartyId == partyId)))
                 {
                     G.EndWait(this);
                     var result = MessageBox.Show($"There's already a candidate for { position.Title }.\n\nContinue adding this candidate?",

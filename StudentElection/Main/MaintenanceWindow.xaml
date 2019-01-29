@@ -297,7 +297,7 @@
                                                        AllowGrouping="False"
                                                        AutoGenerateColumns="False"
                                                        EnableDataVirtualization="True"
-                                                       Visibility="Collapsed">
+                                                       Visibility="Hidden">
                                     <syncfusion:SfDataGrid.SortColumnDescriptions>
                                         <syncfusion:SortColumnDescription ColumnName="PositionRank"/>
                                         <syncfusion:SortColumnDescription ColumnName="VoteCount" SortDirection="Descending"/>

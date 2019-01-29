@@ -2,12 +2,14 @@ namespace StudentElection.Repository.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Linq;
+
     public partial class VoterModel
     {
         public VoterModel()
         {
-            this.Ballot = new BallotModel();
+            this.Ballots = new HashSet<BallotModel>();
+            //this.Ballot = new BallotModel();
         }
     
         public int Id { get; set; }
@@ -22,11 +24,12 @@ namespace StudentElection.Repository.Models
         public string Section { get; set; }
         public int ElectionId { get; set; }
 
-        public BallotModel Ballot { get; set; }
+        public ICollection<BallotModel> Ballots { get; set; }
+        //public BallotModel Ballot { get; set; }
         public ElectionModel Election { get; set; }
         
         public string FullName => $"{ this.LastName }, { this.FirstName } { this.Suffix } { this.MiddleName }".Trim();
-        public bool IsVoted => this.Ballot?.Id > 0;
+        public bool IsVoted => this.Ballots.SingleOrDefault(b => b.Id > 0) != null;
 
     }
 }

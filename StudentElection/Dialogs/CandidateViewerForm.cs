@@ -39,18 +39,11 @@ namespace StudentElection.Dialogs
         public CandidateViewerForm()
         {
             InitializeComponent();
-
-            SetCurrentElection();
-
+            
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += (s, ev) =>
             {
                 G.PlaceWindowOnCenter(this);
             };
-        }
-
-        private async void SetCurrentElection()
-        {
-            _currentElection = await _electionService.GetCurrentElectionAsync();
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -94,6 +87,8 @@ namespace StudentElection.Dialogs
         private async void CandidateViewerForm_Load(object sender, EventArgs e)
         {
             _window = (Tag as MaintenanceWindow);
+
+            _currentElection = await _electionService.GetCurrentElectionAsync();
 
             btnEdit.Visible = !_currentElection.CandidatesFinalizedAt.HasValue;
             btnDelete.Visible = !_currentElection.CandidatesFinalizedAt.HasValue;

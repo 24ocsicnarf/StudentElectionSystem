@@ -145,13 +145,16 @@ namespace StudentElection.MSAccess.AutoMapper
                     o => o.MapFrom(s => Convert.IsDBNull(s["Vin"]) ? null : Convert.ToString(s["Vin"])))
                 .ForMember(m => m.ElectionId,
                     o => o.MapFrom(s => Convert.IsDBNull(s["ElectionId"]) ? default(int) : Convert.ToInt32(s["ElectionId"])))
-                .ForMember(m => m.Ballot, o => o.MapFrom(s => new BallotModel
+                .ForMember(m => m.Ballots, o => o.MapFrom(s => new HashSet<BallotModel>
                 {
-                    Id = Convert.IsDBNull(s["BallotId"]) ? default(int) : Convert.ToInt32(s["BallotId"]),
-                    Code = Convert.IsDBNull(s["BallotCode"]) ? null : Convert.ToString(s["BallotCode"]),
-                    EnteredAt = Convert.IsDBNull(s["BallotEnteredAt"]) ? default(DateTime) : Convert.ToDateTime(s["BallotEnteredAt"]),
-                    CastedAt = Convert.IsDBNull(s["BallotCastedAt"]) ? default(DateTime?) : Convert.ToDateTime(s["BallotCastedAt"]),
-                    VoterId = Convert.IsDBNull(s["BallotVoterId"]) ? default(int) : Convert.ToInt32(s["BallotVoterId"]),
+                    new BallotModel
+                    {
+                        Id = Convert.IsDBNull(s["BallotId"]) ? default(int) : Convert.ToInt32(s["BallotId"]),
+                        Code = Convert.IsDBNull(s["BallotCode"]) ? null : Convert.ToString(s["BallotCode"]),
+                        EnteredAt = Convert.IsDBNull(s["BallotEnteredAt"]) ? default(DateTime) : Convert.ToDateTime(s["BallotEnteredAt"]),
+                        CastedAt = Convert.IsDBNull(s["BallotCastedAt"]) ? default(DateTime?) : Convert.ToDateTime(s["BallotCastedAt"]),
+                        VoterId = Convert.IsDBNull(s["BallotVoterId"]) ? default(int) : Convert.ToInt32(s["BallotVoterId"]),
+                    }
                 }));
         }
 

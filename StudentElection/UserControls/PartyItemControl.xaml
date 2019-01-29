@@ -13,8 +13,8 @@
             <StackPanel>
                 <DockPanel x:Name="dckParty"  VerticalAlignment="Top" Height="28" Margin="4" >
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" >
-                        <Label x:Name="lblCount" FontSize="22" Opacity="0.85" Foreground="{Binding Path=ColorBrush}" Padding="0" Margin="4,0" HorizontalContentAlignment="Center" />
-                        <Rectangle x:Name="recColor" HorizontalAlignment="Left" Width="12" Fill="{Binding Path=ColorBrush}" />
+                        <Label x:Name="lblCount" FontSize="22" Opacity="0.85" Width="24" Foreground="{Binding Path=ColorBrush}" Padding="0" Margin="4,0" HorizontalContentAlignment="Center" />
+                        <Rectangle x:Name="recColor" HorizontalAlignment="Left" Width="8" Fill="{Binding Path=ColorBrush}" />
                         <Grid Margin="0,2,0,0">
                             <Viewbox x:Name="vbParty" Stretch="Uniform" HorizontalAlignment="Left"  Margin="8,0" Height="22">
                                 <TextBlock x:Name="tbkParty" LineHeight="22" LineStackingStrategy="BlockLineHeight" FontSize="22" Text="{Binding Path=Title, Converter={StaticResource toUpperValueConverter}}"  FontWeight="Bold"  Foreground="{Binding Path=ColorBrush}" PreviewMouseLeftButtonUp="tbkParty_PreviewMouseLeftButtonDown" Cursor="IBeam" SizeChanged="tbkParty_SizeChanged">
@@ -31,7 +31,7 @@
                                         <ControlTemplate TargetType="{x:Type Button}">
                                             <Border Background="{TemplateBinding Background}">
                                                 <Viewbox Stretch="Fill" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="36" Width="24" Margin="0,-4,0,0" >
-                                                    <TextBlock Text="+" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontSize="28" FontFamily="Arial Black" FontWeight="Bold" Foreground="{Binding Path=ColorBrush}" />
+                                                    <TextBlock Text="+" LineHeight="24" LineStackingStrategy="BlockLineHeight" FontSize="24" FontFamily="Arial Black" FontWeight="Bold" Foreground="{Binding Path=ColorBrush}" />
                                                 </Viewbox>
                                             </Border>
                                         </ControlTemplate>
@@ -49,7 +49,7 @@
                             <TextBlock Text="Add candidate" TextWrapping="Wrap" />
                         </Button.ToolTip>
                     </Button>
-                    <Button x:Name="btnImportCandidates" DockPanel.Dock="Right" Background="#00000000" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" Cursor="Hand" VerticalAlignment="Center" Margin="4 0" Padding="4" FontSize="14" Height="24" Width="24" Click="btnImportCandidates_Click">
+                    <Button x:Name="btnImportCandidates" DockPanel.Dock="Right" Background="#00000000" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" Cursor="Hand" VerticalAlignment="Center" Margin="6 0" Padding="4" FontSize="14" Height="24" Width="24" Click="btnImportCandidates_Click">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}">
                                 <Setter Property="Opacity" Value="1" />

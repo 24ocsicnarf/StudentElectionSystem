@@ -12,22 +12,14 @@ namespace StudentElection.PostgreSQL.Repositories
 {
     public class CandidateRepository : Repository, ICandidateRepository
     {
-        public async Task DeleteCandidateAsync(CandidateModel model)
-        {
-            using (var context = new StudentElectionContext())
-            {
-                var candidate = await context.Candidates.SingleOrDefaultAsync(c => c.Id == model.Id);
-                context.Candidates.Remove(candidate);
-
-                await context.SaveChangesAsync();
-            }
-        }
-
         public async Task<CandidateModel> GetCandidateDetailsAsync(int candidateId)
         {
             using (var context = new StudentElectionContext())
             {
-                var candidate = await context.Candidates.SingleOrDefaultAsync(c => c.Id == candidateId);
+                var candidate = await context.Candidates
+                    .Include(c => c.Party)
+                    .Include(c => c.Position)
+                    .SingleOrDefaultAsync(c => c.Id == candidateId);
                 if (candidate == null)
                 {
                     return null;
@@ -47,7 +39,8 @@ namespace StudentElection.PostgreSQL.Repositories
                 var candidates = context.Candidates
                     .Include(c => c.Party)
                     .Include(c => c.Position)
-                    .Where(c => c.PartyId == partyId);
+                    .Where(c => c.PartyId == partyId)
+                    .OrderBy(c => c.Position.Rank);
 
                 return await _mapper.ProjectTo<CandidateModel>(candidates)
                     .ToListAsync();
@@ -61,7 +54,8 @@ namespace StudentElection.PostgreSQL.Repositories
                 var candidates = context.Candidates
                         .Include(c => c.Party)
                         .Include(c => c.Position)
-                        .Where(c => c.PositionId == positionId);
+                        .Where(c => c.PositionId == positionId)
+                        .OrderBy(c => c.Position.Rank);
 
                 return await _mapper.ProjectTo<CandidateModel>(candidates)
                     .ToListAsync();
@@ -74,6 +68,25 @@ namespace StudentElection.PostgreSQL.Repositories
             {
                 return await context.Candidates.CountAsync(c => c.Party.ElectionId == electionId);
             }
+        }
+
+        public async Task<bool> IsAliasExistingAsync(int electionId, string alias, CandidateModel editingCandidate)
+        {
+            using (var context = new StudentElectionContext())
+            {
+                var candidate = await context.Candidates
+                    .SingleOrDefaultAsync(c => c.Alias.ToLower() == alias.ToLower());
+
+                if (editingCandidate == null)
+                {
+                    return candidate != null;
+                }
+                else
+                {
+                    return candidate != null && candidate.Id != editingCandidate.Id;
+                }
+            }
+
         }
 
         public async Task InsertCandidateAsync(CandidateModel model)
@@ -105,25 +118,6 @@ namespace StudentElection.PostgreSQL.Repositories
             }
         }
 
-        public async Task<bool> IsAliasExistingAsync(int electionId, string alias, CandidateModel editingCandidate)
-        {
-            using (var context = new StudentElectionContext())
-            {
-                var candidate = await context.Candidates
-                    .SingleOrDefaultAsync(c => c.Alias.Equals(alias, StringComparison.OrdinalIgnoreCase));
-
-                if (editingCandidate == null)
-                {
-                    return candidate != null;
-                }
-                else
-                {
-                    return candidate != null && candidate.Id != editingCandidate.Id;
-                }
-            }
-           
-        }
-
         public async Task UpdateCandidateAsync(CandidateModel model)
         {
             using (var context = new StudentElectionContext())
@@ -134,5 +128,17 @@ namespace StudentElection.PostgreSQL.Repositories
                 await context.SaveChangesAsync();
             }
         }
+
+        public async Task DeleteCandidateAsync(CandidateModel model)
+        {
+            using (var context = new StudentElectionContext())
+            {
+                var candidate = await context.Candidates.SingleOrDefaultAsync(c => c.Id == model.Id);
+                context.Candidates.Remove(candidate);
+
+                await context.SaveChangesAsync();
+            }
+        }
+
     }
 }

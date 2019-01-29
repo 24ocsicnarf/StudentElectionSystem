@@ -27,6 +27,7 @@ using System.Windows.Shapes;
 using static StudentElection.G;
 using StudentElection.Services;
 using StudentElection.Repository.Models;
+using StudentElection.Dialogs;
 
 namespace StudentElection.Main
 {
@@ -270,13 +271,13 @@ namespace StudentElection.Main
 
                     var ballotWindow = new BallotWindow(voter);
 
-                    EndWait(this);
+                    G.EndWait(this);
 
                     ballotWindow.ShowDialog();
                 }
                 else
                 {
-                    EndWait(this);
+                    G.EndWait(this);
                     MessageBox.Show("Invalid Voter ID", Properties.Settings.Default.SystemTitle, MessageBoxButton.OK, MessageBoxImage.Error);
 
                     txtStudentId.Focus();
@@ -284,10 +285,9 @@ namespace StudentElection.Main
             }
             catch (Exception ex)
             {
-                EndWait(this);
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                G.EndWait(this);
 
-                Application.Current?.Shutdown();
+                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 
@@ -524,6 +524,13 @@ namespace StudentElection.Main
             //info.AppendLine("  https://github.com/dnauck/Portable.Licensing");
 
             MessageBox.Show(info.ToString(), "Software Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void btnConnectToServer_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new ServerSetupWindow();
+            window.Owner = this;
+            window.ShowDialog();
         }
     }
 }
