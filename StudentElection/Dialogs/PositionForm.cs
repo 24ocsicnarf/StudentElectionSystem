@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using StudentElection.Services;
 using StudentElection.Repository.Models;
 using Humanizer;
+using Project.Library.Helpers;
 
 namespace StudentElection.Dialogs
 {
@@ -68,16 +69,9 @@ namespace StudentElection.Dialogs
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                Logger.LogError(ex);
 
-                if (Application.MessageLoop)
-                {
-                    Application.Exit();
-                }
-                else
-                {
-                    Environment.Exit(1);
-                }
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
         }
 
@@ -85,7 +79,7 @@ namespace StudentElection.Dialogs
         {
             if (txtPosition.Text.IsBlank())
             {
-                MessageBox.Show("Please provide a position title.", "no position".ToTitleCase(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please provide a position title.", "No position", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtPosition.Focus();
 
                 return;
@@ -190,7 +184,10 @@ namespace StudentElection.Dialogs
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
+
                 G.EndWait(this);
+
                 SetToAddSettings();
             }
         }
@@ -222,6 +219,8 @@ namespace StudentElection.Dialogs
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
+
                 SetToAddSettings();
                 G.EndWait(this);
             }
@@ -378,7 +377,7 @@ namespace StudentElection.Dialogs
                 var yearLevel = (int?)dgv[whoCanVoteColumnIndex, e.RowIndex].Value;
                 if (yearLevel == null)
                 {
-                    e.Value = "All year levels";
+                    e.Value = "All voters";
                     e.FormattingApplied = true;
                 }
                 else

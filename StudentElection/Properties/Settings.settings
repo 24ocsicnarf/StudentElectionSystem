@@ -1,23 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="StudentElection.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
   <Profiles />
-  <Settings>
-    <Setting Name="ReportWorksheetPW" Type="System.String" Scope="User">
-      <Value Profile="(Default)">2Pd4HdP52snJ</Value>
-    </Setting>
-    <Setting Name="WorkbookPW" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Xx3s47hFEtu2</Value>
-    </Setting>
-    <Setting Name="SystemTitle" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Student Election System</Value>
-    </Setting>
-    <Setting Name="StudentElectionConnectionString" Type="(Connection string)" Scope="Application">
-      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;ConnectionString&gt;Provider=Microsoft.Jet.OLEDB.4.0;Data Source="D:\Documents\Visual Studio 2017\RW Projects\StudentElection - Client-Server\StudentElection.MSAccess\StudentElection.mdb";Persist Security Info=True&lt;/ConnectionString&gt;
-  &lt;ProviderName&gt;System.Data.OleDb&lt;/ProviderName&gt;
-&lt;/SerializableConnectionString&gt;</DesignTimeValue>
-      <Value Profile="(Default)">Provider=Microsoft.Jet.OLEDB.4.0;Data Source="D:\Documents\Visual Studio 2017\RW Projects\StudentElection - Client-Server\StudentElection.MSAccess\StudentElection.mdb";Persist Security Info=True</Value>
-    </Setting>
-  </Settings>
+  <Settings />
 </SettingsFile>

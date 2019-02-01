@@ -24,6 +24,8 @@ using Syncfusion.XlsIO;
 using Syncfusion.UI.Xaml.Grid.Converter;
 using Syncfusion.Data;
 using Syncfusion.UI.Xaml.Grid;
+using Project.Library.Helpers;
+using System.Text;
 
 namespace StudentElection.Main
 {
@@ -54,7 +56,7 @@ namespace StudentElection.Main
 
         public MaintenanceWindow()
         {
-            _selectedStaff = -1;
+            //_selectedStaff = -1;
             _selectedVoter = -1;
 
             _isLogOut = false;
@@ -76,41 +78,100 @@ namespace StudentElection.Main
 
         }
         
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            G.WaitLang(this);
+            grdMaintenance.Visibility = Visibility.Hidden;
+            bdrLoadingMaintenance.Visibility = Visibility.Hidden;
+        }
 
+        private async void Window_ContentRendered(object sender, EventArgs e)
+        {
             try
             {
-                await LoadElectionAsync();
-                await LoadUsersAsync();
-                await LoadVotersAsync();
-                await LoadCandidatesAsync();
-                await LoadResultsAsync();
-
-                dgVoters.SearchHelper.AllowFiltering = true;
-
-                lblPosition.Text = string.Format("Positions ({0})", await _positionService.GetPositionsCountAsync(_currentElection.Id));
-                lblUsername.Content = User.UserName;
-
-                if (User.Type == Repository.Models.UserType.Admin)
+                if (await CheckElectionAsync())
                 {
-                    rdfStaff.Height = new GridLength(0, GridUnitType.Star);
-                }
+                    bdrLoadingMaintenance.Visibility = Visibility.Visible;
 
-                G.EndWait(this);
+                    prgMaintenance.Text = "Loading current election...";
+                    await LoadElectionAsync();
+
+                    prgMaintenance.Text = "Loading candidates...";
+                    await LoadCandidatesAsync();
+
+                    prgMaintenance.Text = "Loading results...";
+                    await LoadResultsAsync();
+                    
+                    prgMaintenance.Text = "Loading voters...";
+                    await LoadVotersAsync();
+
+                    prgMaintenance.Text = "Loading users...";
+                    await LoadUsersAsync();
+
+                    dgVoters.SearchHelper.AllowFiltering = true;
+
+                    tbkUsername.Text = User.UserName;
+
+                    //if (User.Type == Repository.Models.UserType.Admin)
+                    //{
+                    //    rdfStaff.Height = new GridLength(0, GridUnitType.Star);
+                    //}
+
+                    grdMaintenance.Visibility = Visibility.Visible;
+                    bdrLoadingMaintenance.Visibility = Visibility.Collapsed;
+                }
             }
             catch (Exception ex)
             {
-                G.EndWait(this);
+                Logger.LogError(ex);
 
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 
-        private async Task LoadElectionAsync()
+        public async Task<bool> CheckElectionAsync()
         {
             _currentElection = await _electionService.GetCurrentElectionAsync();
+
+            while (_currentElection == null)
+            {
+                this.Opacity = 0.5;
+
+                var form = new ElectionForm();
+
+                var helper = new WindowInteropHelper(this);
+                SetWindowLong(new HandleRef(form, form.Handle), -8, helper.Handle.ToInt32());
+
+                form.ShowDialog();
+
+                this.Opacity = 1;
+
+                if (!form.IsCancelled)
+                {
+                    _currentElection = await _electionService.GetCurrentElectionAsync();
+
+                    if (_currentElection != null)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("You cannot use this system without opening an election", "No elections", MessageBoxButton.OK, MessageBoxImage.Stop);
+                    Application.Current.Shutdown();
+
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public async Task LoadElectionAsync()
+        {
+            _currentElection = await _electionService.GetCurrentElectionAsync();
+            
+            tbkElectionTitle.Text = _currentElection.Title;
+            this.Title = _currentElection.Title;
 
             if (_currentElection.ServerTag.IsBlank())
             {
@@ -123,17 +184,19 @@ namespace StudentElection.Main
                 txtTag.Text = _currentElection.ServerTag;
             }
 
+            btnAddVoter.Visibility = Visibility.Visible;
+            btnImportVoters.Visibility = Visibility.Visible;
+
             if (_currentElection.CandidatesFinalizedAt.HasValue && !_currentElection.ClosedAt.HasValue)
             {
                 bdrMaintenance.BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(96, 224, 176));
+                bdrMaintenance.BorderBrush = Brushes.MediumSeaGreen;
                 bdrMaintenance.BorderThickness = new Thickness(4);
             }
             else if (_currentElection.ClosedAt.HasValue)
             {
-                bdrMaintenance.BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(96, 176, 224));
+                bdrMaintenance.BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(224, 96, 96));
                 bdrMaintenance.BorderThickness = new Thickness(4);
-
-
 
                 btnAddVoter.Visibility = Visibility.Collapsed;
                 btnImportVoters.Visibility = Visibility.Collapsed;
@@ -151,6 +214,8 @@ namespace StudentElection.Main
         {
             if (!_currentElection.CandidatesFinalizedAt.HasValue)
             {
+                dckCandidateButtons.Visibility = Visibility.Visible;
+
                 if (await _candidateService.GetCandidatesCount(_currentElection.Id) > 0)
                 {
                     btnFinalize.Visibility = Visibility.Visible;
@@ -195,11 +260,13 @@ namespace StudentElection.Main
                     lblResultsAvailable.Content = string.Format("Results are available ({0:n0} of {1:n0} voted)", ballotsCount, votersCount);
                     grdViewResult.Visibility = Visibility.Visible;
                     lblNoResults.Visibility = Visibility.Collapsed;
+                    btnExportPrint.Visibility = Visibility.Collapsed;
                 }
                 else
                 {
                     grdViewResult.Visibility = Visibility.Collapsed;
                     lblNoResults.Visibility = Visibility.Visible;
+                    btnExportPrint.Visibility = Visibility.Collapsed;
                 }
             }
             else
@@ -215,161 +282,167 @@ namespace StudentElection.Main
 
         #region Staff
         
-        private int _selectedStaff;
+        //private int _selectedStaff;
 
-        private CollectionView cvStaff;
+        //private CollectionView cvStaff;
 
-        private bool StaffFilter(object obj)
-        {
-            if (string.IsNullOrEmpty(txtStaffFilter.Text))
-                return true;
-            else
-            {
-                return ((obj as UserModel).LastName.IndexOf(txtStaffFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
-                    ((obj as UserModel).FirstName.IndexOf(txtStaffFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
-                    ((obj as UserModel).MiddleName.IndexOf(txtStaffFilter.Text, StringComparison.OrdinalIgnoreCase) == 0);
-            }
-        }
+        //private bool StaffFilter(object obj)
+        //{
+        //    if (string.IsNullOrEmpty(txtStaffFilter.Text))
+        //        return true;
+        //    else
+        //    {
+        //        return ((obj as UserModel).LastName.IndexOf(txtStaffFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
+        //            ((obj as UserModel).FirstName.IndexOf(txtStaffFilter.Text, StringComparison.OrdinalIgnoreCase) == 0) ||
+        //            ((obj as UserModel).MiddleName.IndexOf(txtStaffFilter.Text, StringComparison.OrdinalIgnoreCase) == 0);
+        //    }
+        //}
 
         private async Task LoadUsersAsync()
         {
-            lvStaff.ItemsSource = await _userService.GetUsersAsync();
+            //lvStaff.ItemsSource = await _userService.GetUsersAsync();
 
-            cvStaff = (CollectionView)CollectionViewSource.GetDefaultView(lvStaff.ItemsSource);
-            cvStaff.Filter = StaffFilter;
+            //cvStaff = (CollectionView)CollectionViewSource.GetDefaultView(lvStaff.ItemsSource);
+            //cvStaff.Filter = StaffFilter;
         }
 
-        private void lvStaff_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            var lv = sender as ListView;
+        //private void lvStaff_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        //{
+        //    var lv = sender as ListView;
 
-            if (lv.SelectedItems.Count == 1)
-            {
-                btnEditStaff.Visibility = Visibility.Visible;
-                btnDeleteStaff.Visibility = Visibility.Visible;
+        //    if (lv.SelectedItems.Count == 1)
+        //    {
+        //        btnEditStaff.Visibility = Visibility.Visible;
+        //        btnDeleteStaff.Visibility = Visibility.Visible;
 
-                btnDeleteStaff.Visibility = (User.Id != (lvStaff.SelectedValue as UserModel).Id) ? Visibility.Visible : Visibility.Collapsed;
+        //        btnDeleteStaff.Visibility = (User.Id != (lvStaff.SelectedValue as UserModel).Id) ? Visibility.Visible : Visibility.Collapsed;
 
-                _selectedStaff = lv.SelectedIndex;
-            }
-            else
-            {
-                btnEditStaff.Visibility = Visibility.Collapsed;
-                btnDeleteStaff.Visibility = Visibility.Collapsed;
-            }
-        }
+        //        _selectedStaff = lv.SelectedIndex;
+        //    }
+        //    else
+        //    {
+        //        btnEditStaff.Visibility = Visibility.Collapsed;
+        //        btnDeleteStaff.Visibility = Visibility.Collapsed;
+        //    }
+        //}
 
-        private async void btnAddStaff_Click(object sender, RoutedEventArgs e)
-        {
-            Opacity = 0.5;
+        //private async void btnAddStaff_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Opacity = 0.5;
             
-            G.WaitLang(this);
+        //    G.WaitLang(this);
 
-            var staffWindow = new StaffWindow();
-            staffWindow.Owner = this;
+        //    var staffWindow = new StaffWindow();
+        //    staffWindow.Owner = this;
             
-            G.EndWait(this);
+        //    G.EndWait(this);
 
-            staffWindow.ShowDialog();
+        //    staffWindow.ShowDialog();
 
-            G.WaitLang(this);
+        //    G.WaitLang(this);
 
-            Opacity = 1;
+        //    Opacity = 1;
 
-            if (!staffWindow.IsCanceled)
-            {
-                try
-                {
-                    await LoadUsersAsync();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
-                }
-            }
+        //    if (!staffWindow.IsCanceled)
+        //    {
+        //        try
+        //        {
+        //            await LoadUsersAsync();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Logger.LogError(ex);
 
-            lvStaff.ScrollIntoView(lvStaff.Items[lvStaff.Items.Count - 1]);
+        //            MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+        //        }
+        //    }
 
-            G.EndWait(this);
-        }
+        //    lvStaff.ScrollIntoView(lvStaff.Items[lvStaff.Items.Count - 1]);
 
-        private async void btnEditStaff_Click(object sender, RoutedEventArgs e)
-        {
-            G.EndWait(this);
+        //    G.EndWait(this);
+        //}
 
-            Opacity = 0.5;
+        //private async void btnEditStaff_Click(object sender, RoutedEventArgs e)
+        //{
+        //    G.EndWait(this);
 
-            var staff = lvStaff.SelectedValue as UserModel;
+        //    Opacity = 0.5;
+
+        //    var staff = lvStaff.SelectedValue as UserModel;
             
-            var staffWindow = new StaffWindow();
-            staffWindow.User = staff;
-            staffWindow.Owner = this;
+        //    var staffWindow = new StaffWindow();
+        //    staffWindow.User = staff;
+        //    staffWindow.Owner = this;
 
-            G.EndWait(this);
+        //    G.EndWait(this);
 
-            staffWindow.ShowDialog();
+        //    staffWindow.ShowDialog();
 
-            G.WaitLang(this);
+        //    G.WaitLang(this);
 
-            Opacity = 1;
-            if (!staffWindow.IsCanceled)
-            {
-                try
-                {
-                    await LoadUsersAsync();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
-                }
-            }
+        //    Opacity = 1;
+        //    if (!staffWindow.IsCanceled)
+        //    {
+        //        try
+        //        {
+        //            await LoadUsersAsync();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Logger.LogError(ex);
 
-            lvStaff.ScrollIntoView(lvStaff.Items[_selectedStaff]);
-            lvStaff.SelectedIndex = _selectedStaff;
+        //            MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+        //        }
+        //    }
 
-            G.EndWait(this);
-        }
+        //    lvStaff.ScrollIntoView(lvStaff.Items[_selectedStaff]);
+        //    lvStaff.SelectedIndex = _selectedStaff;
 
-        private async void btnDeleteStaff_Click(object sender, RoutedEventArgs e)
-        {
-            if (lvStaff.SelectedItems.Count == 1)
-            {
-                var user = (lvStaff.SelectedValue as UserModel);
-                var result = MessageBox.Show(user.FullName + " will not be able to log in on this system. Do you want to continue?", "Deleting '" + user.UserName + "'", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
-                var selectedStaff = _selectedStaff == lvStaff.Items.Count - 1 ? _selectedStaff - 1 : _selectedStaff;
+        //    G.EndWait(this);
+        //}
 
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        G.WaitLang(this);
+        //private async void btnDeleteStaff_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (lvStaff.SelectedItems.Count == 1)
+        //    {
+        //        var user = (lvStaff.SelectedValue as UserModel);
+        //        var result = MessageBox.Show(user.FullName + " will not be able to log in on this system. Do you want to continue?", "Deleting '" + user.UserName + "'", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+        //        var selectedStaff = _selectedStaff == lvStaff.Items.Count - 1 ? _selectedStaff - 1 : _selectedStaff;
 
-                        await _userService.DeleteUserAsync(user);
+        //        if (result == MessageBoxResult.Yes)
+        //        {
+        //            try
+        //            {
+        //                G.WaitLang(this);
 
-                        G.EndWait(this);
-                        MessageBox.Show("The user is deleted.", "Staff", MessageBoxButton.OK, MessageBoxImage.Information);
+        //                await _userService.DeleteUserAsync(user);
 
-                        G.WaitLang(this);
-                        await LoadUsersAsync();
+        //                G.EndWait(this);
+        //                MessageBox.Show("The user is deleted.", "Staff", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                        lvStaff.ScrollIntoView(lvStaff.Items[selectedStaff]);
-                        G.EndWait(this);
+        //                G.WaitLang(this);
+        //                await LoadUsersAsync();
 
-                    }
-                    catch (Exception ex)
-                    {
-                        G.EndWait(this);
+        //                lvStaff.ScrollIntoView(lvStaff.Items[selectedStaff]);
+        //                G.EndWait(this);
 
-                        MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
-                    }
-                }
-            }
-        }
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                Logger.LogError(ex);
 
-        private void txtStaffFilter_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            CollectionViewSource.GetDefaultView(lvStaff.ItemsSource).Refresh();
-        }
+        //                G.EndWait(this);
+
+        //                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+        //            }
+        //        }
+        //    }
+        //}
+
+        //private void txtStaffFilter_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    CollectionViewSource.GetDefaultView(lvStaff.ItemsSource).Refresh();
+        //}
 
         #endregion
 
@@ -384,6 +457,7 @@ namespace StudentElection.Main
             {
                 return item.IsVoted;
             }
+
             return false;
         }
         
@@ -392,11 +466,14 @@ namespace StudentElection.Main
             try
             {
                 var voters = await _voterService.GetVoterDetailsListAsync(_currentElection.Id);
+
                 dgVoters.ItemsSource = voters.ToList();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                Logger.LogError(ex);
+
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 
@@ -470,10 +547,6 @@ namespace StudentElection.Main
 
         private void txtVoterFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
-            dgVoters.SearchHelper.AllowFiltering = true;
-
-            CheckVoterFilters();
-
             if (txtVoterFilter.Text.IsBlank())
             {
                 dgVoters.SearchHelper.ClearSearch();
@@ -522,9 +595,11 @@ namespace StudentElection.Main
                     }
                     catch (Exception ex)
                     {
+                        Logger.LogError(ex);
+
                         G.EndWait(this);
 
-                        MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                        MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
                     }
 
                     if (dgVoters.View.Records.Any() && voterWindow.Voter != null)
@@ -590,9 +665,11 @@ namespace StudentElection.Main
                 }
                 catch (Exception ex)
                 {
+                    Logger.LogError(ex);
+
                     G.EndWait(this);
 
-                    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                    MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
                 }
             }
         }
@@ -622,8 +699,14 @@ namespace StudentElection.Main
         {
             if (!_isLogOut)
             {
-                e.Cancel = true;
-                return;
+                var result = MessageBox.Show("You will log out if you close this window.\n\nDo you want to log out?",
+                    "Log out", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+
+                if (result == MessageBoxResult.No)
+                {
+                    e.Cancel = true;
+                    return;
+                }
             }
 
             var window = new MainWindow();
@@ -676,6 +759,8 @@ namespace StudentElection.Main
 
         public async Task LoadCandidatesAsync()
         {
+            lblPosition.Text = string.Format("Positions ({0})", await _positionService.GetPositionsCountAsync(_currentElection.Id));
+
             var currScroll = svrCandidates.VerticalOffset;
             foreach (PartyItemControl control in stkCandidates.Children)
             {
@@ -727,7 +812,9 @@ namespace StudentElection.Main
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                Logger.LogError(ex);
+
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
         
@@ -744,6 +831,7 @@ namespace StudentElection.Main
 
             var candidatesCount = await _candidateService.GetCandidatesCount(_currentElection.Id);
             var result = MessageBox.Show($"Once finalized, you WILL NO LONGER...\n" +
+                $"- edit current election info\n" +
                 $"- create, edit or delete a party\n" +
                 $"- add, edit or delete a position\n" +
                 $"- add, edit or delete a candidate\n" +
@@ -776,9 +864,11 @@ namespace StudentElection.Main
                 }
                 catch (Exception ex)
                 {
+                    Logger.LogError(ex);
+
                     G.EndWait(this);
 
-                    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                    MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
                 }
             }
 
@@ -972,7 +1062,9 @@ namespace StudentElection.Main
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                Logger.LogError(ex);
+
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 
@@ -1069,9 +1161,14 @@ namespace StudentElection.Main
                         workBook.Worksheets.Remove(workBook.Worksheets[2]);
                         workBook.Worksheets.Remove(workBook.Worksheets[2]);
 
-                        resultWorksheet.Protect(Properties.Settings.Default.ReportWorksheetPW, ExcelSheetProtection.All);
-                        infoWorksheet.Protect(Properties.Settings.Default.ReportWorksheetPW, ExcelSheetProtection.All);
-                        workBook.Protect(true, true, Properties.Settings.Default.WorkbookPW);
+                        var resultWorksheetSecretCode = CryptographyHelper.GenerateCode(true, 16);
+                        var infoWorksheetSecretCode = CryptographyHelper.GenerateCode(true, 16);
+                        var workBookSecretCode = CryptographyHelper.GenerateCode(true, 16);
+
+                        resultWorksheet.Protect(resultWorksheetSecretCode, ExcelSheetProtection.All);
+                        infoWorksheet.Protect(infoWorksheetSecretCode, ExcelSheetProtection.All);
+                        workBook.Protect(true, true, workBookSecretCode);
+
                         workBook.SaveAs(saveFileDialog.FileName);
                     }
 
@@ -1083,7 +1180,10 @@ namespace StudentElection.Main
                 }
                 catch (Exception ex)
                 {
+                    Logger.LogError(ex);
+
                     G.EndWait(this);
+
                     System.Windows.Forms.MessageBox.Show("Unable to create Excel file.\n" + ex.GetBaseException().Message, "Excel Report", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 }
             }
@@ -1139,10 +1239,13 @@ namespace StudentElection.Main
             bdrMaintenance.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 255, 255, 255));
             tbcMaintenance.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 255, 255, 255));
             border.BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(245, 245, 245, 245));
-            dckTitleBar.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(245, 245, 245, 245));
+            grdTitleBar.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(245, 245, 245, 245));
             bdrMaintenance.BorderBrush = new SolidColorBrush(Colors.Gray);
             lblMachineTag.Foreground = new SolidColorBrush(Colors.Black);
 
+
+            tbkElectionTitle.IsEnabled = true;
+            btnSettings.IsEnabled = true;
             stkUsername.IsEnabled = true;
             tbcMaintenance.IsEnabled = true;
             tbcMaintenance.Opacity = 1;
@@ -1165,7 +1268,7 @@ namespace StudentElection.Main
         {
             if (txtTag.Text.IsBlank())
             {
-                MessageBox.Show("Please provide a tag for this machine's server.", "No server tag", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Please provide a tag for this machine's server.", "No tag", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtTag.Focus();
 
                 return;
@@ -1189,6 +1292,8 @@ namespace StudentElection.Main
 
                 txtTag.Clear();
 
+                tbkElectionTitle.IsEnabled = true;
+                btnSettings.IsEnabled = true;
                 stkUsername.IsEnabled = true;
                 tbcMaintenance.IsEnabled = true;
                 tbcMaintenance.Opacity = 1;
@@ -1196,7 +1301,7 @@ namespace StudentElection.Main
                 bdrMaintenance.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 255, 255, 255));
                 tbcMaintenance.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 255, 255, 255));
                 border.BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(245, 245, 245, 245));
-                dckTitleBar.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(245, 245, 245, 245));
+                grdTitleBar.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(245, 245, 245, 245));
                 bdrMaintenance.BorderBrush = new SolidColorBrush(Colors.Gray);
                 lblMachineTag.Foreground = new SolidColorBrush(Colors.Black);
 
@@ -1204,9 +1309,11 @@ namespace StudentElection.Main
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
+
                 G.EndWait(this);
 
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 
@@ -1221,6 +1328,8 @@ namespace StudentElection.Main
             txtTag.Visibility = Visibility.Visible;
             stkTagButtons.Visibility = Visibility.Visible;
 
+            tbkElectionTitle.IsEnabled = false;
+            btnSettings.IsEnabled = false;
             stkUsername.IsEnabled = false;
             tbcMaintenance.IsEnabled = false;
             tbcMaintenance.Opacity = 0.5;
@@ -1228,7 +1337,7 @@ namespace StudentElection.Main
             bdrMaintenance.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 96, 96, 96));
             tbcMaintenance.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 96, 96, 96));
             border.BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 96, 96, 96));
-            dckTitleBar.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 96, 96, 96));
+            grdTitleBar.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 96, 96, 96));
             bdrMaintenance.BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 32, 32, 32));
             txtTag.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 64, 64, 64));
             txtTag.Foreground = new SolidColorBrush(Colors.White);
@@ -1251,15 +1360,36 @@ namespace StudentElection.Main
 
             try
             {
+                if (_currentElection.TookPlaceOn > DateTime.Today)
+                {
+                    MessageBox.Show("Cannot close a future election", "Future election", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Opacity = 1;
+
+                    return;
+                }
+
                 var votersCount = await _voterService.CountVotersAsync(_currentElection.Id);
                 var votedCount = await _voterService.CountVotedVotersAsync(_currentElection.Id);
                 var notVotedCount = votersCount - votedCount;
-                
-                var result = MessageBox.Show($"{ _currentElection.Title } will be officially closed once you viewed the result from this server.\n\n" +
-                    $"All { "voter".ToQuantity(notVotedCount) } who have not voted yet CANNOT BE ALLOWED to vote anymore. " +
-                    $"Also, you CANNOT BE ALLOWED to ADD, EDIT or DELETE voters.\n\n" +
-                    $"Do you want to close the election and view the results?",
-                    $"View { _currentElection.Title } results", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+
+                var message = string.Empty;
+
+                if (notVotedCount > 0)
+                {
+                    message = $"You can view the result from the server '{ _currentElection.ServerTag }' once the { _currentElection.Title } is closed.\n\n" +
+                        $"All { "voter".ToQuantity(notVotedCount) } who have not voted yet CANNOT BE ALLOWED to vote anymore.\n\n" +
+                        $"Also, you WILL NO LONGER add, edit or delete voters.\n\n" +
+                        $"Do you want to close the election and view the results?";
+                }
+                else
+                {
+                    message = $"You can view the result from the server '{ _currentElection.ServerTag }' once the { _currentElection.Title } is closed.\n\n" +
+                           $"All voters have casted their votes.\n\n" +
+                           $"You WILL NO LONGER add, edit or delete voters once you close the election.\n\n" +
+                           $"Do you want to close the election and view the results?";
+                }
+
+                var result = MessageBox.Show(message, "Close election", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -1277,7 +1407,9 @@ namespace StudentElection.Main
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                Logger.LogError(ex);
+
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
         
@@ -1317,7 +1449,7 @@ namespace StudentElection.Main
         
         private void border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if ((e.Source as Border) != null || (e.Source as DockPanel) != null ||
+            if ((e.Source as Grid) != null || (e.Source as DockPanel) != null ||
                 ((e.Source as Label) != null && ((e.Source as Label).Cursor == Cursors.Arrow)))
                 DragMove();
         }
@@ -1337,49 +1469,66 @@ namespace StudentElection.Main
 
             if (fileDialog.ShowDialog() == true)
             {
-                _backgroundWorker = new BackgroundWorker
+                try
                 {
-                    WorkerReportsProgress = true,
-                    WorkerSupportsCancellation = true,
-                };
+                    _backgroundWorker = new BackgroundWorker
+                    {
+                        WorkerReportsProgress = true,
+                        WorkerSupportsCancellation = true,
+                    };
 
-                _backgroundWorker.DoWork += BackgroundWorker_DoWork;
-                _backgroundWorker.ProgressChanged += _backgroundWorker_ProgressChanged;
-                _backgroundWorker.RunWorkerCompleted += _backgroundWorker_RunWorkerCompleted;
-                _backgroundWorker.RunWorkerAsync(fileDialog.OpenFile());
+                    _backgroundWorker.DoWork += BackgroundWorker_DoWork;
+                    _backgroundWorker.ProgressChanged += _backgroundWorker_ProgressChanged;
+                    _backgroundWorker.RunWorkerCompleted += _backgroundWorker_RunWorkerCompleted;
+                    _backgroundWorker.RunWorkerAsync(fileDialog.OpenFile());
 
-                _progressWindow = new ProgressWindow();
-                _progressWindow.btnCancel.Click += delegate
+                    _progressWindow = new ProgressWindow();
+                    _progressWindow.btnCancel.Click += delegate
+                    {
+                        _backgroundWorker.CancelAsync();
+                    };
+                    _progressWindow.progressBar.IsIndeterminate = false;
+
+                    G.WaitLang(this);
+                    this.Opacity = 0.5;
+
+                    _progressWindow.Owner = this;
+                    _progressWindow.ShowDialog();
+                }
+                catch (Exception ex)
                 {
-                    _backgroundWorker.CancelAsync();
-                };
-                _progressWindow.progressBar.IsIndeterminate = true;
-                
-                G.WaitLang(this);
-                this.Opacity = 0.5;
+                    Logger.LogError(ex);
 
-                _progressWindow.Owner = this;
-                _progressWindow.ShowDialog();
+                    MessageBox.Show($"{ ex.GetBaseException().Message }\n\nNo voters imported",
+                        "Import error", MessageBoxButton.OK, MessageBoxImage.Stop);
+                }
             }
         }
 
         private async void _backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Error != null || e.Result is Exception)
-            {
-                MessageBox.Show($"{ (e.Error ?? e.Result as Exception).GetBaseException().Message }\n\nNo voters imported",
-                    "Import error", MessageBoxButton.OK, MessageBoxImage.Stop);
-            }
-            else if (e.Cancelled)
+            if (e.Cancelled || e.Error is OperationCanceledException)
             {
                 MessageBox.Show("Import cancelled.\n\nNo voters imported", "Import cancelled", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (e.Error != null || e.Result is Exception)
+            {
+                var exception = e.Error ?? e.Result as Exception;
+                MessageBox.Show($"{ exception.GetBaseException().Message } \n\n { "No voters imported" }", "Import error", MessageBoxButton.OK, MessageBoxImage.Stop);
             }
             else
             {
                 await LoadVotersAsync();
+                await LoadResultsAsync();
 
-                var count = Convert.ToInt32(e.Result);
-                MessageBox.Show($"Successfully imported { "voter".ToQuantity(count) }", "Import successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                var tuple = e.Result as Tuple<int, int>;
+                var messageBuilder = new StringBuilder($"Successfully imported { "voter".ToQuantity(tuple.Item1) }");
+                if (tuple.Item2 > 0)
+                {
+                    messageBuilder.Append($" ({ "blank row".ToQuantity(tuple.Item2) })");
+                }
+
+                MessageBox.Show(messageBuilder.ToString(), "Import successful", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
             _progressWindow.Close();
@@ -1392,15 +1541,22 @@ namespace StudentElection.Main
 
         private void _backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            var count = Convert.ToInt32(e.UserState);
-
-            if (e.ProgressPercentage == 0)
+            if (e.ProgressPercentage == 100)
             {
-                _progressWindow.tbkMessage.Text = $"Checking { "voter".ToQuantity(count) }...";
+                var count = Convert.ToInt32(e.UserState);
+
+                _progressWindow.progressBar.IsIndeterminate = true;
+                _progressWindow.btnCancel.IsEnabled = false;
+                _progressWindow.tbkMessage.Text = $"Importing { "voter".ToQuantity(count, "n0") }...";
             }
             else
             {
-                _progressWindow.tbkMessage.Text = $"Importing { "voter".ToQuantity(count) }...";
+                var tuple = e.UserState as Tuple<int, int, int>;
+
+                _progressWindow.btnCancel.IsEnabled = true;
+                _progressWindow.progressBar.Value = e.ProgressPercentage;
+                _progressWindow.tbkMessage.Text = $"Checking { tuple.Item1.ToString("n0") } of { "voter".ToQuantity(tuple.Item2, "n0") } ...";
+                _progressWindow.tbkSubMessage.Text = $"{ "blank row".ToQuantity(tuple.Item3, "n0") }";
             }
         }
 
@@ -1409,30 +1565,61 @@ namespace StudentElection.Main
             var stream = e.Argument as System.IO.Stream;
             var importedVoters = new List<VoterModel>();
 
+            int count = 0;
+            int blankCount = 0;
+
             try
             {
                 using (stream)
                 {
                     using (var reader = ExcelReaderFactory.CreateReader(stream))
                     {
-                        int count = 0;
+                        count = 0;
+                        blankCount = 0;
 
                         reader.Read();
                         while (reader.Read())
                         {
+                            if (_backgroundWorker.CancellationPending)
+                            {
+                                e.Cancel = true;
+                                return;
+                            }
+
+                            var percentage = count / (reader.RowCount - 1d) * 100;
+
                             count++;
-                            _backgroundWorker.ReportProgress(0, count);
+                            _backgroundWorker.ReportProgress((int)(Math.Floor(percentage)), new Tuple<int, int, int>(count, reader.RowCount, blankCount));
+
+                            var row = new List<string>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var cellText = Convert.ToString(reader.GetValue(i) ?? string.Empty);
+                                row.Add(cellText);
+                            }
+
+                            if (row.All(r => r.IsBlank()))
+                            {
+                                blankCount++;
+                                continue;
+                            }
 
                             var newVoter = new VoterModel();
                             newVoter.ElectionId = _currentElection.Id;
-                            newVoter.Vin = reader.GetString(0);
-                            newVoter.FirstName = reader.GetString(1);
-                            newVoter.MiddleName = reader.GetString(2);
-                            newVoter.LastName = reader.GetString(3);
-                            newVoter.Suffix = reader.GetString(4);
-                            newVoter.Birthdate = reader.IsDBNull(5) ? default(DateTime?) : reader.GetDateTime(5);
+                            newVoter.Vin = Convert.ToString(reader.GetValue(0) ?? string.Empty);
+                            newVoter.FirstName = Convert.ToString(reader.GetValue(1) ?? string.Empty);
+                            newVoter.MiddleName = Convert.ToString(reader.GetValue(2) ?? string.Empty);
+                            newVoter.LastName = Convert.ToString(reader.GetValue(3) ?? string.Empty);
+                            newVoter.Suffix = Convert.ToString(reader.GetValue(4) ?? string.Empty);
+                            if (!reader.IsDBNull(5))
+                            {
+                                if (DateTime.TryParse(reader.GetString(5), result: out var dateTime))
+                                {
+                                    newVoter.Birthdate = dateTime;
+                                }
+                            }
 
-                            var sexText = reader.GetString(6);
+                            var sexText = Convert.ToString(reader.GetValue(6));
                             if (sexText.Equals("male", StringComparison.OrdinalIgnoreCase))
                             {
                                 newVoter.Sex = Sex.Male;
@@ -1443,22 +1630,22 @@ namespace StudentElection.Main
                             }
                             else
                             {
-                                e.Result = new ArgumentException("Must be 'male' or 'female'", nameof(newVoter.Sex));
+                                e.Result = new ArgumentException($"'{ sexText }' is invalid\nMust be 'male' or 'female'\n\nRow number: { count + 1 }", nameof(newVoter.Sex));
                                 return;
                             }
 
-                            var yearLevelText = reader.GetValue(7);
-                            if (int.TryParse(yearLevelText?.ToString(), out int yearLevel))
+                            var yearLevelText = Convert.ToString(reader.GetValue(7) ?? string.Empty);
+                            if (int.TryParse(yearLevelText, out int yearLevel))
                             {
                                 newVoter.YearLevel = yearLevel;
                             }
                             else
                             {
-                                e.Result = new ArgumentException("Invalid year level", nameof(newVoter.YearLevel));
+                                e.Result = new ArgumentException($"Invalid year level '{ yearLevelText }'\nMust be a number and between 1 and 12\n\nRow number: { count + 1 }", nameof(newVoter.YearLevel));
                                 return;
                             }
 
-                            newVoter.Section = reader.GetString(8);
+                            newVoter.Section = Convert.ToString(reader.GetValue(8) ?? string.Empty);
 
                             _voterService.ValidateAsync(_currentElection.Id, newVoter).Wait();
 
@@ -1468,18 +1655,21 @@ namespace StudentElection.Main
                 }
 
                 _backgroundWorker.ReportProgress(100, importedVoters.Count);
+
                 _voterService.ImportVotersAsync(importedVoters).Wait();
             }
             catch (Exception ex)
             {
-                e.Result = ex;
+                Logger.LogError(ex);
+
+                e.Result = new Exception($"{ ex.GetBaseException().Message }\n\nRow number: { count + 1 }"); ;
                 return;
             }
 
-            e.Result = importedVoters.Count;
+            e.Result = new Tuple<int, int>(importedVoters.Count, blankCount);
         }
 
-        private void ChkVoted_Click(object sender, RoutedEventArgs e)
+        private void chkVoted_Click(object sender, RoutedEventArgs e)
         {
             CheckVoterFilters();
         }
@@ -1488,14 +1678,37 @@ namespace StudentElection.Main
         {
             if (chkVoted.IsChecked == true)
             {
-                dgVoters.View.Filter = FilterVotedVoters;
+                dgVoters.Columns["IsVoted"].FilterPredicates.Add(new FilterPredicate
+                {
+                    FilterType = FilterType.Equals,
+                    FilterValue = true
+                });
             }
             else
             {
-                dgVoters.View.Filter = null;
+                dgVoters.Columns["IsVoted"].FilterPredicates.Clear();
             }
 
             dgVoters.View.RefreshFilter();
+        }
+
+        private void btnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            Opacity = 0.5;
+
+            G.WaitLang(this);
+
+            var form = new SettingsForm();
+
+            var helper = new WindowInteropHelper(this);
+            SetWindowLong(new HandleRef(form, form.Handle), -8, helper.Handle.ToInt32());
+
+            G.EndWait(this);
+
+            form.Tag = this;
+            form.ShowDialog();
+
+            Opacity = 1;
         }
     }
 }

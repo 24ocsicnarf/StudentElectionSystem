@@ -21,6 +21,7 @@ using Humanizer;
 using Humanizer.Localisation;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
+using Project.Library.Helpers;
 //using StudentElection.StudentElectionDataSetTableAdapters;
 
 namespace StudentElection.Dialogs
@@ -100,9 +101,11 @@ namespace StudentElection.Dialogs
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
+
                 G.EndWait(this);
 
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 
@@ -166,7 +169,7 @@ namespace StudentElection.Dialogs
             tbkScrollDown.Text = string.Empty;
             tbkScrollDown.Visibility = Visibility.Visible;
 
-            if (stkCandidates.ActualHeight < svCandidates.ViewportHeight)
+            if (stkCandidates.ActualHeight <= svCandidates.ViewportHeight)
             {
                 await Task.Delay(3000);
 

@@ -4,13 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudentElection.Dialogs"
-        mc:Ignorable="d" FontFamily="Tahoma" FontSize="14"
-        Title="" Height="120" Width="240" ShowInTaskbar="False" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" WindowStyle="None" IsTabStop="False">
+        mc:Ignorable="d" FontFamily="Tahoma" FontSize="14.667"
+        Title="" Height="160" Width="256" ShowInTaskbar="False" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" WindowStyle="None" IsTabStop="False">
     <Grid>
-        <Grid Margin="16">
+        <Grid Margin="12">
             <StackPanel VerticalAlignment="Center">
                 <TextBlock x:Name="tbkMessage" Text="Please wait..." DockPanel.Dock="Top" Foreground="Black" HorizontalAlignment="Center" Padding="8"/>
                 <ProgressBar x:Name="progressBar"  Height="24" />
+                <TextBlock x:Name="tbkSubMessage" Text="Please wait..." Opacity="0.87" DockPanel.Dock="Top" FontSize="12" Foreground="Black" HorizontalAlignment="Center" Padding="8"/>
                 <Button x:Name="btnCancel" Content="CANCEL" VerticalAlignment="Center" FontSize="12" HorizontalAlignment="Center" Margin="8" Padding="12 2"/>
             </StackPanel>
         </Grid>

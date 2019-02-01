@@ -14,7 +14,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Label Opacity="0.87" Content="Check your votes" FontSize="20" FontWeight="Bold"/>
-                <Button x:Name="btnChange" Grid.Column="1" DockPanel.Dock="Right" Content="CLOSE" FontWeight="Bold" BorderBrush="{x:Null}" Margin="0 4" Width="80" Click="btnChange_Click">
+                <Button x:Name="btnChange" Grid.Column="1" DockPanel.Dock="Right" Content="r" Foreground="Firebrick" FontFamily="Webdings" ToolTip="Close" FontSize="24" FontWeight="Bold" BorderBrush="{x:Null}" Margin="0" Width="36" Click="btnChange_Click">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Background" Value="#00000000"/>
@@ -22,7 +22,7 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type Button}">
                                         <Border Background="{TemplateBinding Background}">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,4" />
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" />
                                         </Border>
                                     </ControlTemplate>
                                 </Setter.Value>

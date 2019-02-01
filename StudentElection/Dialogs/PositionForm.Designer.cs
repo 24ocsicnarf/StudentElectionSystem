@@ -286,7 +286,7 @@
             this.cmbWhoCanVote.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmbWhoCanVote.FormattingEnabled = true;
             this.cmbWhoCanVote.Items.AddRange(new object[] {
-            "All",
+            "All voters",
             "Grade 1 only",
             "Grade 2 only",
             "Grade 3 only",
@@ -335,6 +335,8 @@
             this.MaximumSize = new System.Drawing.Size(320, 440);
             this.MinimizeBox = false;
             this.Name = "PositionForm";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Position";

@@ -1,5 +1,6 @@
 ﻿//using StudentElection.Classes;
 using Humanizer;
+using Project.Library.Helpers;
 using StudentElection.Dialogs;
 using StudentElection.Repository.Models;
 using StudentElection.Services;
@@ -471,19 +472,21 @@ namespace StudentElection.Main
         {
             try
             {
-                G.WaitLang(this);
+                bdrBallot.Visibility = Visibility.Hidden;
+                bdrLoadingMaintenance.Visibility = Visibility.Visible;
 
                 _currentElection = await _electionService.GetCurrentElectionAsync();
 
                 await SetBallotAsync(_voter);
 
-                G.EndWait(this);
+                bdrBallot.Visibility = Visibility.Visible;
+                bdrLoadingMaintenance.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
             {
-                G.EndWait(this);
+                Logger.LogError(ex);
 
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
     }

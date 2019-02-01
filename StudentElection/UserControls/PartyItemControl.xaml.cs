@@ -128,9 +128,11 @@ namespace StudentElection.UserControls
                 }
                 catch (Exception ex)
                 {
+                    Logger.LogError(ex);
+
                     G.EndWait(window);
 
-                    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                    MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
                 }
             }
             
@@ -276,7 +278,7 @@ namespace StudentElection.UserControls
                     {
                         _backgroundWorker.CancelAsync();
                     };
-                    _progressWindow.progressBar.IsIndeterminate = true;
+                    _progressWindow.progressBar.IsIndeterminate = false;
 
                     var parentWindow = Window.GetWindow(this);
                     _maintenanceWindow = parentWindow as MaintenanceWindow;
@@ -284,12 +286,21 @@ namespace StudentElection.UserControls
                     G.WaitLang(_maintenanceWindow);
                     _maintenanceWindow.Opacity = 0.5;
 
+                    _progressWindow.Closed += delegate
+                    {
+                        G.EndWait(_maintenanceWindow);
+
+                        _maintenanceWindow.Opacity = 1;
+                    };
+
                     _progressWindow.Owner = _maintenanceWindow;
                     _progressWindow.ShowDialog();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                    Logger.LogError(ex);
+
+                    MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
                 }
             }
         }
@@ -297,18 +308,15 @@ namespace StudentElection.UserControls
         private async void _backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             _progressWindow.Close();
-
-            G.EndWait(_maintenanceWindow);
-            _maintenanceWindow.Opacity = 1;
             
-            if (e.Error != null || e.Result is Exception)
+            if (e.Cancelled || e.Error is OperationCanceledException)
+            {
+                MessageBox.Show("Import cancelled.\n\nNo candidates imported", "Import cancelled", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (e.Error != null || e.Result is Exception)
             {
                 var exception = e.Error ?? e.Result as Exception;
                 MessageBox.Show($"{ exception.GetBaseException().Message } \n\n { "No candidates imported" }", "Import error", MessageBoxButton.OK, MessageBoxImage.Stop);
-            }
-            else if (e.Cancelled)
-            {
-                MessageBox.Show("Import cancelled.\n\nNo candidates imported", "Import cancelled", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
@@ -323,15 +331,20 @@ namespace StudentElection.UserControls
 
         private void _backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            var count = Convert.ToInt32(e.UserState);
-
-            if (e.ProgressPercentage == 0)
+            if (e.ProgressPercentage == 100)
             {
-                _progressWindow.tbkMessage.Text = $"Checking { "candidate".ToQuantity(count) }...";
+                var count = Convert.ToInt32(e.UserState);
+
+                _progressWindow.progressBar.IsIndeterminate = true;
+                _progressWindow.tbkMessage.Text = $"Importing { "candidate".ToQuantity(count, "n0") }...";
             }
             else
             {
-                _progressWindow.tbkMessage.Text = $"Importing { "candidate".ToQuantity(count) }...";
+                var tuple = e.UserState as Tuple<int, int, int>;
+
+                _progressWindow.progressBar.Value = e.ProgressPercentage;
+                _progressWindow.tbkMessage.Text = $"Checking { tuple.Item1.ToString("n0") } of { "candidate".ToQuantity(tuple.Item2, "n0") } ...";
+                _progressWindow.tbkSubMessage.Text = $"{ "blank row".ToQuantity(tuple.Item3, "n0") }";
             }
         }
 
@@ -341,6 +354,7 @@ namespace StudentElection.UserControls
             var importedCandidates = new List<CandidateModel>();
 
             int count = 0;
+            int blankCount = 0;
 
             try
             {
@@ -351,18 +365,45 @@ namespace StudentElection.UserControls
                         reader.Read();
                         while (reader.Read())
                         {
+                            if (_backgroundWorker.CancellationPending)
+                            {
+                                e.Cancel = true;
+                                return;
+                            }
+
+                            var percentage = count / (reader.RowCount - 1d) * 100;
+                            
                             count++;
-                            _backgroundWorker.ReportProgress(0, count);
+                            _backgroundWorker.ReportProgress((int)(Math.Floor(percentage)), new Tuple<int, int, int>(count, reader.RowCount, blankCount));
+
+                            var row = new List<string>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var cellText = Convert.ToString(reader.GetValue(i) ?? string.Empty);
+                                row.Add(cellText);
+                            }
+
+                            if (row.All(r => r.IsBlank()))
+                            {
+                                blankCount++;
+                                continue;
+                            }
 
                             var newCandidate = new CandidateModel();
                             newCandidate.PartyId = _party.Id;
-                            newCandidate.FirstName = reader.GetString(0);
-                            newCandidate.MiddleName = reader.GetString(1);
-                            newCandidate.LastName = reader.GetString(2);
-                            newCandidate.Suffix = reader.GetString(3);
-                            newCandidate.Birthdate = reader.IsDBNull(4) ? default(DateTime?) : reader.GetDateTime(4);
+                            newCandidate.FirstName = Convert.ToString(reader.GetValue(0) ?? string.Empty);
+                            newCandidate.MiddleName = Convert.ToString(reader.GetValue(1) ?? string.Empty);
+                            newCandidate.LastName = Convert.ToString(reader.GetValue(2) ?? string.Empty);
+                            newCandidate.Suffix = Convert.ToString(reader.GetValue(3) ?? string.Empty);
+                            if (!reader.IsDBNull(4))
+                            {
+                                if (DateTime.TryParse(reader.GetString(4), result: out var dateTime))
+                                {
+                                    newCandidate.Birthdate = dateTime;
+                                }
+                            }
 
-                            var sexText = reader.GetString(5);
+                            var sexText = Convert.ToString(reader.GetString(5) ?? string.Empty);
                             if (sexText.Equals("male", StringComparison.OrdinalIgnoreCase))
                             {
                                 newCandidate.Sex = Sex.Male;
@@ -373,26 +414,26 @@ namespace StudentElection.UserControls
                             }
                             else
                             {
-                                e.Result = new ArgumentException($"Must be 'male' or 'female'\n\nRow number: { count + 1 }");
+                                e.Result = new ArgumentException($"'{ sexText }' is invalid\nMust be 'male' or 'female'\n\nRow number: { count + 1 }", nameof(newCandidate.Sex));
                                 return;
                             }
 
-                            var yearLevelText = reader.GetValue(6);
+                            var yearLevelText = Convert.ToString(reader.GetValue(6) ?? string.Empty);
                             if (int.TryParse(yearLevelText?.ToString(), out int yearLevel))
                             {
                                 newCandidate.YearLevel = yearLevel;
                             }
                             else
                             {
-                                e.Result = new ArgumentException("Invalid year level\n\nRow number: { count + 1 }");
+                                e.Result = new ArgumentException($"Invalid year level '{ yearLevelText }'\nMust be a number and between 1 and 12\n\nRow number: { count + 1 }", nameof(newCandidate.YearLevel));
                                 return;
                             }
 
-                            newCandidate.Section = reader.GetString(7);
-                            newCandidate.Alias = reader.GetString(8);
-                            newCandidate.PictureFileName = reader.GetString(9);
+                            newCandidate.Section = Convert.ToString(reader.GetString(7) ?? string.Empty);
+                            newCandidate.Alias = Convert.ToString(reader.GetString(8) ?? string.Empty);
+                            newCandidate.PictureFileName = Convert.ToString(reader.GetString(9) ?? string.Empty);
 
-                            var positionTitle = reader.GetString(10);
+                            var positionTitle = Convert.ToString(reader.GetString(10) ?? string.Empty);
                             PositionModel position = null;
                             _positionService.GetPositionByTitleAsync(_party.ElectionId, positionTitle).ContinueWith((t) =>
                             {
@@ -415,16 +456,19 @@ namespace StudentElection.UserControls
 
                             importedCandidates.Add(newCandidate);
                         }
+                        _progressWindow.btnCancel.IsEnabled = false;
                     }
                 }
 
                 _backgroundWorker.ReportProgress(100, importedCandidates.Count);
                 _candidateService.ImportCandidatesAsync(importedCandidates).Wait();
 
-                e.Result = importedCandidates.Count;
+                e.Result = new Tuple<int, int>(importedCandidates.Count, blankCount);
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
+
                 e.Result = new Exception($"{ ex.GetBaseException().Message }\n\nRow number: { count + 1 }");
                 return;
             }

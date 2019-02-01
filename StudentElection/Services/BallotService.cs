@@ -54,7 +54,7 @@ namespace StudentElection.Services
         {
             var castedAt = DateTime.Now;
 
-            var count = await _ballotRepository.CountCastedBallotsQuery(voter.Id);
+            var count = await _ballotRepository.CountCastedBallotsAsync(voter.Id);
             if (count > 1)
             {
                 throw new ConstraintException($"Voter { voter.FullName } with VIN# { voter.Vin } has voted twice");

@@ -8,8 +8,8 @@ namespace StudentElection.Repository.Models
 {
     public enum UserType
     {
-        SuperUser = 1,
+        Superuser = 1,
         Admin = 2,
-        Encoder = 3
+        Normal = 3
     }
 }

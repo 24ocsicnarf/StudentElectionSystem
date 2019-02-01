@@ -81,7 +81,7 @@ namespace StudentElection.PostgreSQL.AutoMapper
         public void MapVoters()
         {
             CreateMap<Voter, VoterModel>()
-                .ForMember(m => m.Ballots, o => o.Ignore())
+                //.ForMember(m => m.Ballots, o => o.Ignore())
                 //.ForMember(m => m.Election, o => o.ExplicitExpansion())
                 .ForMember(m => m.Sex, o => o.MapFrom(s => (Sex)s.Sex));
 

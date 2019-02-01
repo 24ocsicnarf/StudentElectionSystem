@@ -50,6 +50,8 @@ namespace StudentElection.Services
 
         public async Task SaveVoterAsync(VoterModel voter)
         {
+            voter.Vin = voter.Vin?.ToUpper();
+
             if (voter.Id == 0)
             {
                 await _voterRepository.InsertVoterAsync(voter);
@@ -67,6 +69,11 @@ namespace StudentElection.Services
 
         public async Task ImportVotersAsync(IEnumerable<VoterModel> voters)
         {
+            foreach (var voter in voters)
+            {
+                voter.Vin = voter.Vin?.ToUpper();
+            }
+
             await _voterRepository.InsertVotersAsync(voters);
         }
 

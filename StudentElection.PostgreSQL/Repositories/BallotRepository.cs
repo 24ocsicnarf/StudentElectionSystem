@@ -26,6 +26,11 @@ namespace StudentElection.PostgreSQL.Repositories
                 }
 
                 var ballot = await context.Ballots.SingleOrDefaultAsync(b => b.Id == ballotId);
+                if (ballot.CastedAt != null)
+                {
+                    throw new InvalidOperationException("The votes from this ballot has already been casted.");
+                }
+
                 ballot.CastedAt = castedAt;
 
                 await context.SaveChangesAsync();
@@ -36,15 +41,15 @@ namespace StudentElection.PostgreSQL.Repositories
         {
             using (var context = new StudentElectionContext())
             {
-                return await context.Ballots.CountAsync(b => b.Id == electionId);
+                return await context.Ballots.CountAsync(b => b.Voter.ElectionId == electionId);
             }
         }
 
-        public async Task<int> CountCastedBallotsQuery(int voterId)
+        public async Task<int> CountCastedBallotsAsync(int voterId)
         {
             using (var context = new StudentElectionContext())
             {
-                return await context.Ballots.CountAsync(b => b.VoterId == voterId);
+                return await context.Ballots.CountAsync(b => b.VoterId == voterId && b.CastedAt != null);
             }
         }
 

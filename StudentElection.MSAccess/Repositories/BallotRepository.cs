@@ -108,7 +108,7 @@ namespace StudentElection.MSAccess.Repositories
             }
         }
 
-        public async Task<int> CountCastedBallotsQuery(int voterId)
+        public async Task<int> CountCastedBallotsAsync(int voterId)
         {
             await Task.CompletedTask;
 

@@ -9,9 +9,8 @@
         xmlns:UserControls="clr-namespace:StudentElection.UserControls"
     xmlns:syncfusion="http://schemas.syncfusion.com/wpf" x:Class="StudentElection.Main.MaintenanceWindow"
         mc:Ignorable="d"
-        Title="Maintenance" FontFamily="Tahoma" FontSize="14.667" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Closing="Window_Closing" WindowStyle="None" Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown" UseLayoutRounding="True" >
+        Title="" FontFamily="Tahoma" FontSize="14.667" MinWidth="736" MinHeight="544" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" Closing="Window_Closing" WindowStyle="SingleBorderWindow" Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown" UseLayoutRounding="True" ContentRendered="Window_ContentRendered" >
     <Window.Resources>
-        <!--<local:CustomSorting x:Key="Comparer"/>-->
         <base:TabSizeConverter x:Key="tabSizeConverter" />
         <Style TargetType="{x:Type TabItem}">
             <Setter Property="Width">
@@ -22,7 +21,6 @@
                     </MultiBinding>
                 </Setter.Value>
             </Setter>
-
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TabItem}">
@@ -45,19 +43,118 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Border x:Name="bdrMaintenance" BorderBrush="#808080" BorderThickness="4">
-        <Grid>
-            <DockPanel >
-                <Border x:Name="border" DockPanel.Dock="Top" HorizontalAlignment="Stretch" BorderBrush="#F5F5F5F5" BorderThickness="8,4" MouseLeftButtonDown="border_MouseLeftButtonDown" Cursor="Arrow">
-                    <DockPanel x:Name="dckTitleBar" Background="{Binding BorderBrush, ElementName=border}" Cursor="Arrow" >
-                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-                            <Label x:Name="lblMachineTag" Content="Server Tag" FontSize="14" ToolTip="A unique name of this voting server" Cursor="Arrow" />
+    <Border>
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Border x:Name="bdrMaintenance" BorderBrush="#808080" BorderThickness="4">
+                <Grid x:Name="grdMaintenance" Visibility="Visible">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border x:Name="border" Background="#F5F5F5" BorderBrush="#F5F5F5" BorderThickness="8 4">
+                        <Grid  x:Name="grdTitleBar" Cursor="Arrow">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="32"/>
+                                <RowDefinition Height="28"/>
+                            </Grid.RowDefinitions>
                             <Grid>
-                                <TextBox x:Name="txtTag" Visibility="Collapsed" Text="" CharacterCasing="Upper" Width="236" Height="Auto" FontSize="14" VerticalAlignment="Center" MaxLines="1" MaxLength="16" Foreground="#ff000000" FontWeight="Bold" PreviewTextInput="txtTag_PreviewTextInput" PreviewKeyDown="txtTag_PreviewKeyDown" />
-                                <Label x:Name="lblTag" Visibility="Visible" Cursor="IBeam" Content="(No Tag)" Padding="3,5" FontSize="14"  Foreground="#dd000000" FontWeight="Bold" PreviewMouseLeftButtonDown="lblTag_PreviewMouseLeftButtonDown"/>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="tbkElectionTitle" Text="(ELECTION TITLE)" TextAlignment="Left" TextTrimming="CharacterEllipsis" FontWeight="Bold" FontSize="18" LineHeight="19" LineStackingStrategy="BlockLineHeight" Cursor="Arrow" />
+                                </Grid>
+                                <Grid Grid.Column="1" x:Name="stkUsername" Margin="2,0" Cursor="Arrow">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="tbkUsername" Text="username" TextTrimming="CharacterEllipsis" IsEnabled="False" Foreground="DimGray" FontSize="12" VerticalAlignment="Center" Padding="0"  Cursor="Hand" PreviewMouseLeftButtonUp="lblUsername_PreviewMouseLeftButtonUp" HorizontalAlignment="Right">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Foreground" Value="Black" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Foreground" Value="Blue" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <Label Grid.Column="1" Content="•" FontSize="12" VerticalAlignment="Center" Cursor="Arrow" HorizontalAlignment="Center" />
+                                    <Label x:Name="lblLogOut" Grid.Column="2" Content="Log out" FontSize="12" VerticalAlignment="Center" Padding="0" Margin="0,0,5,0" Cursor="Hand" PreviewMouseLeftButtonUp="lblLogOut_PreviewMouseLeftButtonUp" HorizontalAlignment="Right">
+                                        <Label.Style>
+                                            <Style TargetType="{x:Type Label}">
+                                                <Setter Property="Foreground" Value="Black" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Foreground" Value="Blue" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Label.Style>
+                                    </Label>
+                                </Grid>
                             </Grid>
-                            <StackPanel x:Name="stkTagButtons" Orientation="Horizontal" Margin="4,0,0,0" Visibility="Collapsed">
-                                <Button x:Name="btnUpdateTag" Content="UPDATE"  FontSize="10.667" VerticalAlignment="Center" Margin="4,0" BorderThickness="0" FontWeight="Bold" Width="60" Click="btnUpdateTag_Click" >
+                            <DockPanel Grid.Row="1">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" >
+                                    <Label x:Name="lblMachineTag" Content="SERVER TAG" FontSize="10.667" Padding="2" Opacity="0.87" ToolTip="A unique name of this voting server (up to 10 letters and numbers only)" Cursor="Arrow" VerticalAlignment="Center" />
+                                    <Grid Margin="2 0">
+                                        <TextBox x:Name="txtTag" Visibility="Collapsed" Text="" CharacterCasing="Upper" Width="160" Height="Auto" FontSize="14" VerticalAlignment="Center" MaxLines="1" MaxLength="10" Foreground="#ff000000" FontWeight="Bold" PreviewTextInput="txtTag_PreviewTextInput" PreviewKeyDown="txtTag_PreviewKeyDown" />
+                                        <Label x:Name="lblTag" Visibility="Visible" Cursor="IBeam" Content="(No Tag)" Padding="3,5" FontSize="14"  Foreground="#dd000000" FontWeight="Bold" PreviewMouseLeftButtonDown="lblTag_PreviewMouseLeftButtonDown"/>
+                                    </Grid>
+                                    <StackPanel x:Name="stkTagButtons" Orientation="Horizontal" Margin="4,0,0,0" Visibility="Collapsed">
+                                        <Button x:Name="btnUpdateTag" Content="UPDATE"  FontSize="10.667" VerticalAlignment="Center" Margin="4,0" BorderThickness="0" FontWeight="Bold" Width="60" Click="btnUpdateTag_Click" >
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}">
+                                                    <Setter Property="Background" Value="#19000000"/>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                                <Border Background="{TemplateBinding Background}">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,4"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#49000000"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                        <Button x:Name="btnCancelTag" Content="CANCEL" FontSize="10.667" VerticalAlignment="Center" BorderThickness="0" FontWeight="Bold" Width="60" Click="btnCancelTag_Click" >
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}">
+                                                    <Setter Property="Background" Value="#00000000"/>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                                <Border Background="{TemplateBinding Background}">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,4"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#49000000"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                                <Button x:Name="btnSettings" DockPanel.Dock="Right" Content="SETTINGS"  FontSize="10.667" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,0" BorderThickness="0" FontWeight="Bold" Width="72" Click="btnSettings_Click" >
                                     <Button.Style>
                                         <Style TargetType="{x:Type Button}">
                                             <Setter Property="Background" Value="#19000000"/>
@@ -78,194 +175,146 @@
                                         </Style>
                                     </Button.Style>
                                 </Button>
-                                <Button x:Name="btnCancelTag" Content="CANCEL" FontSize="10.667" VerticalAlignment="Center" BorderThickness="0" FontWeight="Bold" Width="60" Click="btnCancelTag_Click" >
-                                    <Button.Style>
-                                        <Style TargetType="{x:Type Button}">
-                                            <Setter Property="Background" Value="#00000000"/>
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="{x:Type Button}">
-                                                        <Border Background="{TemplateBinding Background}">
-                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,4"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#49000000"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" x:Name="stkUsername" Margin="2,0" Cursor="Arrow">
-                            <Label x:Name="lblUsername" Content="username" IsEnabled="False" FontSize="12" VerticalAlignment="Center" Padding="0"  Cursor="Hand" PreviewMouseLeftButtonUp="lblUsername_PreviewMouseLeftButtonUp">
-                                <Label.Style>
-                                    <Style TargetType="{x:Type Label}">
-                                        <Setter Property="Foreground" Value="Black" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Foreground" Value="Blue" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Label.Style>
-                            </Label>
-                            <Label Content="•" FontSize="12" VerticalAlignment="Center" Cursor="Arrow" />
-                            <Label x:Name="lblLogOut" Content="Log out" FontSize="12" VerticalAlignment="Center" Padding="0" Margin="0,0,5,0" Cursor="Hand" PreviewMouseLeftButtonUp="lblLogOut_PreviewMouseLeftButtonUp">
-                                <Label.Style>
-                                    <Style TargetType="{x:Type Label}">
-                                        <Setter Property="Foreground" Value="Black" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Foreground" Value="Blue" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Label.Style>
-                            </Label>
-                        </StackPanel>
-                    </DockPanel>
-                </Border>
-                <TabControl DockPanel.Dock="Bottom" x:Name="tbcMaintenance" BorderThickness="0" Margin="0">
-                    <TabItem Header="CANDIDATES">
-                        <Grid Background="White">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <Label x:Name="lblNoCandidates" Content="No candidates" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible" />
-                                <ScrollViewer x:Name="svrCandidates" VerticalScrollBarVisibility="Auto" Grid.Row="0" >
-                                    <StackPanel x:Name="stkCandidates"/>
-                                </ScrollViewer>
-                                <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" x:Name="dckCandidateButtons"  >
-                                    <TextBlock Margin="8" DockPanel.Dock="Left" x:Name="lblPosition" Text="Positions" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="Visible" TextDecorations="Underline" Cursor="Hand" PreviewMouseLeftButtonUp="lblPosition_PreviewMouseLeftButtonUp" FontSize="16" >
-                                        <TextBlock.Style>
-                                            <Style TargetType="{x:Type TextBlock}">
-                                                <Setter Property="Foreground" Value="Black" />
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Foreground" Value="Blue" />
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                    <Button DockPanel.Dock="Right"  x:Name="btnAddParty" Content="CREATE PARTY"  FontWeight="Bold" Margin="4"  BorderBrush="{x:Null}" Click="btnAddParty_Click">
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Background" Value="#19000000"/>
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="{x:Type Button}">
-                                                            <Border Background="{TemplateBinding Background}">
-                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12,4" />
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#49000000"/>
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                    </Button>
-                                    <Button DockPanel.Dock="Right" x:Name="btnFinalize" Content="FINALIZE"  Padding="12,4" FontWeight="Bold" BorderBrush="{x:Null}" Margin="4" Visibility="Collapsed" Click="btnFinalize_Click" HorizontalAlignment="Right">
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Background" Value="#00000000"/>
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="{x:Type Button}">
-                                                            <Border Background="{TemplateBinding Background}">
-                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12,4" />
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#49000000"/>
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                    </Button>
-                                </DockPanel>
-                            </Grid>
+                            </DockPanel>
                         </Grid>
-                    </TabItem>
-                    <TabItem x:Name="tbcResults" Header="RESULTS">
-                        <Grid Background="White">
-                            <Label x:Name="lblNoResults" Content="No results yet" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
-                            <Grid x:Name="grdViewResult" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
-                                <StackPanel>
-                                    <Label x:Name="lblResultsAvailable"  Content="Results are available" HorizontalAlignment="Center" VerticalAlignment="Center"  />
-                                    <Button x:Name="btnViewResult" Content="VIEW RESULT" FontWeight="Bold" BorderBrush="{x:Null}" Margin="4" HorizontalAlignment="Center" Click="btnViewResult_Click">
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Background" Value="#19000000"/>
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="{x:Type Button}">
-                                                            <Border Background="{TemplateBinding Background}">
-                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,4"/>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#49000000"/>
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                    </Button>
-                                </StackPanel>
+                    </Border>
+                    <TabControl x:Name="tbcMaintenance" Grid.Row="1" BorderThickness="0" Margin="0">
+                        <TabItem Header="CANDIDATES">
+                            <Grid Background="White">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Label x:Name="lblNoCandidates" Content="No candidates" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible" />
+                                    <ScrollViewer x:Name="svrCandidates" VerticalScrollBarVisibility="Auto" Grid.Row="0" >
+                                        <StackPanel x:Name="stkCandidates"/>
+                                    </ScrollViewer>
+                                    <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" x:Name="dckCandidateButtons"  >
+                                        <TextBlock Margin="8" DockPanel.Dock="Left" x:Name="lblPosition" Text="Positions" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="Visible" TextDecorations="Underline" Cursor="Hand" PreviewMouseLeftButtonUp="lblPosition_PreviewMouseLeftButtonUp" FontSize="16" >
+                                            <TextBlock.Style>
+                                                <Style TargetType="{x:Type TextBlock}">
+                                                    <Setter Property="Foreground" Value="Black" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="Blue" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <Button DockPanel.Dock="Right"  x:Name="btnAddParty" Content="CREATE PARTY"  FontWeight="Bold" Margin="4"  BorderBrush="{x:Null}" Click="btnAddParty_Click">
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}">
+                                                    <Setter Property="Background" Value="#19000000"/>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                                <Border Background="{TemplateBinding Background}">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12,4" />
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#49000000"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                        <Button DockPanel.Dock="Right" x:Name="btnFinalize" Content="FINALIZE"  Padding="12,4" FontWeight="Bold" BorderBrush="{x:Null}" Margin="4" Visibility="Collapsed" Click="btnFinalize_Click" HorizontalAlignment="Right">
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}">
+                                                    <Setter Property="Background" Value="#00000000"/>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                                <Border Background="{TemplateBinding Background}">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12,4" />
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#49000000"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </DockPanel>
+                                </Grid>
                             </Grid>
-                            <DockPanel x:Name="btnExportPrint" Visibility="Collapsed">
-                                <DockPanel  DockPanel.Dock="Top" VerticalAlignment="Top"  Margin="2" Visibility="Visible">
-                                    <Label Foreground="#CC000000" x:Name="lblFilterPosition"  Content="Filter Position" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                    <Border BorderThickness="1" BorderBrush="#ABADB3" Margin="2" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                        <ComboBox x:Name="cmbPositions" Width="240" HorizontalAlignment="Right" VerticalAlignment="Center" SelectionChanged="cmbPositions_SelectionChanged" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}"  />
-                                    </Border>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4">
-                                        <TextBlock Foreground="#CC000000" Text="Vote turnout:"  HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2">
-                                        </TextBlock>
-                                        <TextBlock x:Name="txtVoteTurnout" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2">
-                                        </TextBlock>
+                        </TabItem>
+                        <TabItem x:Name="tbcResults" Header="RESULTS">
+                            <Grid Background="White">
+                                <Label x:Name="lblNoResults" Content="No results yet" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
+                                <Grid x:Name="grdViewResult" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible">
+                                    <StackPanel>
+                                        <Label x:Name="lblResultsAvailable"  Content="Results are available" HorizontalAlignment="Center" VerticalAlignment="Center"  />
+                                        <Label Content="Close this election to view the results" HorizontalAlignment="Center" VerticalAlignment="Center"  />
+                                        <Button x:Name="btnViewResult" Content="CLOSE ELECTION" FontWeight="Bold" BorderBrush="{x:Null}" Margin="4" HorizontalAlignment="Center" Click="btnViewResult_Click">
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}">
+                                                    <Setter Property="Background" Value="#19000000"/>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                                <Border Background="{TemplateBinding Background}">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,4"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#49000000"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
                                     </StackPanel>
-                                </DockPanel>
-                                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" >
-                                    <Button x:Name="btnExportReport" Content="EXPORT TO EXCEL" FontWeight="Bold" BorderBrush="{x:Null}" Margin="4" Click="btnExportReport_Click">
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Background" Value="#19000000"/>
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="{x:Type Button}">
-                                                            <Border Background="{TemplateBinding Background}">
-                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12,4" />
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#49000000"/>
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                    </Button>
-                                    <!--<Button x:Name="btnPrintReport" Content="PRINT REPORT" FontWeight="Bold" BorderBrush="{x:Null}" Margin="4" Click="btnPrintReport_Click">
+                                </Grid>
+                                <DockPanel x:Name="btnExportPrint" Visibility="Collapsed">
+                                    <DockPanel  DockPanel.Dock="Top" VerticalAlignment="Top"  Margin="2" Visibility="Visible">
+                                        <Label Foreground="#CC000000" x:Name="lblFilterPosition"  Content="Filter Position" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        <Border BorderThickness="1" BorderBrush="#ABADB3" Margin="2" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <ComboBox x:Name="cmbPositions" Width="240" HorizontalAlignment="Right" VerticalAlignment="Center" SelectionChanged="cmbPositions_SelectionChanged" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}"  />
+                                        </Border>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4">
+                                            <TextBlock Foreground="#CC000000" Text="Vote turnout:"  HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2">
+                                            </TextBlock>
+                                            <TextBlock x:Name="txtVoteTurnout" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2">
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DockPanel>
+                                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" >
+                                        <Button x:Name="btnExportReport" Content="EXPORT TO EXCEL" FontWeight="Bold" BorderBrush="{x:Null}" Margin="4" Click="btnExportReport_Click">
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}">
+                                                    <Setter Property="Background" Value="#19000000"/>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                                <Border Background="{TemplateBinding Background}">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12,4" />
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#49000000"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                        <!--<Button x:Name="btnPrintReport" Content="PRINT REPORT" FontWeight="Bold" BorderBrush="{x:Null}" Margin="4" Click="btnPrintReport_Click">
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
                                                 <Setter Property="Background" Value="#19000000"/>
@@ -286,11 +335,11 @@
                                             </Style>
                                         </Button.Style>
                                     </Button>-->
-                                </StackPanel>
-                                <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto"  Grid.Row="0" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Margin="2" Visibility="Visible">
-                                    <StackPanel x:Name="stkResults"/>
-                                </ScrollViewer>
-                                <syncfusion:SfDataGrid x:Name="dgResults"
+                                    </StackPanel>
+                                    <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto"  Grid.Row="0" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" Margin="2" Visibility="Visible">
+                                        <StackPanel x:Name="stkResults"/>
+                                    </ScrollViewer>
+                                    <syncfusion:SfDataGrid x:Name="dgResults"
                                                        ColumnSizer="AutoWithLastColumnFill"
                                                        AllowFiltering="False"
                                                        AllowTriStateSorting="True"
@@ -298,268 +347,278 @@
                                                        AutoGenerateColumns="False"
                                                        EnableDataVirtualization="True"
                                                        Visibility="Hidden">
-                                    <syncfusion:SfDataGrid.SortColumnDescriptions>
-                                        <syncfusion:SortColumnDescription ColumnName="PositionRank"/>
-                                        <syncfusion:SortColumnDescription ColumnName="VoteCount" SortDirection="Descending"/>
-                                        <syncfusion:SortColumnDescription ColumnName="FullName"/>
-                                        <syncfusion:SortColumnDescription ColumnName="Alias"/>
-                                    </syncfusion:SfDataGrid.SortColumnDescriptions>
-                                    <syncfusion:SfDataGrid.Columns>
-                                        <syncfusion:GridTextColumn HeaderText="Position" MappingName="PositionTitle" MinimumWidth="100"/>
-                                        <syncfusion:GridTextColumn HeaderText="Candidate" MappingName="FullName" MinimumWidth="100"/>
-                                        <syncfusion:GridTextColumn HeaderText="Alias" MappingName="Alias" MinimumWidth="50"/>
-                                        <syncfusion:GridTextColumn HeaderText="Grade" MappingName="YearLevel" TextAlignment="Center" MinimumWidth="20"/>
-                                        <syncfusion:GridTextColumn HeaderText="Strand" MappingName="Section" TextAlignment="Center"  MinimumWidth="40"/>
-                                        <syncfusion:GridTextColumn HeaderText="Party" MappingName="PartyTitle" MinimumWidth="50"/>
-                                        <syncfusion:GridTextColumn HeaderText="Vote Count" MappingName="VoteCount" TextAlignment="Right" MinimumWidth="40"/>
-                                    </syncfusion:SfDataGrid.Columns>
-                                </syncfusion:SfDataGrid>
-                            </DockPanel>
-                        </Grid>
-                    </TabItem>
-                    <TabItem Header="USERS">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition x:Name="rdfStaff" Height="0" />
-                                <RowDefinition x:Name="rdfVoters" Height="5*" />
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" Background="#FFE1E1FF" Visibility="Visible">
-                                <DockPanel Margin="8,4" >
-                                    <DockPanel DockPanel.Dock="Bottom">
-                                        <Button x:Name="btnEditStaff" Content="EDIT" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,2" Visibility="Collapsed" FontSize="12" Click="btnEditStaff_Click">
-                                            <Button.Style>
-                                                <Style TargetType="{x:Type Button}">
-                                                    <Setter Property="Background" Value="#19000000"/>
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="{x:Type Button}">
-                                                                <Border Background="{TemplateBinding Background}">
-                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
-                                                                </Border>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#49000000"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                        <Button x:Name="btnDeleteStaff" Content="DELETE"  DockPanel.Dock="Left" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2" Visibility="Collapsed" FontSize="12" Click="btnDeleteStaff_Click">
-                                            <Button.Style>
-                                                <Style TargetType="{x:Type Button}">
-                                                    <Setter Property="Background" Value="#19000000"/>
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="{x:Type Button}">
-                                                                <Border Background="{TemplateBinding Background}">
-                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
-                                                                </Border>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#49000000"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                        <Button x:Name="btnAddStaff" Content="CREATE" DockPanel.Dock="Right" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,2" Click="btnAddStaff_Click" FontSize="12">
-                                            <Button.Style>
-                                                <Style TargetType="{x:Type Button}">
-                                                    <Setter Property="Background" Value="#19000000"/>
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="{x:Type Button}">
-                                                                <Border Background="{TemplateBinding Background}">
-                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
-                                                                </Border>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#49000000"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                    </DockPanel>
-                                    <DockPanel DockPanel.Dock="Top" >
-                                        <Label HorizontalAlignment="Left" Content="Staff" FontWeight="Bold" FontSize="18"  />
-                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-                                            <Label Content="Filter" VerticalAlignment="Center" />
-                                            <TextBox x:Name="txtStaffFilter" Width="180" Height="Auto" VerticalAlignment="Center" MaxLines="1" MaxLength="20" TextChanged="txtStaffFilter_TextChanged" />
-                                        </StackPanel>
-                                    </DockPanel>
-                                    <ListView x:Name="lvStaff" FontSize="12" Foreground="#FF101010" SelectionChanged="lvStaff_SelectionChanged">
-                                        <ListView.View>
-                                            <GridView x:Name="gvStaff">
-                                                <GridViewColumn Header="Type" Width="40" DisplayMemberBinding="{Binding TypeAbbr}"/>
-                                                <GridViewColumn Header="Last Name" Width="120" DisplayMemberBinding="{Binding LastName}"/>
-                                                <GridViewColumn Header="First Name" Width="120" DisplayMemberBinding="{Binding FirstName}"/>
-                                                <GridViewColumn Header="Middle Name" Width="120" DisplayMemberBinding="{Binding MiddleName}"/>
-                                                <GridViewColumn Header="Username" Width="120" DisplayMemberBinding="{Binding Username}"/>
-                                                <GridViewColumn Header="Password" Width="120" DisplayMemberBinding="{Binding Password}"/>
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-                                </DockPanel>
-                            </Grid>
-                            <Grid Grid.Row="1" Background="#FFE0FFE0">
-                                <DockPanel Margin="8,4" >
-                                    <DockPanel DockPanel.Dock="Bottom" x:Name="btnVoterButtons" Height="28" Margin="0,0,0,0">
-                                        <Button x:Name="btnEditVoter" Content="EDIT" FontWeight="Bold" BorderBrush="{x:Null}" Margin="0,2" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed" FontSize="12" Click="btnEditVoter_Click">
-                                            <Button.Style>
-                                                <Style TargetType="{x:Type Button}">
-                                                    <Setter Property="Background" Value="#19000000"/>
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="{x:Type Button}">
-                                                                <Border Background="{TemplateBinding Background}">
-                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
-                                                                </Border>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#49000000"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                        <Button x:Name="btnDeleteVoter" Content="DELETE" DockPanel.Dock="Left" FontWeight="Bold" Margin="2" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed" FontSize="12" Click="btnDeleteVoter_Click">
-                                            <Button.Style>
-                                                <Style TargetType="{x:Type Button}">
-                                                    <Setter Property="Background" Value="#19000000"/>
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="{x:Type Button}">
-                                                                <Border Background="{TemplateBinding Background}">
-                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
-                                                                </Border>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#49000000"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                        <Button x:Name="btnAddVoter" Content="ADD VOTER" DockPanel.Dock="Right" FontWeight="Bold" Margin="0,2" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Click="btnAddVoter_Click">
-                                            <Button.Style>
-                                                <Style TargetType="{x:Type Button}">
-                                                    <Setter Property="Background" Value="#19000000"/>
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="{x:Type Button}">
-                                                                <Border Background="{TemplateBinding Background}">
-                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
-                                                                </Border>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#49000000"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                        <Button x:Name="btnImportVoters" Content="IMPORT VOTERS" DockPanel.Dock="Right" FontWeight="Bold" Margin="4,2" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Click="btnImportVoters_Click">
-                                            <Button.Style>
-                                                <Style TargetType="{x:Type Button}">
-                                                    <Setter Property="Background" Value="#19000000"/>
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="{x:Type Button}">
-                                                                <Border Background="{TemplateBinding Background}">
-                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
-                                                                </Border>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#49000000"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                    </DockPanel>
-                                    <DockPanel DockPanel.Dock="Top" >
-                                        <Label HorizontalAlignment="Left"  Content="Voters" FontWeight="Bold" FontSize="18"  />
-                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="Visible">
-                                            <CheckBox x:Name="chkVoted" DockPanel.Dock="Right" Content="Show voted only" HorizontalAlignment="Right"  VerticalAlignment="Center" VerticalContentAlignment="Center" Visibility="Visible" Margin="4,0" Foreground="#dd000000" Click="ChkVoted_Click"/>
-                                            <Rectangle Fill="LightGray" Width="1" Height="20" Margin="4 0"/>
-                                            <Label Content="Search" VerticalAlignment="Center" />
-                                            <TextBox x:Name="txtVoterFilter" Width="120" VerticalContentAlignment="Center" Height="24" MaxLines="1" MaxLength="20" TextChanged="txtVoterFilter_TextChanged" />
-                                        </StackPanel>
-                                    </DockPanel>
-                                    <syncfusion:SfDataGrid x:Name="dgVoters"
-                                                           Background="White"
-                                                           ColumnSizer="AutoLastColumnFill"
-                                                           AllowFiltering="False"
-                                                           AllowTriStateSorting="True"
-                                                           AllowGrouping="True"
-                                                           AutoGenerateColumns="False"
-                                                           NavigationMode="Row"
-                                                           SelectionUnit="Row"
-                                                           SelectionMode="Single"
-                                                           ScrollMode="Async"
-                                                           AllowResizingColumns="True"
-                                                           EnableDataVirtualization="True" SelectionChanged="dgVoters_SelectionChanged">
-                                        <syncfusion:SfDataGrid.RowStyle>
-                                            <Style TargetType="syncfusion:VirtualizingCellsControl">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsVoted}" Value="True">
-                                                        <Setter Property="Foreground" Value="#FF009966" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </syncfusion:SfDataGrid.RowStyle>
-                                        <syncfusion:SfDataGrid.TableSummaryRowStyle>
-                                            <Style TargetType="syncfusion:TableSummaryRowControl">
-                                                <Setter Property="Background" Value="WhiteSmoke"/>
-                                            </Style>
-                                        </syncfusion:SfDataGrid.TableSummaryRowStyle>
-                                        <syncfusion:SfDataGrid.TableSummaryRows>
-                                            <syncfusion:GridTableSummaryRow Title="Number of voters: {VoterCount}" ShowSummaryInRow="True" >
-                                                <syncfusion:GridSummaryRow.SummaryColumns>
-                                                    <syncfusion:GridSummaryColumn Name="VoterCount"
-                                                                                  Format="'{Count:d}'"
-                                                                                  MappingName="Vin"
-                                                                                  SummaryType="CountAggregate" />
-                                                </syncfusion:GridSummaryRow.SummaryColumns>
-                                            </syncfusion:GridTableSummaryRow>
-                                        </syncfusion:SfDataGrid.TableSummaryRows>
+                                        <syncfusion:SfDataGrid.SortColumnDescriptions>
+                                            <syncfusion:SortColumnDescription ColumnName="PositionRank"/>
+                                            <syncfusion:SortColumnDescription ColumnName="VoteCount" SortDirection="Descending"/>
+                                            <syncfusion:SortColumnDescription ColumnName="FullName"/>
+                                            <syncfusion:SortColumnDescription ColumnName="Alias"/>
+                                        </syncfusion:SfDataGrid.SortColumnDescriptions>
                                         <syncfusion:SfDataGrid.Columns>
-                                            <syncfusion:GridTextColumn HeaderText="Voter ID" ValueBinding="{Binding Vin}" MinimumWidth="90"/>
-                                            <syncfusion:GridTextColumn HeaderText="Name" ValueBinding="{Binding FullName}" MinimumWidth="200" ColumnSizer="AutoLastColumnFill"/>
-                                            <syncfusion:GridTextColumn HeaderText="Year Level" ValueBinding="{Binding YearLevel}" TextAlignment="Center" MinimumWidth="100"/>
-                                            <syncfusion:GridTextColumn HeaderText="Section" ValueBinding="{Binding Section}" MinimumWidth="120"/>
-                                            <syncfusion:GridTextColumn HeaderText="Sex" ValueBinding="{Binding Sex}" TextAlignment="Center" MinimumWidth="80"/>
-                                            <syncfusion:GridTextColumn HeaderText="Birthdate" ValueBinding="{Binding Birthdate, StringFormat=yyyy-MM-dd}" TextAlignment="Center" MinimumWidth="120"/>
+                                            <syncfusion:GridTextColumn HeaderText="Position" MappingName="PositionTitle" MinimumWidth="100"/>
+                                            <syncfusion:GridTextColumn HeaderText="Candidate" MappingName="FullName" MinimumWidth="100"/>
+                                            <syncfusion:GridTextColumn HeaderText="Alias" MappingName="Alias" MinimumWidth="50"/>
+                                            <syncfusion:GridTextColumn HeaderText="Grade" MappingName="YearLevel" TextAlignment="Center" MinimumWidth="20"/>
+                                            <syncfusion:GridTextColumn HeaderText="Strand" MappingName="Section" TextAlignment="Center"  MinimumWidth="40"/>
+                                            <syncfusion:GridTextColumn HeaderText="Party" MappingName="PartyTitle" MinimumWidth="50"/>
+                                            <syncfusion:GridTextColumn HeaderText="Vote Count" MappingName="VoteCount" TextAlignment="Right" MinimumWidth="40"/>
                                         </syncfusion:SfDataGrid.Columns>
                                     </syncfusion:SfDataGrid>
                                 </DockPanel>
                             </Grid>
-                        </Grid>
-                    </TabItem>
-                </TabControl>
-            </DockPanel>
+                        </TabItem>
+                        <TabItem Header="VOTERS">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition x:Name="rdfStaff" Height="0" />
+                                    <RowDefinition x:Name="rdfVoters" Height="5*" />
+                                </Grid.RowDefinitions>
+                                <!--<Grid Grid.Row="0" Background="#FFE1E1FF" Visibility="Visible">
+                                    <DockPanel Margin="8,4" >
+                                        <DockPanel DockPanel.Dock="Bottom">
+                                            <Button x:Name="btnEditStaff" Content="EDIT" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,2" Visibility="Collapsed" FontSize="12" Click="btnEditStaff_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Background" Value="#19000000"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border Background="{TemplateBinding Background}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#49000000"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <Button x:Name="btnDeleteStaff" Content="DELETE"  DockPanel.Dock="Left" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2" Visibility="Collapsed" FontSize="12" Click="btnDeleteStaff_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Background" Value="#19000000"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border Background="{TemplateBinding Background}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#49000000"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <Button x:Name="btnAddStaff" Content="CREATE" DockPanel.Dock="Right" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,2" Click="btnAddStaff_Click" FontSize="12">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Background" Value="#19000000"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border Background="{TemplateBinding Background}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#49000000"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </DockPanel>
+                                        <DockPanel DockPanel.Dock="Top" >
+                                            <Label HorizontalAlignment="Left" Content="Staff" FontWeight="Bold" FontSize="18"  />
+                                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                                                <Label Content="Filter" VerticalAlignment="Center" />
+                                                <TextBox x:Name="txtStaffFilter" Width="180" Height="Auto" VerticalAlignment="Center" MaxLines="1" MaxLength="20" TextChanged="txtStaffFilter_TextChanged" />
+                                            </StackPanel>
+                                        </DockPanel>
+                                        <ListView x:Name="lvStaff" FontSize="12" Foreground="#FF101010" SelectionChanged="lvStaff_SelectionChanged">
+                                            <ListView.View>
+                                                <GridView x:Name="gvStaff">
+                                                    <GridViewColumn Header="Type" Width="40" DisplayMemberBinding="{Binding TypeAbbr}"/>
+                                                    <GridViewColumn Header="Last Name" Width="120" DisplayMemberBinding="{Binding LastName}"/>
+                                                    <GridViewColumn Header="First Name" Width="120" DisplayMemberBinding="{Binding FirstName}"/>
+                                                    <GridViewColumn Header="Middle Name" Width="120" DisplayMemberBinding="{Binding MiddleName}"/>
+                                                    <GridViewColumn Header="Username" Width="120" DisplayMemberBinding="{Binding Username}"/>
+                                                    <GridViewColumn Header="Password" Width="120" DisplayMemberBinding="{Binding Password}"/>
+                                                </GridView>
+                                            </ListView.View>
+                                        </ListView>
+                                    </DockPanel>
+                                </Grid>-->
+                                <Grid Grid.Row="1" Background="#FFE0FFE0">
+                                    <DockPanel Margin="8,4" >
+                                        <DockPanel DockPanel.Dock="Bottom" x:Name="btnVoterButtons" Height="28" Margin="0,0,0,0">
+                                            <Button x:Name="btnEditVoter" Content="EDIT" FontWeight="Bold" BorderBrush="{x:Null}" Margin="0,2" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed" FontSize="12" Click="btnEditVoter_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Background" Value="#19000000"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border Background="{TemplateBinding Background}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#49000000"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <Button x:Name="btnDeleteVoter" Content="DELETE" DockPanel.Dock="Left" FontWeight="Bold" Margin="2" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed" FontSize="12" Click="btnDeleteVoter_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Background" Value="#19000000"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border Background="{TemplateBinding Background}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#49000000"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <Button x:Name="btnAddVoter" Content="ADD VOTER" DockPanel.Dock="Right" FontWeight="Bold" Margin="0,2" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Click="btnAddVoter_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Background" Value="#19000000"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border Background="{TemplateBinding Background}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#49000000"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <Button x:Name="btnImportVoters" Content="IMPORT VOTERS" DockPanel.Dock="Right" FontWeight="Bold" Margin="4,2" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" Click="btnImportVoters_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Background" Value="#19000000"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border Background="{TemplateBinding Background}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,5" />
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#49000000"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </DockPanel>
+                                        <DockPanel DockPanel.Dock="Top" >
+                                            <Label HorizontalAlignment="Left"  Content="Voters" FontWeight="Bold" FontSize="18"  />
+                                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="Visible">
+                                                <CheckBox x:Name="chkVoted" DockPanel.Dock="Right" Content="Show voted only" HorizontalAlignment="Right"  VerticalAlignment="Center" VerticalContentAlignment="Center" Visibility="Visible" Margin="4,0" Foreground="#dd000000" Click="chkVoted_Click"/>
+                                                <Label Content="Search" VerticalAlignment="Center" />
+                                                <TextBox x:Name="txtVoterFilter" Width="120" VerticalContentAlignment="Center" Height="24" MaxLines="1" MaxLength="20" TextChanged="txtVoterFilter_TextChanged" />
+                                            </StackPanel>
+                                        </DockPanel>
+                                        <!--<syncfusion:SfDataPager x:Name="dataPagerVoters"
+                                                                DockPanel.Dock="Bottom"
+                                                                HorizontalAlignment="Right"
+                                                                NumericButtonCount="10"
+                                                                PageSize="40"/>-->
+                                        <syncfusion:SfDataGrid x:Name="dgVoters"
+                                                               Background="White"
+                                                               ColumnSizer="AutoLastColumnFill"
+                                                               AllowFiltering="False"
+                                                               AllowTriStateSorting="True"
+                                                               AllowGrouping="True"
+                                                               AutoGenerateColumns="False"
+                                                               NavigationMode="Row"
+                                                               SelectionUnit="Row"
+                                                               SelectionMode="Single"
+                                                               ScrollMode="Async"
+                                                               AllowResizingColumns="True"
+                                                               ItemsSource="{Binding ElementName=dataPagerVoters, Path=PagedSource}"
+                                                               SelectionChanged="dgVoters_SelectionChanged">
+                                            <syncfusion:SfDataGrid.RowStyle>
+                                                <Style TargetType="syncfusion:VirtualizingCellsControl">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsVoted}" Value="True">
+                                                            <Setter Property="Foreground" Value="#FF009966" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </syncfusion:SfDataGrid.RowStyle>
+                                            <syncfusion:SfDataGrid.TableSummaryRowStyle>
+                                                <Style TargetType="syncfusion:TableSummaryRowControl">
+                                                    <Setter Property="Background" Value="WhiteSmoke"/>
+                                                </Style>
+                                            </syncfusion:SfDataGrid.TableSummaryRowStyle>
+                                            <syncfusion:SfDataGrid.TableSummaryRows>
+                                                <syncfusion:GridTableSummaryRow Title="Number of voters: {VoterCount}" ShowSummaryInRow="True" >
+                                                    <syncfusion:GridSummaryRow.SummaryColumns>
+                                                        <syncfusion:GridSummaryColumn Name="VoterCount"
+                                                                                  Format="'{Count:d}'"
+                                                                                  MappingName="Vin"
+                                                                                  SummaryType="CountAggregate" />
+                                                    </syncfusion:GridSummaryRow.SummaryColumns>
+                                                </syncfusion:GridTableSummaryRow>
+                                            </syncfusion:SfDataGrid.TableSummaryRows>
+                                            <syncfusion:SfDataGrid.Columns>
+                                                <syncfusion:GridTextColumn HeaderText="Voter ID" MappingName="Vin" MinimumWidth="90"/>
+                                                <syncfusion:GridTextColumn HeaderText="Name" MappingName="FullName" MinimumWidth="200" ColumnSizer="AutoLastColumnFill"/>
+                                                <syncfusion:GridNumericColumn HeaderText="Year Level" MappingName="YearLevel" NumberDecimalDigits="0" TextAlignment="Center" MinimumWidth="100"/>
+                                                <syncfusion:GridTextColumn HeaderText="Section" MappingName="Section" MinimumWidth="120"/>
+                                                <syncfusion:GridTextColumn HeaderText="Sex" MappingName="Sex" TextAlignment="Center" MinimumWidth="80"/>
+                                                <syncfusion:GridDateTimeColumn HeaderText="Birthdate" MappingName="Birthdate" AllowNullValue="True" TextAlignment="Center" MinimumWidth="120" Pattern="CustomPattern" CustomPattern="yyyy-MM-dd"/>
+                                                <syncfusion:GridCheckBoxColumn HeaderText="Is Voted?" MappingName="IsVoted" TextAlignment="Center" IsHidden="True"/>
+                                            </syncfusion:SfDataGrid.Columns>
+                                        </syncfusion:SfDataGrid>
+                                    </DockPanel>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </Border>
+            <Border x:Name="bdrLoadingMaintenance" Background="White" Visibility="Hidden">
+                <syncfusion:ProgressRing x:Name="prgMaintenance" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Loading..." FontSize="20"/>
+            </Border>
         </Grid>
     </Border>
 </Window>

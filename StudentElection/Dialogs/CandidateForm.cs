@@ -251,7 +251,9 @@ namespace StudentElection.Dialogs
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                Logger.LogError(ex);
+
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
         }
 
@@ -382,6 +384,7 @@ namespace StudentElection.Dialogs
                         File.Delete(existingImageFile);
                     }
 
+                    //TODO: GUID COLLISION!!! (SOBRANG DALANG LANG NITO HEHE)
                     var fileExtension = Path.GetExtension(ofdImage.FileName);
                     newFileName = $"{ Guid.NewGuid().ToString() }{ fileExtension }";
 
@@ -424,17 +427,11 @@ namespace StudentElection.Dialogs
 
             catch (Exception ex)
             {
-                G.EndWait(this);
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                Logger.LogError(ex);
 
-                if (Application.MessageLoop)
-                {
-                    Application.Exit();
-                }
-                else
-                {
-                    Environment.Exit(1);
-                }
+                G.EndWait(this);
+
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
         }
 

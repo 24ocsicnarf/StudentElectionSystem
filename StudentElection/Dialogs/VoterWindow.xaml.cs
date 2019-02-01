@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using StudentElection.Repository.Models;
 using StudentElection.Services;
+using Project.Library.Helpers;
 
 namespace StudentElection.Dialogs
 {
@@ -164,7 +165,7 @@ namespace StudentElection.Dialogs
                     FirstName = txtFirstName.Text,
                     MiddleName = txtMiddleName.Text,
                     Suffix = txtSuffix.Text,
-                    YearLevel = (Convert.ToInt32(cmbGradeLevel.Text)),
+                    YearLevel = Convert.ToInt32(cmbGradeLevel.Text),
                     Section = txtStrandSection.Text,
                     Sex = cmbSex.Text.StartsWith("M") ? Sex.Male : Sex.Female,
                     Birthdate = dpBirthdate.SelectedDate,
@@ -194,9 +195,11 @@ namespace StudentElection.Dialogs
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
+
                 G.EndWait(this);
 
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 

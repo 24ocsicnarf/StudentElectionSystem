@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace StudentElection.Dialogs
 {
     /// <summary>
-    /// Interaction logic for ServerSetupWindow.xaml
+    /// Interaction logic for ElectionSettingsWindow.xaml
     /// </summary>
-    public partial class ServerSetupWindow : Window
+    public partial class ElectionSettingsWindow : Window
     {
-        public ServerSetupWindow()
+        public ElectionSettingsWindow()
         {
             InitializeComponent();
         }

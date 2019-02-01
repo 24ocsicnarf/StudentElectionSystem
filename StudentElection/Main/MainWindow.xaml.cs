@@ -28,6 +28,10 @@ using static StudentElection.G;
 using StudentElection.Services;
 using StudentElection.Repository.Models;
 using StudentElection.Dialogs;
+using System.Windows.Interop;
+using System.Runtime.InteropServices;
+using Project.Library.Services.Cryptography;
+using Project.Library.Helpers;
 
 namespace StudentElection.Main
 {
@@ -45,6 +49,9 @@ namespace StudentElection.Main
         private readonly BallotService _ballotService = new BallotService();
 
         private ElectionModel _currentElection;
+
+        [DllImport("user32.dll")]
+        private static extern int SetWindowLong(HandleRef hWnd, int nIndex, int dwNewLong);
 
         public MainWindow()
         {
@@ -66,7 +73,7 @@ namespace StudentElection.Main
         {
             _currentElection = await _electionService.GetCurrentElectionAsync();
 
-            try
+            if (_currentElection != null)
             {
                 if (_currentElection.ClosedAt.HasValue)
                 {
@@ -90,23 +97,22 @@ namespace StudentElection.Main
                     }
                 }
 
-                this.Title = $"{ Properties.Settings.Default.SystemTitle } • { (_currentElection.ServerTag.IsBlank() ? "(No tag)" : _currentElection.ServerTag) }";
-
-                //var fileName = "D:/Videos/New Text Document.txt";
-                //FileSecurity fSecurity = File.GetAccessControl(fileName);
-
-                //fSecurity.AddAccessRule(new FileSystemAccessRule("Everyone", FileSystemRights.ReadData, AccessControlType.Allow));
-
-                //File.SetAccessControl(fileName, fSecurity);
-                //DB.LoadData();
+                this.Title = $"{ _currentElection.Title } • { (_currentElection.ServerTag.IsBlank() ? "(No tag)" : _currentElection.ServerTag) }";
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                this.Title = "Student Election System";
 
-                Close();
+                grdNoElection.Visibility = Visibility.Visible;
             }
 
+            //var fileName = "D:/Videos/New Text Document.txt";
+            //FileSecurity fSecurity = File.GetAccessControl(fileName);
+
+            //fSecurity.AddAccessRule(new FileSystemAccessRule("Everyone", FileSystemRights.ReadData, AccessControlType.Allow));
+
+            //File.SetAccessControl(fileName, fSecurity);
+            //DB.LoadData();
         }
 
         //private bool LicenseException(License license)
@@ -216,7 +222,7 @@ namespace StudentElection.Main
         {
             try
             {
-                WaitLang(this);
+                G.WaitLang(this);
                 
                 var user = await _userService.LogInAsync(txtUsername.Text, pwdMaintenance.SecurePassword);
 
@@ -233,7 +239,7 @@ namespace StudentElection.Main
                     return;
                 }
 
-                EndWait(this);
+                G.EndWait(this);
                 MessageBox.Show("Invalid username or password", "Log In".ToTitleCase(), MessageBoxButton.OK, MessageBoxImage.Error);
 
                 txtUsername.Clear();
@@ -243,17 +249,29 @@ namespace StudentElection.Main
             }
             catch (Exception ex)
             {
-                EndWait(this);
+                Logger.LogError(ex);
 
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                G.EndWait(this);
+
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 
         private async void btnVote_Click(object sender, RoutedEventArgs e)
         {
             G.WaitLang(this);
+
             try
             {
+                if (_currentElection.TookPlaceOn > DateTime.Today)
+                {
+                    MessageBox.Show("You cannot vote for a future election", "Future election", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    G.EndWait(this);
+                    
+                    return;
+                }
+
                 bool isValid = false;
                 var voter = await _voterService.GetVoterByVinAsync(_currentElection.Id, txtStudentId.Text);
                 if (voter != null)
@@ -278,16 +296,18 @@ namespace StudentElection.Main
                 else
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Invalid Voter ID", Properties.Settings.Default.SystemTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Invalid Voter ID", _currentElection.Title, MessageBoxButton.OK, MessageBoxImage.Error);
 
                     txtStudentId.Focus();
                 }
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
+
                 G.EndWait(this);
 
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 
@@ -298,10 +318,29 @@ namespace StudentElection.Main
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Title = "Loading...";
+            G.WaitLang(this);
 
-            await SetCurrentElectionAsync();
+            try
+            {
+                this.Title = "Loading...";
+            
+                await SetCurrentElectionAsync();
 
+                G.EndWait(this);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+
+                G.EndWait(this);
+
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+            }
+
+            this.Focus();
+
+            this.Topmost = true;
+            this.Topmost = false;
 
             //dockMain.Visibility = Visibility.Collapsed;
             //grdLicense.Visibility = Visibility.Collapsed;
@@ -379,7 +418,7 @@ namespace StudentElection.Main
 
             //    dockMain.Visibility = Visibility.Collapsed;
 
-            //    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+            //    MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             //    Environment.Exit(0);
             //}
         }
@@ -513,7 +552,7 @@ namespace StudentElection.Main
         {
             var info = new StringBuilder();
             info.AppendLine("STUDENT ELECTION SYSTEM");
-            info.AppendLine("version 1.2.0");
+            info.AppendLine("version 1.3.0");
             info.AppendLine();
             info.AppendLine();
             info.AppendLine("© 2019 Albert Francisco");
@@ -524,13 +563,6 @@ namespace StudentElection.Main
             //info.AppendLine("  https://github.com/dnauck/Portable.Licensing");
 
             MessageBox.Show(info.ToString(), "Software Info", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void btnConnectToServer_Click(object sender, RoutedEventArgs e)
-        {
-            var window = new ServerSetupWindow();
-            window.Owner = this;
-            window.ShowDialog();
         }
     }
 }

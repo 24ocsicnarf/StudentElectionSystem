@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using StudentElection.Services;
 using StudentElection.Repository.Models;
+using Project.Library.Helpers;
 
 namespace StudentElection.Dialogs
 {
@@ -291,6 +292,17 @@ namespace StudentElection.Dialogs
             {
                 try
                 {
+                    string existingImageFile = null;
+                    if (Candidate.PictureFileName != null)
+                    {
+                        existingImageFile = System.IO.Path.Combine(App.ImageFolderPath, Candidate.PictureFileName);
+                    }
+
+                    if (existingImageFile != null && System.IO.File.Exists(existingImageFile))
+                    {
+                        System.IO.File.Delete(existingImageFile);
+                    }
+
                     await _candidateService.DeleteCandidateAsync(Candidate);
 
                     IsDeleted = true;
@@ -299,16 +311,9 @@ namespace StudentElection.Dialogs
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    Logger.LogError(ex);
 
-                    if (Application.MessageLoop)
-                    {
-                        Application.Exit();
-                    }
-                    else
-                    {
-                        Environment.Exit(1);
-                    }
+                    MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 }
             }
         }

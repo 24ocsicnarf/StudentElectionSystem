@@ -22,50 +22,5 @@ namespace StudentElection.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2Pd4HdP52snJ")]
-        public string ReportWorksheetPW {
-            get {
-                return ((string)(this["ReportWorksheetPW"]));
-            }
-            set {
-                this["ReportWorksheetPW"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Xx3s47hFEtu2")]
-        public string WorkbookPW {
-            get {
-                return ((string)(this["WorkbookPW"]));
-            }
-            set {
-                this["WorkbookPW"] = value;
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Student Election System")]
-        public string SystemTitle {
-            get {
-                return ((string)(this["SystemTitle"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=\"D:\\Documents\\Visual Studio 2017\\RW " +
-            "Projects\\StudentElection - Client-Server\\StudentElection.MSAccess\\StudentElectio" +
-            "n.mdb\";Persist Security Info=True")]
-        public string StudentElectionConnectionString {
-            get {
-                return ((string)(this["StudentElectionConnectionString"]));
-            }
-        }
     }
 }

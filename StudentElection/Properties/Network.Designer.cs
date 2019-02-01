@@ -13,11 +13,11 @@ namespace StudentElection.Properties {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0")]
-    internal sealed partial class Database : global::System.Configuration.ApplicationSettingsBase {
+    internal sealed partial class Network : global::System.Configuration.ApplicationSettingsBase {
         
-        private static Database defaultInstance = ((Database)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Database())));
+        private static Network defaultInstance = ((Network)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Network())));
         
-        public static Database Default {
+        public static Network Default {
             get {
                 return defaultInstance;
             }
@@ -25,25 +25,25 @@ namespace StudentElection.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("file")]
-        public string DatabaseType {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string NetworkFolderAddress {
             get {
-                return ((string)(this["DatabaseType"]));
+                return ((string)(this["NetworkFolderAddress"]));
             }
             set {
-                this["DatabaseType"] = value;
+                this["NetworkFolderAddress"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ServerLocation {
+        public string NetworkFolderName {
             get {
-                return ((string)(this["ServerLocation"]));
+                return ((string)(this["NetworkFolderName"]));
             }
             set {
-                this["ServerLocation"] = value;
+                this["NetworkFolderName"] = value;
             }
         }
     }

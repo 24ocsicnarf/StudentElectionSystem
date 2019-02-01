@@ -1,5 +1,6 @@
 ﻿//using StudentElection.Classes;
 using Humanizer;
+using Project.Library.Helpers;
 using StudentElection;
 using StudentElection.Repository.Models;
 using StudentElection.Services;
@@ -84,21 +85,21 @@ namespace StudentElection.Dialogs
 
             if (txtName.Text.IsBlank())
             {
-                MessageBox.Show("Please provide the name of the party.", "No Party Name", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please provide the name of the party.", "No party name", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtName.Focus();
 
                 return;
             }
             if (txtAbbreviation.Text.IsBlank())
             {
-                MessageBox.Show("Please provide an abbreviation of the party.", "No Abbreviation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please provide the short name of the party.", "No short name", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtAbbreviation.Focus();
 
                 return;
             }
             if (txtName.Text.Length <= txtAbbreviation.Text.Length)
             {
-                MessageBox.Show("The abbreviation of the party must be shorter than its name.", "Party", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("The short name of the party must be shorter than its actual name.", "Party", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtAbbreviation.Focus();
 
                 return;
@@ -117,7 +118,7 @@ namespace StudentElection.Dialogs
                 if (rows.Count() > 0)
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Name of this party has already been used.", "Party name in us".ToTitleCase(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Name of this party has already been used", "Party name in use", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txtName.Focus();
 
                     return;
@@ -127,7 +128,7 @@ namespace StudentElection.Dialogs
                 if (rows.Count() > 0 && Party == null)
                 {
                     G.EndWait(this);
-                    MessageBox.Show("The short name has already been used.", "Abbreviation in Use".ToTitleCase(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The short name has already been used", "Short name in use", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txtAbbreviation.Focus();
 
                     return;
@@ -175,17 +176,11 @@ namespace StudentElection.Dialogs
             }
             catch (Exception ex)
             {
-                G.EndWait(this);
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                Logger.LogError(ex);
 
-                if (Application.MessageLoop)
-                {
-                    Application.Exit();
-                }
-                else
-                {
-                    Environment.Exit(1);
-                }
+                G.EndWait(this);
+
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
         }
 
@@ -220,16 +215,10 @@ namespace StudentElection.Dialogs
                 catch (Exception ex)
                 {
                     G.EndWait(this);
-                    MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
 
-                    if (Application.MessageLoop)
-                    {
-                        Application.Exit();
-                    }
-                    else
-                    {
-                        Environment.Exit(1);
-                    }
+                    Logger.LogError(ex);
+
+                    MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 }
             }
         }

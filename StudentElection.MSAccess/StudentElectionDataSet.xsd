@@ -4,12 +4,12 @@
     <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
       <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
         <Connections>
-          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="StudentElectionConnectionString1" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="StudentElectionConnectionString1 (Settings)" PropertyReference="ApplicationSettings.StudentElection.MSAccess.Properties.Settings.GlobalReference.Default.StudentElectionConnectionString1" Provider="System.Data.OleDb" />
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="StudentElectionConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="StudentElectionConnectionString (Settings)" PropertyReference="ApplicationSettings.StudentElection.MSAccess.Properties.Settings.GlobalReference.Default.StudentElectionConnectionString" Provider="System.Data.OleDb" />
         </Connections>
         <Tables>
           <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="UserTableAdapter" GeneratorDataComponentClassName="UserTableAdapter" Name="User" UserDataComponentName="UserTableAdapter">
             <MainSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="[User]" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="[User]" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
                 <DeleteCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>DELETE FROM [User]
@@ -73,7 +73,16 @@ WHERE        (ID = ?)</CommandText>
               <Mapping SourceColumn="PasswordHash" DataSetColumn="PasswordHash" />
             </Mappings>
             <Sources>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="[User]" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillBy" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetUser" GeneratorSourceName="FillBy" GetMethodModifier="Public" GetMethodName="GetUser" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetUser" UserSourceName="FillBy">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountUsersQuery" Modifier="Public" Name="CountUsersQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountUsersQuery">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT        COUNT(*) AS Expr1
+FROM            [User]</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="[User]" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillBy" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetUser" GeneratorSourceName="FillBy" GetMethodModifier="Public" GetMethodName="GetUser" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetUser" UserSourceName="FillBy">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        ID AS Expr1, FirstName, MiddleName, LastName, Suffix, Sex, Type, UserName, PasswordHash
@@ -85,7 +94,7 @@ WHERE        (ID = [@id])</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="[User]" DbObjectType="Table" GenerateMethods="Get" GenerateShortCommands="true" GeneratorGetMethodName="GetUsersByUsername" GeneratorSourceName="FillBy" GetMethodModifier="Public" GetMethodName="GetUsersByUsername" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetUsersByUsername" UserSourceName="GetUsersByUsername">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="[User]" DbObjectType="Table" GenerateMethods="Get" GenerateShortCommands="true" GeneratorGetMethodName="GetUsersByUsername" GeneratorSourceName="FillBy" GetMethodModifier="Public" GetMethodName="GetUsersByUsername" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetUsersByUsername" UserSourceName="GetUsersByUsername">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT FirstName, ID AS Expr1, LastName, MiddleName, PasswordHash, Sex, Suffix, Type, UserName FROM [User] WHERE (UserName = [@username])</CommandText>
@@ -99,7 +108,7 @@ WHERE        (ID = [@id])</CommandText>
           </TableAdapter>
           <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="PositionTableAdapter" GeneratorDataComponentClassName="PositionTableAdapter" Name="Position" UserDataComponentName="PositionTableAdapter">
             <MainSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="[Position]" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="[Position]" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
                 <DeleteCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>DELETE FROM [Position]
@@ -158,7 +167,7 @@ WHERE        (ID = ?)</CommandText>
               <Mapping SourceColumn="YearLevel" DataSetColumn="YearLevel" />
             </Mappings>
             <Sources>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountPositionsQuery" Modifier="Public" Name="CountPositionsQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountPositionsQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountPositionsQuery" Modifier="Public" Name="CountPositionsQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountPositionsQuery">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        COUNT(*) AS Expr1
@@ -170,7 +179,7 @@ WHERE        (ElectionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="[Position]" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillBy" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetPositions" GeneratorSourceName="FillBy" GetMethodModifier="Public" GetMethodName="GetPositions" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetPositions" UserSourceName="FillBy">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="[Position]" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillBy" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetPositions" GeneratorSourceName="FillBy" GetMethodModifier="Public" GetMethodName="GetPositions" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetPositions" UserSourceName="FillBy">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT ElectionId, ID, Rank, Title, WinnersCount, YearLevel FROM [Position] WHERE (ID = ?)</CommandText>
@@ -180,7 +189,7 @@ WHERE        (ElectionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="[Position]" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillPositionsByTitle" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetPositionsByTitle" GeneratorSourceName="FillPositionsByTitle" GetMethodModifier="Public" GetMethodName="GetPositionsByTitle" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetPositionsByTitle" UserSourceName="FillPositionsByTitle">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="[Position]" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillPositionsByTitle" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetPositionsByTitle" GeneratorSourceName="FillPositionsByTitle" GetMethodModifier="Public" GetMethodName="GetPositionsByTitle" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetPositionsByTitle" UserSourceName="FillPositionsByTitle">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT ElectionId, ID, Rank, Title, WinnersCount, YearLevel FROM [Position] WHERE (ElectionId = ?) AND (Title = ?) ORDER BY Rank</CommandText>
@@ -191,7 +200,7 @@ WHERE        (ElectionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="[Position]" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillPositionsByYearLevel" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetPositionsByYearLevel" GeneratorSourceName="FillPositionsByYearLevel" GetMethodModifier="Public" GetMethodName="GetPositionsByYearLevel" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetPositionsByYearLevel" UserSourceName="FillPositionsByYearLevel">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="[Position]" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillPositionsByYearLevel" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetPositionsByYearLevel" GeneratorSourceName="FillPositionsByYearLevel" GetMethodModifier="Public" GetMethodName="GetPositionsByYearLevel" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetPositionsByYearLevel" UserSourceName="FillPositionsByYearLevel">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        ID, Title, WinnersCount, Rank, ElectionId, YearLevel
@@ -206,7 +215,7 @@ ORDER BY Rank</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="UpdateRankQuery" Modifier="Public" Name="UpdateRankQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy1" UserSourceName="UpdateRankQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="UpdateRankQuery" Modifier="Public" Name="UpdateRankQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy1" UserSourceName="UpdateRankQuery">
                 <UpdateCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>UPDATE       [Position]
@@ -223,7 +232,7 @@ WHERE        (ID = ?)</CommandText>
           </TableAdapter>
           <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="PartyTableAdapter" GeneratorDataComponentClassName="PartyTableAdapter" Name="Party" UserDataComponentName="PartyTableAdapter">
             <MainSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Party" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Party" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
                 <DeleteCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>DELETE FROM Party
@@ -278,7 +287,7 @@ WHERE        (ID = ?)</CommandText>
               <Mapping SourceColumn="Argb" DataSetColumn="Argb" />
             </Mappings>
             <Sources>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountPartiesQuery" Modifier="Public" Name="CountPartiesQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountPartiesQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountPartiesQuery" Modifier="Public" Name="CountPartiesQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountPartiesQuery">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        COUNT(*) AS Expr1
@@ -290,7 +299,7 @@ WHERE        (ElectionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Party" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillBy" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetParties" GeneratorSourceName="FillBy" GetMethodModifier="Public" GetMethodName="GetParties" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetParties" UserSourceName="FillBy">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Party" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillBy" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetParties" GeneratorSourceName="FillBy" GetMethodModifier="Public" GetMethodName="GetParties" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetParties" UserSourceName="FillBy">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT Argb, ElectionId, ID, ShortName, Title FROM Party WHERE (ID = ?)</CommandText>
@@ -304,7 +313,7 @@ WHERE        (ElectionId = ?)</CommandText>
           </TableAdapter>
           <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="CandidateTableAdapter" GeneratorDataComponentClassName="CandidateTableAdapter" Name="Candidate" UserDataComponentName="CandidateTableAdapter">
             <MainSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Candidate" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Candidate" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
                 <DeleteCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>DELETE FROM Candidate
@@ -380,7 +389,7 @@ WHERE        (ID = ?)</CommandText>
               <Mapping SourceColumn="PartyId" DataSetColumn="PartyId" />
             </Mappings>
             <Sources>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Party" DbObjectType="Table" GenerateShortCommands="true" GeneratorSourceName="CountCandidateQuery" Modifier="Public" Name="CountCandidateQuery" QueryType="Scalar" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountCandidateQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Party" DbObjectType="Table" GenerateShortCommands="true" GeneratorSourceName="CountCandidateQuery" Modifier="Public" Name="CountCandidateQuery" QueryType="Scalar" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountCandidateQuery">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        COUNT(*) AS Expr1, Party.ElectionId
@@ -395,7 +404,7 @@ HAVING        (Party.ElectionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillCandidateDetails" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidateDetails" GeneratorSourceName="FillCandidateDetails" GetMethodModifier="Public" GetMethodName="GetCandidateDetails" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidateDetails" UserSourceName="FillCandidateDetails">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillCandidateDetails" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidateDetails" GeneratorSourceName="FillCandidateDetails" GetMethodModifier="Public" GetMethodName="GetCandidateDetails" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidateDetails" UserSourceName="FillCandidateDetails">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
@@ -411,7 +420,7 @@ WHERE        (Candidate.ID = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillCandidateDetailsListByParty" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidateDetailsListByParty" GeneratorSourceName="FillCandidateDetailsListByParty" GetMethodModifier="Public" GetMethodName="GetCandidateDetailsListByParty" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidateDetailsListByParty" UserSourceName="FillCandidateDetailsListByParty">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillCandidateDetailsListByParty" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidateDetailsListByParty" GeneratorSourceName="FillCandidateDetailsListByParty" GetMethodModifier="Public" GetMethodName="GetCandidateDetailsListByParty" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidateDetailsListByParty" UserSourceName="FillCandidateDetailsListByParty">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
@@ -428,7 +437,7 @@ ORDER BY [Position].Rank</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillCandidateDetailsListByPosition" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidateDetailsListByPosition" GeneratorSourceName="FillCandidateDetailsListByPosition" GetMethodModifier="Public" GetMethodName="GetCandidateDetailsListByPosition" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidateDetailsListByPosition" UserSourceName="FillCandidateDetailsListByPosition">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillCandidateDetailsListByPosition" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidateDetailsListByPosition" GeneratorSourceName="FillCandidateDetailsListByPosition" GetMethodModifier="Public" GetMethodName="GetCandidateDetailsListByPosition" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidateDetailsListByPosition" UserSourceName="FillCandidateDetailsListByPosition">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
@@ -444,7 +453,7 @@ WHERE        (Candidate.PositionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillCandidatesByAlias" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidatesByAlias" GeneratorSourceName="FillCandidatesByAlias" GetMethodModifier="Public" GetMethodName="GetCandidatesByAlias" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidatesByAlias" UserSourceName="FillCandidatesByAlias">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillCandidatesByAlias" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCandidatesByAlias" GeneratorSourceName="FillCandidatesByAlias" GetMethodModifier="Public" GetMethodName="GetCandidatesByAlias" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCandidatesByAlias" UserSourceName="FillCandidatesByAlias">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        Candidate.ID, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.Sex, Candidate.Birthdate, Candidate.YearLevel, Candidate.[Section], Candidate.Alias, Candidate.PictureFileName, 
@@ -464,7 +473,7 @@ WHERE         (Party.ElectionId = ?) AND (Candidate.Alias = ?)</CommandText>
           </TableAdapter>
           <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="VoterTableAdapter" GeneratorDataComponentClassName="VoterTableAdapter" Name="Voter" UserDataComponentName="VoterTableAdapter">
             <MainSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Voter" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Voter" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
                 <DeleteCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>DELETE FROM Voter
@@ -537,7 +546,7 @@ WHERE        (ID = ?)</CommandText>
               <Mapping SourceColumn="MiddleName" DataSetColumn="MiddleName" />
             </Mappings>
             <Sources>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountVotedVotersQuery" Modifier="Public" Name="CountVotedVotersQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountVotedVotersQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CountVotedVotersQuery" Modifier="Public" Name="CountVotedVotersQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CountVotedVotersQuery">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        COUNT(*) AS [Count]
@@ -551,7 +560,7 @@ HAVING        (Voter.ElectionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Voter" DbObjectType="Table" GenerateShortCommands="true" GeneratorSourceName="CountVotersQuery" Modifier="Public" Name="CountVotersQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy1" UserSourceName="CountVotersQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Voter" DbObjectType="Table" GenerateShortCommands="true" GeneratorSourceName="CountVotersQuery" Modifier="Public" Name="CountVotersQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy1" UserSourceName="CountVotersQuery">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        COUNT(*) AS Expr1, ElectionId
@@ -564,7 +573,7 @@ HAVING        (ElectionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillVoterDetailsList" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetVoterDetailsList" GeneratorSourceName="FillVoterDetailsList" GetMethodModifier="Public" GetMethodName="GetVoterDetailsList" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetVoterDetailsList" UserSourceName="FillVoterDetailsList">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillVoterDetailsList" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetVoterDetailsList" GeneratorSourceName="FillVoterDetailsList" GetMethodModifier="Public" GetMethodName="GetVoterDetailsList" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetVoterDetailsList" UserSourceName="FillVoterDetailsList">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        Voter.ID, Voter.FirstName, Voter.MiddleName, Voter.LastName, Voter.Suffix, Voter.Sex, Voter.Birthdate, Voter.Vin, Voter.YearLevel, Voter.[Section], Voter.ElectionId, Ballot.ID AS BallotId, Ballot.Code AS BallotCode, 
@@ -578,7 +587,7 @@ WHERE        (Voter.ElectionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Voter" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillVotersById" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetVotersById" GeneratorSourceName="FillVotersById" GetMethodModifier="Public" GetMethodName="GetVotersById" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetVotersById" UserSourceName="FillVotersById">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Voter" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillVotersById" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetVotersById" GeneratorSourceName="FillVotersById" GetMethodModifier="Public" GetMethodName="GetVotersById" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetVotersById" UserSourceName="FillVotersById">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT Birthdate, ElectionId, FirstName, ID, LastName, MiddleName, [Section], Sex, Suffix, Vin, YearLevel FROM Voter WHERE (ID = ?)</CommandText>
@@ -588,7 +597,7 @@ WHERE        (Voter.ElectionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Voter" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillVotersByVin" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetVotersByVin" GeneratorSourceName="FillVotersByVin" GetMethodModifier="Public" GetMethodName="GetVotersByVin" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetVotersByVin" UserSourceName="FillVotersByVin">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Voter" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillVotersByVin" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetVotersByVin" GeneratorSourceName="FillVotersByVin" GetMethodModifier="Public" GetMethodName="GetVotersByVin" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetVotersByVin" UserSourceName="FillVotersByVin">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT Birthdate, ElectionId, FirstName, ID, LastName, MiddleName, [Section], Sex, Suffix, Vin, YearLevel FROM Voter WHERE (Vin = ?) AND (ElectionId = ?)</CommandText>
@@ -603,7 +612,7 @@ WHERE        (Voter.ElectionId = ?)</CommandText>
           </TableAdapter>
           <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="BallotTableAdapter" GeneratorDataComponentClassName="BallotTableAdapter" Name="Ballot" UserDataComponentName="BallotTableAdapter">
             <MainSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Ballot" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Ballot" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
                 <DeleteCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="false">
                     <CommandText>DELETE FROM `Ballot` WHERE ((`ID` = ?) AND ((? = 1 AND `Code` IS NULL) OR (`Code` = ?)) AND ((? = 1 AND `EnteredAt` IS NULL) OR (`EnteredAt` = ?)) AND ((? = 1 AND `CastedAt` IS NULL) OR (`CastedAt` = ?)) AND ((? = 1 AND `VoterId` IS NULL) OR (`VoterId` = ?)))</CommandText>
@@ -668,7 +677,7 @@ FROM            Ballot</CommandText>
               <Mapping SourceColumn="VoterId" DataSetColumn="VoterId" />
             </Mappings>
             <Sources>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CastBallotQuery" Modifier="Public" Name="CastBallotQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CastBallotQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CastBallotQuery" Modifier="Public" Name="CastBallotQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CastBallotQuery">
                 <UpdateCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>UPDATE       Ballot
@@ -681,7 +690,7 @@ WHERE        (ID = ?)</CommandText>
                   </DbCommand>
                 </UpdateCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Voter" DbObjectType="Table" GenerateShortCommands="true" GeneratorSourceName="CountBallotsQuery" Modifier="Public" Name="CountBallotsQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy1" UserSourceName="CountBallotsQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Voter" DbObjectType="Table" GenerateShortCommands="true" GeneratorSourceName="CountBallotsQuery" Modifier="Public" Name="CountBallotsQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy1" UserSourceName="CountBallotsQuery">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        COUNT(*) AS Expr1, Voter.ElectionId
@@ -695,7 +704,7 @@ HAVING        (Voter.ElectionId = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Ballot" DbObjectType="Table" GenerateShortCommands="true" GeneratorSourceName="CountCastedBallotsQuery" Modifier="Public" Name="CountCastedBallotsQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy2" UserSourceName="CountCastedBallotsQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Ballot" DbObjectType="Table" GenerateShortCommands="true" GeneratorSourceName="CountCastedBallotsQuery" Modifier="Public" Name="CountCastedBallotsQuery" QueryType="Scalar" ScalarCallRetval="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy2" UserSourceName="CountCastedBallotsQuery">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        COUNT(*) AS Expr1, VoterId, CastedAt
@@ -708,7 +717,7 @@ HAVING        (VoterId = ?) AND (CastedAt IS NOT NULL)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Ballot" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillBallotsById" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetBallotsById" GeneratorSourceName="FillBallotsById" GetMethodModifier="Public" GetMethodName="GetBallotsById" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetBallotsById" UserSourceName="FillBallotsById">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Ballot" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillBallotsById" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetBallotsById" GeneratorSourceName="FillBallotsById" GetMethodModifier="Public" GetMethodName="GetBallotsById" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetBallotsById" UserSourceName="FillBallotsById">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        ID, Code, EnteredAt, CastedAt, VoterId
@@ -720,7 +729,7 @@ WHERE        (ID = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Ballot" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillBallotsByVin" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetBallotsByVin" GeneratorSourceName="FillBallotsByVin" GetMethodModifier="Public" GetMethodName="GetBallotsByVin" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetBallotsByVin" UserSourceName="FillBallotsByVin">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Ballot" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillBallotsByVin" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetBallotsByVin" GeneratorSourceName="FillBallotsByVin" GetMethodModifier="Public" GetMethodName="GetBallotsByVin" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetBallotsByVin" UserSourceName="FillBallotsByVin">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        Ballot.ID, Ballot.Code, Ballot.EnteredAt, Ballot.CastedAt, Ballot.VoterId
@@ -734,7 +743,7 @@ WHERE         (Voter.ElectionId = ?) AND (Voter.Vin = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillVoteResults" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetVoteResults" GeneratorSourceName="FillVoteResults" GetMethodModifier="Public" GetMethodName="GetVoteResults" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetVoteResults" UserSourceName="FillVoteResults">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="FillVoteResults" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetVoteResults" GeneratorSourceName="FillVoteResults" GetMethodModifier="Public" GetMethodName="GetVoteResults" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetVoteResults" UserSourceName="FillVoteResults">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        Candidate.ID AS CandidateId, Candidate.FirstName, Candidate.MiddleName, Candidate.LastName, Candidate.Suffix, Candidate.YearLevel, Candidate.[Section], Candidate.Birthdate, Candidate.Sex, Candidate.PartyId, 
@@ -755,7 +764,7 @@ HAVING        (Election.ID = ?)</CommandText>
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="SetBallotCodeQuery" Modifier="Public" Name="SetBallotCodeQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy3" UserSourceName="SetBallotCodeQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="SetBallotCodeQuery" Modifier="Public" Name="SetBallotCodeQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy3" UserSourceName="SetBallotCodeQuery">
                 <UpdateCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>UPDATE       Ballot
@@ -772,7 +781,7 @@ WHERE        (ID = ?)</CommandText>
           </TableAdapter>
           <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="VoteTableAdapter" GeneratorDataComponentClassName="VoteTableAdapter" Name="Vote" UserDataComponentName="VoteTableAdapter">
             <MainSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Vote" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Vote" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
                 <DeleteCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="false">
                     <CommandText>DELETE FROM `Vote` WHERE ((`ID` = ?) AND ((? = 1 AND `BallotId` IS NULL) OR (`BallotId` = ?)) AND ((? = 1 AND `CandidateId` IS NULL) OR (`CandidateId` = ?)))</CommandText>
@@ -826,13 +835,24 @@ FROM            Vote</CommandText>
           </TableAdapter>
           <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="ElectionTableAdapter" GeneratorDataComponentClassName="ElectionTableAdapter" Name="Election" UserDataComponentName="ElectionTableAdapter">
             <MainSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Election" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Election" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
                 <DeleteCommand>
-                  <DbCommand CommandType="Text" ModifiedByUser="true">
-                    <CommandText>DELETE FROM Election
-WHERE        (ID = ?)</CommandText>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>DELETE FROM `Election` WHERE ((`ID` = ?) AND ((? = 1 AND `Title` IS NULL) OR (`Title` = ?)) AND ((? = 1 AND `Description` IS NULL) OR (`Description` = ?)) AND ((? = 1 AND `TookPlaceOn` IS NULL) OR (`TookPlaceOn` = ?)) AND ((? = 1 AND `CandidatesFinalizedAt` IS NULL) OR (`CandidatesFinalizedAt` = ?)) AND ((? = 1 AND `ClosedAt` IS NULL) OR (`ClosedAt` = ?)) AND ((? = 1 AND `ServerTag` IS NULL) OR (`ServerTag` = ?)))</CommandText>
                     <Parameters>
-                      <Parameter AllowDbNull="false" AutogeneratedName="Param1" ColumnName="ID" DataSourceName="Election" DataTypeServer="DbType.Int32" DbType="Int32" Direction="Input" ParameterName="ID" Precision="0" ProviderType="Integer" Scale="0" Size="0" SourceColumn="ID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="Original_ID" Precision="0" ProviderType="Integer" Scale="0" Size="0" SourceColumn="ID" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="IsNull_Title" Precision="0" ProviderType="Integer" Scale="0" Size="0" SourceColumn="Title" SourceColumnNullMapping="true" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="String" Direction="Input" ParameterName="Original_Title" Precision="0" ProviderType="VarWChar" Scale="0" Size="0" SourceColumn="Title" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="IsNull_Description" Precision="0" ProviderType="Integer" Scale="0" Size="0" SourceColumn="Description" SourceColumnNullMapping="true" SourceVersion="Original" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="String" Direction="Input" ParameterName="Original_Description" Precision="0" ProviderType="VarWChar" Scale="0" Size="0" SourceColumn="Description" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="IsNull_TookPlaceOn" Precision="0" ProviderType="Integer" Scale="0" Size="0" SourceColumn="TookPlaceOn" SourceColumnNullMapping="true" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="DateTime" Direction="Input" ParameterName="Original_TookPlaceOn" Precision="0" ProviderType="Date" Scale="0" Size="0" SourceColumn="TookPlaceOn" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="IsNull_CandidatesFinalizedAt" Precision="0" ProviderType="Integer" Scale="0" Size="0" SourceColumn="CandidatesFinalizedAt" SourceColumnNullMapping="true" SourceVersion="Original" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="DateTime" Direction="Input" ParameterName="Original_CandidatesFinalizedAt" Precision="0" ProviderType="Date" Scale="0" Size="0" SourceColumn="CandidatesFinalizedAt" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="IsNull_ClosedAt" Precision="0" ProviderType="Integer" Scale="0" Size="0" SourceColumn="ClosedAt" SourceColumnNullMapping="true" SourceVersion="Original" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="" DataSourceName="" DbType="DateTime" Direction="Input" ParameterName="Original_ClosedAt" Precision="0" ProviderType="Date" Scale="0" Size="0" SourceColumn="ClosedAt" SourceColumnNullMapping="false" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="Int32" Direction="Input" ParameterName="IsNull_ServerTag" Precision="0" ProviderType="Integer" Scale="0" Size="0" SourceColumn="ServerTag" SourceColumnNullMapping="true" SourceVersion="Original" />
+                      <Parameter AllowDbNull="false" AutogeneratedName="" DataSourceName="" DbType="String" Direction="Input" ParameterName="Original_ServerTag" Precision="0" ProviderType="VarWChar" Scale="0" Size="0" SourceColumn="ServerTag" SourceColumnNullMapping="false" SourceVersion="Original" />
                     </Parameters>
                   </DbCommand>
                 </DeleteCommand>
@@ -884,7 +904,7 @@ WHERE        (ID = ?)</CommandText>
               <Mapping SourceColumn="ServerTag" DataSetColumn="ServerTag" />
             </Mappings>
             <Sources>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CloseElectionQuery" Modifier="Public" Name="CloseElectionQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CloseElectionQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="CloseElectionQuery" Modifier="Public" Name="CloseElectionQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="CloseElectionQuery">
                 <UpdateCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>UPDATE       Election
@@ -897,17 +917,17 @@ WHERE        (ID = ?)</CommandText>
                   </DbCommand>
                 </UpdateCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="Election" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillCurrentElections" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCurrentElections" GeneratorSourceName="FillCurrentElections" GetMethodModifier="Public" GetMethodName="GetCurrentElections" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCurrentElections" UserSourceName="FillCurrentElections">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="Election" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="FillCurrentElections" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetCurrentElections" GeneratorSourceName="FillCurrentElections" GetMethodModifier="Public" GetMethodName="GetCurrentElections" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetCurrentElections" UserSourceName="FillCurrentElections">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
-                    <CommandText>SELECT        CandidatesFinalizedAt, ClosedAt, Description, ID, ServerTag, Title, TookPlaceOn
+                    <CommandText>SELECT        TOP 1 CandidatesFinalizedAt, ClosedAt, Description, ID, ServerTag, Title, TookPlaceOn
 FROM            Election
 ORDER BY TookPlaceOn DESC, ID DESC</CommandText>
                     <Parameters />
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="FinalizeCandidatesQuery" Modifier="Public" Name="FinalizeCandidatesQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy1" UserSourceName="FinalizeCandidatesQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="FinalizeCandidatesQuery" Modifier="Public" Name="FinalizeCandidatesQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy1" UserSourceName="FinalizeCandidatesQuery">
                 <UpdateCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>UPDATE       Election
@@ -920,14 +940,14 @@ WHERE        (ID = ?)</CommandText>
                   </DbCommand>
                 </UpdateCommand>
               </DbSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="UpdateServerTagQuery" Modifier="Public" Name="UpdateServerTagQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy2" UserSourceName="UpdateServerTagQuery">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="" DbObjectType="Unknown" GenerateShortCommands="true" GeneratorSourceName="UpdateServerTagQuery" Modifier="Public" Name="UpdateServerTagQuery" QueryType="NoData" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy2" UserSourceName="UpdateServerTagQuery">
                 <UpdateCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>UPDATE       Election
 SET                ServerTag = ?
 WHERE        (ID = ?)</CommandText>
                     <Parameters>
-                      <Parameter AllowDbNull="false" AutogeneratedName="Param1" ColumnName="ServerTag" DataSourceName="Election" DataTypeServer="DbType.StringFixedLength(255)" DbType="String" Direction="Input" ParameterName="ServerTag" Precision="0" ProviderType="WChar" Scale="0" Size="255" SourceColumn="ServerTag" SourceColumnNullMapping="false" SourceVersion="Current" />
+                      <Parameter AllowDbNull="true" AutogeneratedName="Param1" ColumnName="ServerTag" DataSourceName="Election" DataTypeServer="DbType.StringFixedLength(255)" DbType="String" Direction="Input" ParameterName="ServerTag" Precision="0" ProviderType="WChar" Scale="0" Size="255" SourceColumn="ServerTag" SourceColumnNullMapping="false" SourceVersion="Current" />
                       <Parameter AllowDbNull="false" AutogeneratedName="Param2" ColumnName="ID" DataSourceName="Election" DataTypeServer="DbType.Int32" DbType="Int32" Direction="Input" ParameterName="Original_ID" Precision="0" ProviderType="Integer" Scale="0" Size="0" SourceColumn="ID" SourceColumnNullMapping="false" SourceVersion="Original" />
                     </Parameters>
                   </DbCommand>
@@ -937,7 +957,7 @@ WHERE        (ID = ?)</CommandText>
           </TableAdapter>
           <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="VoteResultTableAdapter" GeneratorDataComponentClassName="VoteResultTableAdapter" Name="VoteResult" UserDataComponentName="VoteResultTableAdapter">
             <MainSource>
-              <DbSource ConnectionRef="StudentElectionConnectionString1 (Settings)" DbObjectName="VoteResult" DbObjectType="View" FillMethodModifier="Public" FillMethodName="FillVoteResults" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetVoteResults" GeneratorSourceName="FillVoteResults" GetMethodModifier="Public" GetMethodName="GetVoteResults" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetVoteResults" UserSourceName="FillVoteResults">
+              <DbSource ConnectionRef="StudentElectionConnectionString (Settings)" DbObjectName="VoteResult" DbObjectType="View" FillMethodModifier="Public" FillMethodName="FillVoteResults" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetVoteResults" GeneratorSourceName="FillVoteResults" GetMethodModifier="Public" GetMethodName="GetVoteResults" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetVoteResults" UserSourceName="FillVoteResults">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
                     <CommandText>SELECT        PositionRank, VoteCount, LastName, FirstName, Suffix, MiddleName, CandidateId, YearLevel, [Section], Birthdate, Sex, PartyId, PositionId, Alias, PictureFileName, PositionTitle, PartyTitle, PartyShortName, PartyArgb, ElectionId, 
@@ -985,7 +1005,7 @@ WHERE        (ElectionId = ?)</CommandText>
   <xs:element name="StudentElectionDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="StudentElectionDataSet" msprop:Generator_UserDSName="StudentElectionDataSet">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="User" msprop:Generator_TableClassName="UserDataTable" msprop:Generator_TableVarName="tableUser" msprop:Generator_TablePropName="User" msprop:Generator_RowDeletingName="UserRowDeleting" msprop:Generator_RowChangingName="UserRowChanging" msprop:Generator_RowEvHandlerName="UserRowChangeEventHandler" msprop:Generator_RowDeletedName="UserRowDeleted" msprop:Generator_UserTableName="User" msprop:Generator_RowChangedName="UserRowChanged" msprop:Generator_RowEvArgName="UserRowChangeEvent" msprop:Generator_RowClassName="UserRow">
+        <xs:element name="User" msprop:Generator_TableClassName="UserDataTable" msprop:Generator_TableVarName="tableUser" msprop:Generator_RowChangedName="UserRowChanged" msprop:Generator_TablePropName="User" msprop:Generator_RowDeletingName="UserRowDeleting" msprop:Generator_RowChangingName="UserRowChanging" msprop:Generator_RowEvHandlerName="UserRowChangeEventHandler" msprop:Generator_RowDeletedName="UserRowDeleted" msprop:Generator_RowClassName="UserRow" msprop:Generator_UserTableName="User" msprop:Generator_RowEvArgName="UserRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Id" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msdata:Caption="Expr1" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
@@ -1036,7 +1056,7 @@ WHERE        (ElectionId = ?)</CommandText>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Position" msprop:Generator_TableClassName="PositionDataTable" msprop:Generator_TableVarName="tablePosition" msprop:Generator_RowChangedName="PositionRowChanged" msprop:Generator_TablePropName="Position" msprop:Generator_RowDeletingName="PositionRowDeleting" msprop:Generator_RowChangingName="PositionRowChanging" msprop:Generator_RowEvHandlerName="PositionRowChangeEventHandler" msprop:Generator_RowDeletedName="PositionRowDeleted" msprop:Generator_RowClassName="PositionRow" msprop:Generator_UserTableName="Position" msprop:Generator_RowEvArgName="PositionRowChangeEvent">
+        <xs:element name="Position" msprop:Generator_TableClassName="PositionDataTable" msprop:Generator_TableVarName="tablePosition" msprop:Generator_TablePropName="Position" msprop:Generator_RowDeletingName="PositionRowDeleting" msprop:Generator_RowChangingName="PositionRowChanging" msprop:Generator_RowEvHandlerName="PositionRowChangeEventHandler" msprop:Generator_RowDeletedName="PositionRowDeleted" msprop:Generator_UserTableName="Position" msprop:Generator_RowChangedName="PositionRowChanged" msprop:Generator_RowEvArgName="PositionRowChangeEvent" msprop:Generator_RowClassName="PositionRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="ID" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:int" />
@@ -1054,7 +1074,7 @@ WHERE        (ElectionId = ?)</CommandText>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Party" msprop:Generator_TableClassName="PartyDataTable" msprop:Generator_TableVarName="tableParty" msprop:Generator_TablePropName="Party" msprop:Generator_RowDeletingName="PartyRowDeleting" msprop:Generator_RowChangingName="PartyRowChanging" msprop:Generator_RowEvHandlerName="PartyRowChangeEventHandler" msprop:Generator_RowDeletedName="PartyRowDeleted" msprop:Generator_UserTableName="Party" msprop:Generator_RowChangedName="PartyRowChanged" msprop:Generator_RowEvArgName="PartyRowChangeEvent" msprop:Generator_RowClassName="PartyRow">
+        <xs:element name="Party" msprop:Generator_TableClassName="PartyDataTable" msprop:Generator_TableVarName="tableParty" msprop:Generator_RowChangedName="PartyRowChanged" msprop:Generator_TablePropName="Party" msprop:Generator_RowDeletingName="PartyRowDeleting" msprop:Generator_RowChangingName="PartyRowChanging" msprop:Generator_RowEvHandlerName="PartyRowChangeEventHandler" msprop:Generator_RowDeletedName="PartyRowDeleted" msprop:Generator_RowClassName="PartyRow" msprop:Generator_UserTableName="Party" msprop:Generator_RowEvArgName="PartyRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="ID" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:int" />
@@ -1077,7 +1097,7 @@ WHERE        (ElectionId = ?)</CommandText>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Candidate" msprop:Generator_TableClassName="CandidateDataTable" msprop:Generator_TableVarName="tableCandidate" msprop:Generator_TablePropName="Candidate" msprop:Generator_RowDeletingName="CandidateRowDeleting" msprop:Generator_RowChangingName="CandidateRowChanging" msprop:Generator_RowEvHandlerName="CandidateRowChangeEventHandler" msprop:Generator_RowDeletedName="CandidateRowDeleted" msprop:Generator_UserTableName="Candidate" msprop:Generator_RowChangedName="CandidateRowChanged" msprop:Generator_RowEvArgName="CandidateRowChangeEvent" msprop:Generator_RowClassName="CandidateRow">
+        <xs:element name="Candidate" msprop:Generator_TableClassName="CandidateDataTable" msprop:Generator_TableVarName="tableCandidate" msprop:Generator_RowChangedName="CandidateRowChanged" msprop:Generator_TablePropName="Candidate" msprop:Generator_RowDeletingName="CandidateRowDeleting" msprop:Generator_RowChangingName="CandidateRowChanging" msprop:Generator_RowEvHandlerName="CandidateRowChangeEventHandler" msprop:Generator_RowDeletedName="CandidateRowDeleted" msprop:Generator_RowClassName="CandidateRow" msprop:Generator_UserTableName="Candidate" msprop:Generator_RowEvArgName="CandidateRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="ID" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:int" />
@@ -1138,7 +1158,7 @@ WHERE        (ElectionId = ?)</CommandText>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Voter" msprop:Generator_TableClassName="VoterDataTable" msprop:Generator_TableVarName="tableVoter" msprop:Generator_RowChangedName="VoterRowChanged" msprop:Generator_TablePropName="Voter" msprop:Generator_RowDeletingName="VoterRowDeleting" msprop:Generator_RowChangingName="VoterRowChanging" msprop:Generator_RowEvHandlerName="VoterRowChangeEventHandler" msprop:Generator_RowDeletedName="VoterRowDeleted" msprop:Generator_RowClassName="VoterRow" msprop:Generator_UserTableName="Voter" msprop:Generator_RowEvArgName="VoterRowChangeEvent">
+        <xs:element name="Voter" msprop:Generator_TableClassName="VoterDataTable" msprop:Generator_TableVarName="tableVoter" msprop:Generator_TablePropName="Voter" msprop:Generator_RowDeletingName="VoterRowDeleting" msprop:Generator_RowChangingName="VoterRowChanging" msprop:Generator_RowEvHandlerName="VoterRowChangeEventHandler" msprop:Generator_RowDeletedName="VoterRowDeleted" msprop:Generator_UserTableName="Voter" msprop:Generator_RowChangedName="VoterRowChanged" msprop:Generator_RowEvArgName="VoterRowChangeEvent" msprop:Generator_RowClassName="VoterRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="ID" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:int" />
@@ -1191,7 +1211,7 @@ WHERE        (ElectionId = ?)</CommandText>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Ballot" msprop:Generator_TableClassName="BallotDataTable" msprop:Generator_TableVarName="tableBallot" msprop:Generator_RowChangedName="BallotRowChanged" msprop:Generator_TablePropName="Ballot" msprop:Generator_RowDeletingName="BallotRowDeleting" msprop:Generator_RowChangingName="BallotRowChanging" msprop:Generator_RowEvHandlerName="BallotRowChangeEventHandler" msprop:Generator_RowDeletedName="BallotRowDeleted" msprop:Generator_RowClassName="BallotRow" msprop:Generator_UserTableName="Ballot" msprop:Generator_RowEvArgName="BallotRowChangeEvent">
+        <xs:element name="Ballot" msprop:Generator_TableClassName="BallotDataTable" msprop:Generator_TableVarName="tableBallot" msprop:Generator_TablePropName="Ballot" msprop:Generator_RowDeletingName="BallotRowDeleting" msprop:Generator_RowChangingName="BallotRowChanging" msprop:Generator_RowEvHandlerName="BallotRowChangeEventHandler" msprop:Generator_RowDeletedName="BallotRowDeleted" msprop:Generator_UserTableName="Ballot" msprop:Generator_RowChangedName="BallotRowChanged" msprop:Generator_RowEvArgName="BallotRowChangeEvent" msprop:Generator_RowClassName="BallotRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="ID" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:int" />
@@ -1208,7 +1228,7 @@ WHERE        (ElectionId = ?)</CommandText>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Vote" msprop:Generator_TableClassName="VoteDataTable" msprop:Generator_TableVarName="tableVote" msprop:Generator_RowChangedName="VoteRowChanged" msprop:Generator_TablePropName="Vote" msprop:Generator_RowDeletingName="VoteRowDeleting" msprop:Generator_RowChangingName="VoteRowChanging" msprop:Generator_RowEvHandlerName="VoteRowChangeEventHandler" msprop:Generator_RowDeletedName="VoteRowDeleted" msprop:Generator_RowClassName="VoteRow" msprop:Generator_UserTableName="Vote" msprop:Generator_RowEvArgName="VoteRowChangeEvent">
+        <xs:element name="Vote" msprop:Generator_TableClassName="VoteDataTable" msprop:Generator_TableVarName="tableVote" msprop:Generator_TablePropName="Vote" msprop:Generator_RowDeletingName="VoteRowDeleting" msprop:Generator_RowChangingName="VoteRowChanging" msprop:Generator_RowEvHandlerName="VoteRowChangeEventHandler" msprop:Generator_RowDeletedName="VoteRowDeleted" msprop:Generator_UserTableName="Vote" msprop:Generator_RowChangedName="VoteRowChanged" msprop:Generator_RowEvArgName="VoteRowChangeEvent" msprop:Generator_RowClassName="VoteRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="ID" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:int" />
@@ -1217,7 +1237,7 @@ WHERE        (ElectionId = ?)</CommandText>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Election" msprop:Generator_TableClassName="ElectionDataTable" msprop:Generator_TableVarName="tableElection" msprop:Generator_RowChangedName="ElectionRowChanged" msprop:Generator_TablePropName="Election" msprop:Generator_RowDeletingName="ElectionRowDeleting" msprop:Generator_RowChangingName="ElectionRowChanging" msprop:Generator_RowEvHandlerName="ElectionRowChangeEventHandler" msprop:Generator_RowDeletedName="ElectionRowDeleted" msprop:Generator_RowClassName="ElectionRow" msprop:Generator_UserTableName="Election" msprop:Generator_RowEvArgName="ElectionRowChangeEvent">
+        <xs:element name="Election" msprop:Generator_TableClassName="ElectionDataTable" msprop:Generator_TableVarName="tableElection" msprop:Generator_TablePropName="Election" msprop:Generator_RowDeletingName="ElectionRowDeleting" msprop:Generator_RowChangingName="ElectionRowChanging" msprop:Generator_RowEvHandlerName="ElectionRowChangeEventHandler" msprop:Generator_RowDeletedName="ElectionRowDeleted" msprop:Generator_UserTableName="Election" msprop:Generator_RowChangedName="ElectionRowChanged" msprop:Generator_RowEvArgName="ElectionRowChangeEvent" msprop:Generator_RowClassName="ElectionRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="ID" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:int" />
@@ -1248,7 +1268,7 @@ WHERE        (ElectionId = ?)</CommandText>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="VoteResult" msprop:Generator_TableClassName="VoteResultDataTable" msprop:Generator_TableVarName="tableVoteResult" msprop:Generator_RowChangedName="VoteResultRowChanged" msprop:Generator_TablePropName="VoteResult" msprop:Generator_RowDeletingName="VoteResultRowDeleting" msprop:Generator_RowChangingName="VoteResultRowChanging" msprop:Generator_RowEvHandlerName="VoteResultRowChangeEventHandler" msprop:Generator_RowDeletedName="VoteResultRowDeleted" msprop:Generator_RowClassName="VoteResultRow" msprop:Generator_UserTableName="VoteResult" msprop:Generator_RowEvArgName="VoteResultRowChangeEvent">
+        <xs:element name="VoteResult" msprop:Generator_TableClassName="VoteResultDataTable" msprop:Generator_TableVarName="tableVoteResult" msprop:Generator_TablePropName="VoteResult" msprop:Generator_RowDeletingName="VoteResultRowDeleting" msprop:Generator_RowChangingName="VoteResultRowChanging" msprop:Generator_RowEvHandlerName="VoteResultRowChangeEventHandler" msprop:Generator_RowDeletedName="VoteResultRowDeleted" msprop:Generator_UserTableName="VoteResult" msprop:Generator_RowChangedName="VoteResultRowChanged" msprop:Generator_RowEvArgName="VoteResultRowChangeEvent" msprop:Generator_RowClassName="VoteResultRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="CandidateId" msdata:AutoIncrement="true" msprop:Generator_ColumnVarNameInTable="columnCandidateId" msprop:Generator_ColumnPropNameInRow="CandidateId" msprop:Generator_ColumnPropNameInTable="CandidateIdColumn" msprop:Generator_UserColumnName="CandidateId" type="xs:int" minOccurs="0" />
@@ -1387,14 +1407,14 @@ WHERE        (ElectionId = ?)</CommandText>
   </xs:element>
   <xs:annotation>
     <xs:appinfo>
-      <msdata:Relationship name="PartyCandidate" msdata:parent="Party" msdata:child="Candidate" msdata:parentkey="ID" msdata:childkey="PartyId" msprop:Generator_UserChildTable="Candidate" msprop:Generator_ChildPropName="GetCandidateRows" msprop:Generator_UserRelationName="PartyCandidate" msprop:Generator_ParentPropName="PartyRow" msprop:Generator_RelationVarName="relationPartyCandidate" msprop:Generator_UserParentTable="Party" />
-      <msdata:Relationship name="PositionCandidate" msdata:parent="Position" msdata:child="Candidate" msdata:parentkey="ID" msdata:childkey="PositionId" msprop:Generator_UserChildTable="Candidate" msprop:Generator_ChildPropName="GetCandidateRows" msprop:Generator_UserRelationName="PositionCandidate" msprop:Generator_ParentPropName="PositionRow" msprop:Generator_RelationVarName="relationPositionCandidate" msprop:Generator_UserParentTable="Position" />
-      <msdata:Relationship name="VoterBallot" msdata:parent="Voter" msdata:child="Ballot" msdata:parentkey="ID" msdata:childkey="VoterId" msprop:Generator_UserChildTable="Ballot" msprop:Generator_ChildPropName="GetBallotRows" msprop:Generator_UserRelationName="VoterBallot" msprop:Generator_RelationVarName="relationVoterBallot" msprop:Generator_UserParentTable="Voter" msprop:Generator_ParentPropName="VoterRow" />
-      <msdata:Relationship name="BallotVote" msdata:parent="Ballot" msdata:child="Vote" msdata:parentkey="ID" msdata:childkey="BallotId" msprop:Generator_UserChildTable="Vote" msprop:Generator_ChildPropName="GetVoteRows" msprop:Generator_UserRelationName="BallotVote" msprop:Generator_RelationVarName="relationBallotVote" msprop:Generator_UserParentTable="Ballot" msprop:Generator_ParentPropName="BallotRow" />
-      <msdata:Relationship name="CandidateVote" msdata:parent="Candidate" msdata:child="Vote" msdata:parentkey="ID" msdata:childkey="CandidateId" msprop:Generator_UserChildTable="Vote" msprop:Generator_ChildPropName="GetVoteRows" msprop:Generator_UserRelationName="CandidateVote" msprop:Generator_RelationVarName="relationCandidateVote" msprop:Generator_UserParentTable="Candidate" msprop:Generator_ParentPropName="CandidateRow" />
-      <msdata:Relationship name="ElectionPosition" msdata:parent="Election" msdata:child="Position" msdata:parentkey="ID" msdata:childkey="ElectionId" msprop:Generator_UserChildTable="Position" msprop:Generator_ChildPropName="GetPositionRows" msprop:Generator_UserRelationName="ElectionPosition" msprop:Generator_ParentPropName="ElectionRow" msprop:Generator_RelationVarName="relationElectionPosition" msprop:Generator_UserParentTable="Election" />
-      <msdata:Relationship name="ElectionParty" msdata:parent="Election" msdata:child="Party" msdata:parentkey="ID" msdata:childkey="ElectionId" msprop:Generator_UserChildTable="Party" msprop:Generator_ChildPropName="GetPartyRows" msprop:Generator_UserRelationName="ElectionParty" msprop:Generator_ParentPropName="ElectionRow" msprop:Generator_RelationVarName="relationElectionParty" msprop:Generator_UserParentTable="Election" />
-      <msdata:Relationship name="ElectionVoter" msdata:parent="Election" msdata:child="Voter" msdata:parentkey="ID" msdata:childkey="ElectionId" msprop:Generator_UserChildTable="Voter" msprop:Generator_ChildPropName="GetVoterRows" msprop:Generator_UserRelationName="ElectionVoter" msprop:Generator_ParentPropName="ElectionRow" msprop:Generator_RelationVarName="relationElectionVoter" msprop:Generator_UserParentTable="Election" />
+      <msdata:Relationship name="PartyCandidate" msdata:parent="Party" msdata:child="Candidate" msdata:parentkey="ID" msdata:childkey="PartyId" msprop:Generator_UserChildTable="Candidate" msprop:Generator_ChildPropName="GetCandidateRows" msprop:Generator_UserRelationName="PartyCandidate" msprop:Generator_RelationVarName="relationPartyCandidate" msprop:Generator_UserParentTable="Party" msprop:Generator_ParentPropName="PartyRow" />
+      <msdata:Relationship name="PositionCandidate" msdata:parent="Position" msdata:child="Candidate" msdata:parentkey="ID" msdata:childkey="PositionId" msprop:Generator_UserChildTable="Candidate" msprop:Generator_ChildPropName="GetCandidateRows" msprop:Generator_UserRelationName="PositionCandidate" msprop:Generator_RelationVarName="relationPositionCandidate" msprop:Generator_UserParentTable="Position" msprop:Generator_ParentPropName="PositionRow" />
+      <msdata:Relationship name="VoterBallot" msdata:parent="Voter" msdata:child="Ballot" msdata:parentkey="ID" msdata:childkey="VoterId" msprop:Generator_UserChildTable="Ballot" msprop:Generator_ChildPropName="GetBallotRows" msprop:Generator_UserRelationName="VoterBallot" msprop:Generator_ParentPropName="VoterRow" msprop:Generator_RelationVarName="relationVoterBallot" msprop:Generator_UserParentTable="Voter" />
+      <msdata:Relationship name="BallotVote" msdata:parent="Ballot" msdata:child="Vote" msdata:parentkey="ID" msdata:childkey="BallotId" msprop:Generator_UserChildTable="Vote" msprop:Generator_ChildPropName="GetVoteRows" msprop:Generator_UserRelationName="BallotVote" msprop:Generator_ParentPropName="BallotRow" msprop:Generator_RelationVarName="relationBallotVote" msprop:Generator_UserParentTable="Ballot" />
+      <msdata:Relationship name="CandidateVote" msdata:parent="Candidate" msdata:child="Vote" msdata:parentkey="ID" msdata:childkey="CandidateId" msprop:Generator_UserChildTable="Vote" msprop:Generator_ChildPropName="GetVoteRows" msprop:Generator_UserRelationName="CandidateVote" msprop:Generator_ParentPropName="CandidateRow" msprop:Generator_RelationVarName="relationCandidateVote" msprop:Generator_UserParentTable="Candidate" />
+      <msdata:Relationship name="ElectionPosition" msdata:parent="Election" msdata:child="Position" msdata:parentkey="ID" msdata:childkey="ElectionId" msprop:Generator_UserChildTable="Position" msprop:Generator_ChildPropName="GetPositionRows" msprop:Generator_UserRelationName="ElectionPosition" msprop:Generator_RelationVarName="relationElectionPosition" msprop:Generator_UserParentTable="Election" msprop:Generator_ParentPropName="ElectionRow" />
+      <msdata:Relationship name="ElectionParty" msdata:parent="Election" msdata:child="Party" msdata:parentkey="ID" msdata:childkey="ElectionId" msprop:Generator_UserChildTable="Party" msprop:Generator_ChildPropName="GetPartyRows" msprop:Generator_UserRelationName="ElectionParty" msprop:Generator_RelationVarName="relationElectionParty" msprop:Generator_UserParentTable="Election" msprop:Generator_ParentPropName="ElectionRow" />
+      <msdata:Relationship name="ElectionVoter" msdata:parent="Election" msdata:child="Voter" msdata:parentkey="ID" msdata:childkey="ElectionId" msprop:Generator_UserChildTable="Voter" msprop:Generator_ChildPropName="GetVoterRows" msprop:Generator_UserRelationName="ElectionVoter" msprop:Generator_RelationVarName="relationElectionVoter" msprop:Generator_UserParentTable="Election" msprop:Generator_ParentPropName="ElectionRow" />
     </xs:appinfo>
   </xs:annotation>
 </xs:schema>

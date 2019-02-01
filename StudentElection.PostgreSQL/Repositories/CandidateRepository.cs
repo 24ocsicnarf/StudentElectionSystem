@@ -75,6 +75,7 @@ namespace StudentElection.PostgreSQL.Repositories
             using (var context = new StudentElectionContext())
             {
                 var candidate = await context.Candidates
+                    .Where(c => c.Party.ElectionId == electionId)
                     .SingleOrDefaultAsync(c => c.Alias.ToLower() == alias.ToLower());
 
                 if (editingCandidate == null)

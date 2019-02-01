@@ -17,10 +17,10 @@ namespace StudentElection.MSAccess.Repositories
     {
         public async Task AddUserAsync(UserModel user)
         {
+            await Task.CompletedTask;
+
             using (var tableAdapter = new UserTableAdapter())
             {
-                await Task.CompletedTask;
-
                 tableAdapter.Insert(
                     user.FirstName,
                     user.MiddleName,
@@ -34,12 +34,22 @@ namespace StudentElection.MSAccess.Repositories
             }
         }
 
-        public async Task DeleteUserAsync(UserModel user)
+        public async Task<int> CountUsersAsync()
         {
+            await Task.CompletedTask;
+
             using (var tableAdapter = new UserTableAdapter())
             {
-                await Task.CompletedTask;
+                return tableAdapter.CountUsersQuery() ?? 0;
+            }
+        }
 
+        public async Task DeleteUserAsync(UserModel user)
+        {
+            await Task.CompletedTask;
+
+            using (var tableAdapter = new UserTableAdapter())
+            {
                 tableAdapter.Delete(
                     user.Id
                 );
@@ -118,10 +128,10 @@ namespace StudentElection.MSAccess.Repositories
 
         public async Task UpdateUserAsync(UserModel user)
         {
+            await Task.CompletedTask;
+
             using (var tableAdapter = new UserTableAdapter())
             {
-                await Task.CompletedTask;
-
                 tableAdapter.Update(
                     user.FirstName,
                     user.MiddleName,

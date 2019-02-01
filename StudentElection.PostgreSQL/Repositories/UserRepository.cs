@@ -27,6 +27,14 @@ namespace StudentElection.PostgreSQL.Repositories
             }
         }
 
+        public async Task<int> CountUsersAsync()
+        {
+            using (var context = new StudentElectionContext())
+            {
+                return await context.Users.CountAsync();
+            }
+        }
+
         public async Task DeleteUserAsync(UserModel model)
         {
             using (var context = new StudentElectionContext())

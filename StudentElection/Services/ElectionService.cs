@@ -39,11 +39,19 @@ namespace StudentElection.Services
             await _electionRepository.CloseElectionAsync(electionId, dateTime);
         }
 
+        public async Task OpenElectionAsync(ElectionModel model)
+        {
+            await _electionRepository.InsertElectionAsync(model);
+        }
+
         public async Task UpdateTagAsync(int electionId, string tag)
         {
-            var dateTime = DateTime.Now;
-
             await _electionRepository.UpdateTagAsync(electionId, tag);
+        }
+
+        public async Task UpdateElectionAsync(ElectionModel election)
+        {
+            await _electionRepository.UpdateElectionAsync(election);
         }
     }
 }

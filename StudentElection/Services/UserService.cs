@@ -1,5 +1,7 @@
 ﻿using Project.Library;
 using Project.Library.Helpers;
+using Project.Library.Services.Cryptography;
+using Project.Library.Services.Cryptography.Interfaces;
 using StudentElection.Repository;
 using StudentElection.Repository.Interfaces;
 using StudentElection.Repository.Models;
@@ -28,7 +30,9 @@ namespace StudentElection.Services
 
             if (user != null)
             {
-                if (await CryptographyHelper.MatchHashAsync(password, user.PasswordHash))
+                IHasherService hasherService = new BCryptHasherService();
+
+                if (hasherService.MatchHash(password, user.PasswordHash))
                 {
                     return user;
                 }
@@ -60,11 +64,12 @@ namespace StudentElection.Services
         public async Task SaveUserAsync(UserModel user, SecureString password)
         {
             //TODO: Validations here
-            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(user.FirstName.IsBlank(), "First name is required");
 
             if (user.Id == 0)
             {
-                user.PasswordHash = await CryptographyHelper.GetHashAsync(password);
+                IHasherService hasherService = new BCryptHasherService();
+
+                user.PasswordHash = hasherService.GetHash(password);
                 await _userRepository.AddUserAsync(user);
             }
             else
@@ -72,6 +77,11 @@ namespace StudentElection.Services
                 //TODO: CHANGE PASSWORD
                 await _userRepository.UpdateUserAsync(user);
             }
+        }
+
+        public async Task<int> CountUsersAsync()
+        {
+            return await _userRepository.CountUsersAsync();
         }
 
         public async Task DeleteUserAsync(UserModel user)

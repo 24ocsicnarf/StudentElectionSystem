@@ -15,18 +15,18 @@ namespace StudentElection
 {
     public static class G
     {
-        public enum UserType
-        {
-            Voter,
-            Admin,
-            SuperAdmin
-        }
+        //public enum UserType
+        //{
+        //    Voter,
+        //    Admin,
+        //    SuperAdmin
+        //}
 
-        public enum SexType
-        {
-            Male,
-            Female
-        }
+        //public enum SexType
+        //{
+        //    Male,
+        //    Female
+        //}
 
         public static List<double> CandidateHOffsets = new List<double>();
 
@@ -121,7 +121,23 @@ namespace StudentElection
         public static void WaitLang(Window window)
         {
             window.IsEnabled = false;
-            window.Cursor = System.Windows.Input.Cursors.Wait;
+
+            if (window is MaintenanceWindow maintenanceWindow)
+            {
+                maintenanceWindow.Cursor = System.Windows.Input.Cursors.Wait;
+            }
+            else if (window is MainWindow mainWindow)
+            {
+                mainWindow.Cursor = System.Windows.Input.Cursors.Wait;
+            }
+            else if (window is BallotWindow ballotWindow)
+            {
+                ballotWindow.Cursor = System.Windows.Input.Cursors.Wait;
+            }
+            else
+            {
+                window.Cursor = System.Windows.Input.Cursors.Wait;
+            }
         }
 
         public static void WaitLang(System.Windows.Forms.Form form)
@@ -133,7 +149,23 @@ namespace StudentElection
         public static void EndWait(Window window)
         {
             window.IsEnabled = true;
-            window.Cursor = System.Windows.Input.Cursors.Arrow;
+
+            if (window is MaintenanceWindow maintenanceWindow)
+            {
+                maintenanceWindow.Cursor = System.Windows.Input.Cursors.Arrow;
+            }
+            else if (window is MainWindow mainWindow)
+            {
+                mainWindow.Cursor = System.Windows.Input.Cursors.Arrow;
+            }
+            else if (window is BallotWindow ballotWindow)
+            {
+                ballotWindow.Cursor = System.Windows.Input.Cursors.Arrow;
+            }
+            else
+            {
+                window.Cursor = System.Windows.Input.Cursors.Arrow;
+            }
         }
 
         public static void EndWait(System.Windows.Forms.Form form)
@@ -148,7 +180,7 @@ namespace StudentElection
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             TabControl tabControl = values[0] as TabControl;
-            double width = (tabControl.ActualWidth - 4) / tabControl.Items.Count;
+            double width = (tabControl.ActualWidth - 5) / tabControl.Items.Count;
 
             return (width < 0) ? 0 : width;
         }

@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudentElection.Dialogs"
         mc:Ignorable="d"
-        Title="StaffWindow" Height="290" Width="360" Margin="0" WindowStyle="None" WindowStartupLocation="CenterOwner" FontFamily="Tahoma" FontSize="14.667" ResizeMode="NoResize"  ShowInTaskbar="False" Loaded="Window_Loaded" PreviewKeyUp="Window_PreviewKeyUp">
+        Title="StaffWindow" Height="380" Width="360" Margin="0" WindowStyle="None" WindowStartupLocation="CenterOwner" FontFamily="Tahoma" FontSize="14.667" ResizeMode="NoResize"  ShowInTaskbar="False" Loaded="Window_Loaded" PreviewKeyUp="Window_PreviewKeyUp">
     <Grid Background="#FFFFFFFF">
         <DockPanel Margin="4">
             <StackPanel DockPanel.Dock="Top"  Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                 <StackPanel>
-                    <Label x:Name="lblTitle" DockPanel.Dock="Left" Content="Create Staff" FontWeight="Bold" FontSize="18" Foreground="#FF1B205E" />
+                    <Label x:Name="lblTitle" DockPanel.Dock="Left" Content="Create User" FontWeight="Bold" FontSize="18" Foreground="#FF1B205E" />
                     <DockPanel>
                         <Label DockPanel.Dock="Left" Content="PERSONAL INFO" FontWeight="Bold" FontSize="12" />
                     </DockPanel>
@@ -19,16 +19,8 @@
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="3*" />
                         </Grid.ColumnDefinitions>
-                        <Label Content="Last Name*" Grid.Column="0" HorizontalAlignment="Left" FontSize="12" />
-                        <TextBox x:Name="txtLastName" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="2,2" FontSize="14.667" MaxLength="255" MaxLines="1"/>
-                    </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="3*" />
-                        </Grid.ColumnDefinitions>
                         <Label Content="First Name*" Grid.Column="0" HorizontalAlignment="Left" FontSize="12" />
-                        <TextBox x:Name="txtFirstName" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="2,2" FontSize="14.667" MaxLength="255" MaxLines="1"/>
+                        <TextBox x:Name="txtFirstName" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="2,2" Padding="2" FontSize="14.667" MaxLength="255" MaxLines="1"/>
                     </Grid>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -36,21 +28,51 @@
                             <ColumnDefinition Width="3*" />
                         </Grid.ColumnDefinitions>
                         <Label Content="Middle Name" Grid.Column="0" HorizontalAlignment="Left" FontSize="12" />
-                        <TextBox x:Name="txtMiddleName" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="2,2" FontSize="14.667" MaxLength="255" MaxLines="1"/>
+                        <TextBox x:Name="txtMiddleName" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="2,2" Padding="2" FontSize="14.667" MaxLength="255" MaxLines="1"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Last Name*" Grid.Column="0" HorizontalAlignment="Left" FontSize="12" />
+                        <TextBox x:Name="txtLastName" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="2,2" Padding="2" FontSize="14.667" MaxLength="255" MaxLines="1"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Suffix" Grid.Column="0" HorizontalAlignment="Left" FontSize="12" />
+                        <TextBox x:Name="txtSuffix" Grid.Column="1" TextWrapping="Wrap"  HorizontalAlignment="Left" Width="100"  Margin="2,2" Padding="2" FontSize="14.667" MaxLength="255" MaxLines="1"/>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Sex*" Grid.Column="0" HorizontalAlignment="Left"  VerticalAlignment="Center"  FontSize="12" />
+                        <Border BorderThickness="1" BorderBrush="#ABADB3"  Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2" Width="80">
+                            <ComboBox x:Name="cmbSex" HorizontalAlignment="Stretch" FontSize="14.667" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}" BorderBrush="Transparent">
+                                <ComboBoxItem>Male</ComboBoxItem>
+                                <ComboBoxItem>Female</ComboBoxItem>
+                            </ComboBox>
+                        </Border>
                     </Grid>
                     <Separator Opacity="0" />
                     <DockPanel>
                         <Label DockPanel.Dock="Left" Content="ACCOUNT" FontWeight="Bold" FontSize="12" />
                     </DockPanel>
-                    <Grid Visibility="Collapsed">
+                    <Grid x:Name="grdUserType" Visibility="Collapsed">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="3*" />
                         </Grid.ColumnDefinitions>
                         <Label Content="Type" Grid.Column="0" HorizontalAlignment="Left" FontSize="12" />
                         <StackPanel  Grid.Column="1" Orientation="Horizontal">
-                            <RadioButton x:Name="radAdmin" Content="Admin" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0" IsChecked="True" />
-                            <RadioButton x:Name="radSuperAdmin" Content="Super Admin" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0" IsEnabled="False" />
+                            <RadioButton x:Name="radNormal" Content="Normal" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0" IsChecked="True" />
+                            <RadioButton x:Name="radAdmin" Content="Admin" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0" IsChecked="False" />
+                            <RadioButton x:Name="radSuperuser" Content="Superuser" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0" IsEnabled="True" />
                         </StackPanel>
                     </Grid>
                     <Grid>
@@ -58,23 +80,24 @@
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="3*" />
                         </Grid.ColumnDefinitions>
-                        <Label Content="Username*" Grid.Column="0" HorizontalAlignment="Left" FontSize="12" />
-                        <TextBox x:Name="txtUsername" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="2,2" FontSize="14.667" MaxLength="255" MaxLines="1"/>
+                        <Label Content="Username*" Grid.Column="0" HorizontalAlignment="Left"  VerticalAlignment="Center" FontSize="12" />
+                        <TextBox x:Name="txtUsername" Grid.Column="1" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="2,2" Padding="2" FontSize="14.667" MaxLength="255" MaxLines="1"/>
                     </Grid>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="6*" />
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="33*" />
                         </Grid.ColumnDefinitions>
-                        <Label Content="Password*" Grid.Column="0" HorizontalAlignment="Left" FontSize="12" />
-                        <Grid Grid.Column="1" HorizontalAlignment="Right" Width="264" >
+                        <Label Content="Password*" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" Grid.ColumnSpan="2" Margin="0,2" />
+                        <Grid Grid.Column="2" HorizontalAlignment="Right" Width="259">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="28" />
                             </Grid.ColumnDefinitions>
                             <Grid  Grid.Column="0">
-                                <PasswordBox x:Name="pwdStaff" HorizontalAlignment="Stretch" Margin="2,2" FontSize="14.667" MaxLength="255" GotFocus="pwdStaff_GotFocus" LostFocus="pwdStaff_LostFocus" PreviewKeyDown="pwdStaff_PreviewKeyDown" />
-                                <TextBox x:Name="txtPassword" HorizontalAlignment="Stretch" Margin="2,2" FontSize="14.667" MaxLength="255" Visibility="Collapsed" />
+                                <PasswordBox x:Name="pwdStaff" HorizontalAlignment="Stretch" Margin="2,2" FontSize="14.667" MaxLength="255" Padding="2" GotFocus="pwdStaff_GotFocus" LostFocus="pwdStaff_LostFocus" PreviewKeyDown="pwdStaff_PreviewKeyDown" />
+                                <TextBox x:Name="txtPassword" HorizontalAlignment="Stretch" Margin="2,2" FontSize="14.667" MaxLength="255" Padding="2" Visibility="Collapsed" />
                             </Grid>
                             <Button Grid.Column="1" x:Name="btnPeek" Content="PEEK" FontSize="10.667" BorderBrush="{x:Null}" Margin="0,3" PreviewMouseLeftButtonDown="btnPeek_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="btnPeek_PreviewMouseLeftButtonUp">
                                 <Button.Style>

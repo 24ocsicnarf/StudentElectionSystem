@@ -51,6 +51,47 @@ namespace StudentElection.MSAccess.Repositories
             }
         }
 
+        public async Task InsertElectionAsync(ElectionModel model)
+        {
+            await Task.CompletedTask;
+
+            using (var dataSet = new StudentElectionDataSet())
+            {
+                using (var manager = new TableAdapterManager())
+                {
+                    manager.ElectionTableAdapter = new ElectionTableAdapter();
+
+                    var newRow = dataSet.Election.NewElectionRow();
+                    _mapper.Map(model, newRow);
+                    newRow.ID = -1;
+                    newRow.SetCandidatesFinalizedAtNull();
+                    newRow.SetClosedAtNull();
+
+                    dataSet.Election.AddElectionRow(newRow);
+
+                    manager.UpdateAll(dataSet);
+                }
+            }
+        }
+
+        public async Task UpdateElectionAsync(ElectionModel election)
+        {
+            await Task.CompletedTask;
+
+            using (var tableAdapter = new ElectionTableAdapter())
+            {
+                tableAdapter.Update(
+                    election.Title,
+                    election.Description,
+                    election.TookPlaceOn,
+                    election.CandidatesFinalizedAt,
+                    election.ClosedAt,
+                    election.ServerTag,
+                    election.Id
+                );
+            }
+        }
+
         public async Task UpdateTagAsync(int electionId, string serverTag)
         {
             await Task.CompletedTask;

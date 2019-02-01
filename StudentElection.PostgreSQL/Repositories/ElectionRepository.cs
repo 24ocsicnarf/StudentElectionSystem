@@ -67,6 +67,30 @@ namespace StudentElection.PostgreSQL.Repositories
             }
         }
 
+        public async Task InsertElectionAsync(ElectionModel model)
+        {
+            var election = new Election();
+            _mapper.Map(model, election);
+
+            using (var context = new StudentElectionContext())
+            {
+                context.Elections.Add(election);
+
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateElectionAsync(ElectionModel model)
+        {
+            using (var context = new StudentElectionContext())
+            {
+                var election = await context.Elections.SingleOrDefaultAsync(c => c.Id == model.Id);
+                _mapper.Map(model, election);
+
+                await context.SaveChangesAsync();
+            }
+        }
+
         public async Task UpdateTagAsync(int electionId, string tag)
         {
             using (var context = new StudentElectionContext())

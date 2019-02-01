@@ -72,9 +72,9 @@
             this.lblTitle.ForeColor = System.Drawing.Color.SeaGreen;
             this.lblTitle.Location = new System.Drawing.Point(12, 9);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(203, 27);
+            this.lblTitle.Size = new System.Drawing.Size(173, 27);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "Create Candidate";
+            this.lblTitle.Text = "Add Candidate";
             // 
             // lblBrowse
             // 
@@ -415,6 +415,7 @@
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "CandidateForm";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "CandidateForm";
             this.Load += new System.EventHandler(this.CandidateForm_Load);

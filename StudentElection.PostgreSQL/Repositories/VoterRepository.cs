@@ -77,8 +77,9 @@ namespace StudentElection.PostgreSQL.Repositories
         {
             using (var context = new StudentElectionContext())
             {
-                var voters = context.Voters.Where(v => v.ElectionId == electionId)
-                    .Include(v => v.Ballots);
+                var voters = context.Voters
+                    .Include(v => v.Ballots)
+                    .Where(v => v.ElectionId == electionId);
 
                 return await _mapper.ProjectTo<VoterModel>(voters)
                     .ToListAsync();
@@ -143,7 +144,7 @@ namespace StudentElection.PostgreSQL.Repositories
         {
             using (var context = new StudentElectionContext())
             {
-                var voter = context.Voters.SingleOrDefaultAsync(v => v.Id == model.Id);
+                var voter = await context.Voters.SingleOrDefaultAsync(v => v.Id == model.Id);
 
                 _mapper.Map(model, voter);
 

@@ -16,5 +16,6 @@ namespace StudentElection.Repository.Interfaces
         Task UpdateUserAsync(UserModel user);
         Task<IEnumerable<UserModel>> GetUsersAsync();
         Task DeleteUserAsync(UserModel user);
+        Task<int> CountUsersAsync();
     }
 }

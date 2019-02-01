@@ -15,7 +15,7 @@ namespace StudentElection.Repository.Interfaces
         Task<BallotModel> InsertBallotAsync(VoterModel voter, DateTime enteredAt);
         Task SetBallotCodeAsync(BallotModel ballot);
         Task CastVotesAsync(int ballotId, IEnumerable<VoteModel> votes, DateTime castedAt);
-        Task<int> CountCastedBallotsQuery(int voterId);
+        Task<int> CountCastedBallotsAsync(int voterId);
 
         Task<IEnumerable<VoteResultModel>> GetVoteResultsAsync(int electionId);
     }

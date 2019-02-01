@@ -13,7 +13,7 @@ namespace StudentElection.MSAccess.Properties {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -25,22 +25,24 @@ namespace StudentElection.MSAccess.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
         [global::System.Configuration.DefaultSettingValueAttribute("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\\StudentElection.mdb;" +
-            "Jet OLEDB:Database Password=9uAv92fjSh2E")]
+            "")]
         public string StudentElectionConnectionString {
             get {
                 return ((string)(this["StudentElectionConnectionString"]));
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\\StudentElection.mdb;" +
-            "Persist Security Info=True")]
-        public string StudentElectionConnectionString1 {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string StudentElectionConnectionPassword {
             get {
-                return ((string)(this["StudentElectionConnectionString1"]));
+                return ((string)(this["StudentElectionConnectionPassword"]));
+            }
+            set {
+                this["StudentElectionConnectionPassword"] = value;
             }
         }
     }

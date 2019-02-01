@@ -18,6 +18,7 @@ using static StudentElection.G;
 using StudentElection.Repository.Models;
 using StudentElection.Repository;
 using StudentElection.Services;
+using Project.Library.Helpers;
 
 namespace StudentElection.Dialogs
 {
@@ -30,20 +31,29 @@ namespace StudentElection.Dialogs
         public int MachineID;
         public bool IsCanceled = true;
 
-        public UserService _userService;
+        public UserType? PresetUserType;
+
+        public UserService _userService = new UserService();
 
         public StaffWindow()
         {
             InitializeComponent();
-
-            _userService = new UserService();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
             if (User == null)
             {
-                lblTitle.Content = "Add User";
+                if (PresetUserType == UserType.Superuser)
+                {
+                    lblTitle.Content = "Add Superuser";
+                }
+                else
+                {
+                    lblTitle.Content = "Add User";
+                }
+
                 btnAddStaff.Content = "ADD";
             }
             else
@@ -53,24 +63,30 @@ namespace StudentElection.Dialogs
                 txtLastName.Text = User.LastName;
                 txtFirstName.Text = User.FirstName;
                 txtMiddleName.Text = User.MiddleName;
+                txtSuffix.Text = User.Suffix;
                 txtUsername.Text = User.UserName;
+                cmbSex.SelectedIndex = (Sex)User.Sex == Sex.Male ? 0 : 1;
                 //pwdStaff.Password = Staff.Password;
                 btnAddStaff.Content = "UPDATE";
                 radAdmin.IsChecked = User.Type == Repository.Models.UserType.Admin;
-                radSuperAdmin.IsChecked = User.Type == Repository.Models.UserType.SuperUser;
+                radSuperuser.IsChecked = User.Type == Repository.Models.UserType.Superuser;
                 //txtUsername.IsEnabled = false;
 
                 if (User.Type == Repository.Models.UserType.Admin)
                 {
                     radAdmin.IsEnabled = false;
                 }
-                else if (User.Type == Repository.Models.UserType.SuperUser)
+                else if (User.Type == Repository.Models.UserType.Superuser)
                 {
-                    radSuperAdmin.IsEnabled = false;
+                    radSuperuser.IsEnabled = false;
+                }
+                else if (User.Type == Repository.Models.UserType.Normal)
+                {
+                    radNormal.IsEnabled = false;
                 }
             }
 
-            txtLastName.Focus();
+            txtFirstName.Focus();
 
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += (s, ev) =>
             {
@@ -89,18 +105,23 @@ namespace StudentElection.Dialogs
                 txtLastName.Text = txtLastName.Text.ToProperCase();
                 txtFirstName.Text = txtFirstName.Text.ToProperCase();
                 txtMiddleName.Text = txtMiddleName.Text.ToProperCase();
+                txtSuffix.Text = txtSuffix.Text.ToProperCase();
                 txtUsername.Text = txtUsername.Text.Trim();
-
-                //var staffData = Staffs.Dictionary.Values.AsEnumerable();
-                //if (User != null)
-                //{
-                //    staffData = staffData.Where(x => x.ID == User.Id);
-                //}
-
+                
                 if (await _userService.IsUserNameExistingAsync(txtUsername.Text, User))
                 {
                     G.EndWait(this);
                     MessageBox.Show("Username is already in use", "User", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    return;
+                }
+
+                if (txtFirstName.Text.IsBlank())
+                {
+                    G.EndWait(this);
+                    MessageBox.Show("Please provide a first name", "User", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    txtFirstName.Focus();
 
                     return;
                 }
@@ -115,12 +136,12 @@ namespace StudentElection.Dialogs
                     return;
                 }
 
-                if (txtFirstName.Text.IsBlank())
+                if (cmbSex.SelectedIndex < 0)
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Please provide a first name", "User", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Please select a sex", "User", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    txtFirstName.Focus();
+                    cmbSex.Focus();
 
                     return;
                 }
@@ -155,28 +176,31 @@ namespace StudentElection.Dialogs
                     return;
                 }
 
-                //var staff = new Staff()
-                //{
-                //    LastName = txtLastName.Text,
-                //    FirstName = txtFirstName.Text,
-                //    MiddleName = txtMiddleName.Text,
-                //    Type = (UserType)(radAdmin.IsChecked.Value ? 1 : 2),
-                //    Username = txtUsername.Text,
-                //    Password = pwdStaff.Password
-                //};
+                var userType = UserType.Normal;
+                if (radNormal.IsChecked == true)
+                {
+                    userType = UserType.Normal;
+                }
+                else if (radAdmin.IsChecked == true)
+                {
+                    userType = UserType.Admin;
+                }
+                else if (radSuperuser.IsChecked == true)
+                {
+                    userType = UserType.Superuser;
+                }
 
                 var staff = new UserModel
                 {
                     LastName = txtLastName.Text,
                     FirstName = txtFirstName.Text,
                     MiddleName = txtMiddleName.Text,
-                    Type = (Repository.Models.UserType)(radAdmin.IsChecked.Value ? 1 : 2),
+                    Type = PresetUserType ?? userType,
                     UserName = txtUsername.Text
                 };
 
                 if (User == null)
                 {
-                    //Staffs.InsertData(staff);
                     await _userService.SaveUserAsync(staff, pwdStaff.SecurePassword);
                     
                     EndWait(this);
@@ -195,9 +219,11 @@ namespace StudentElection.Dialogs
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
+
                 G.EndWait(this);
 
-                MessageBox.Show(ex.GetBaseException().Message + "\n" + ex.StackTrace, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 

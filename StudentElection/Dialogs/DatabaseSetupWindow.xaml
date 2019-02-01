@@ -1,0 +1,99 @@
+﻿<Window x:Class="StudentElection.Dialogs.DatabaseSetupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StudentElection.Dialogs"
+        mc:Ignorable="d" FontFamily="Tahoma"
+        Title="Set up database" Width="400" SizeToContent="Height" FontSize="14.667" WindowStartupLocation="CenterOwner" WindowStyle="SingleBorderWindow" ResizeMode="NoResize" ShowInTaskbar="False" Loaded="Window_Loaded">
+    <Grid Margin="8">
+        <StackPanel Grid.IsSharedSizeScope="True" VerticalAlignment="Center">
+            <GroupBox Header="Database to use" Margin="4">
+                <StackPanel Margin="4">
+                    <RadioButton x:Name="radMSAccess" Content="MS Access" Margin="4" Checked="radMSAccess_Checked" />
+                    <RadioButton x:Name="radPostgreSQL" Content="PostgreSQL" Margin="4" Checked="radPostgreSQL_Checked"/>
+                </StackPanel>
+            </GroupBox>
+            <Grid>
+                <StackPanel>
+                    <GroupBox Header="Connection string" Margin="4">
+                        <StackPanel x:Name="stkPostgreSQLSettings">
+                            <Grid Margin="4 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="label"/>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Host*" Margin="4" VerticalAlignment="Center"/>
+                                <TextBox x:Name="txtIPAddress" Grid.Column="1" Margin="4" Padding="4" TextChanged="TxtIPAddress_TextChanged"/>
+                            </Grid>
+                            <Grid Margin="4 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="label"/>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Port" Margin="4" VerticalAlignment="Center"/>
+                                <TextBox x:Name="txtPort" Grid.Column="1" Text="" Margin="4" Padding="4" />
+                            </Grid>
+                            <Grid Margin="4 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="label"/>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Database name*" Margin="4" VerticalAlignment="Center"/>
+                                <TextBox x:Name="txtDatabaseName" Grid.Column="1"  Margin="4" Padding="4"/>
+                            </Grid>
+                            <Grid Margin="4 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="label"/>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="User name*" Margin="4" VerticalAlignment="Center"/>
+                                <TextBox x:Name="txtUserName" Grid.Column="1" Margin="4" Padding="4"/>
+                            </Grid>
+                            <Grid Margin="4 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="label"/>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Password*" Margin="4" VerticalAlignment="Center"/>
+                                <PasswordBox x:Name="pwdServer" Grid.Column="1" Margin="4" Padding="4"/>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Network folder" Margin="4">
+                        <StackPanel x:Name="stkNetworkFolderSettings">
+                            <Grid Margin="4" Opacity="0.87">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Network location" Opacity="0.58" Margin="4 0" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="12"/>
+                                <TextBox x:Name="txtNetworkLocation" IsTabStop="False" IsReadOnly="True" IsReadOnlyCaretVisible="True" Opacity="0.87" Background="Transparent" BorderThickness="0" Text="" Grid.Column="1" Margin="0 0 4 0" Padding="2" FontSize="12"/>
+                            </Grid>
+                            <Grid Margin="4 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="label"/>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Network address*" Margin="4" VerticalAlignment="Center"/>
+                                <TextBox x:Name="txtNetworkFolderAddress" Grid.Column="1" Margin="4" Padding="4" TextChanged="TxtNetworkFolderAddress_TextChanged"/>
+                            </Grid>
+                            <Grid Margin="4 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="label"/>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Folder name*" Margin="4" VerticalAlignment="Center"/>
+                                <TextBox x:Name="txtNetworkFolderName" Grid.Column="1" Margin="4" Padding="4" TextChanged="TxtNetworkFolderName_TextChanged"/>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+                <Border x:Name="bdrMessage" Margin="4" Background="Gainsboro" Visibility="Collapsed">
+                    <TextBox x:Name="tbkMessage" BorderThickness="0" Background="Transparent" IsReadOnlyCaretVisible="True" Text="Select a database to use" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Border>
+            </Grid>
+            <Button x:Name="btnConnect" Content="SAVE" FontWeight="Bold" Margin="8" HorizontalAlignment="Right" Padding="12 4" FontSize="12" IsDefault="True" Click="BtnConnect_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
