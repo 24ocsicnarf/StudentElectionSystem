@@ -84,12 +84,12 @@ namespace StudentElection.Services
 
         public async Task ValidateAsync(int electionId, VoterModel voter)
         {
-            if (voter.FirstName.IsBlank())
+            if (string.IsNullOrWhiteSpace(voter.FirstName))
             {
                 throw new ArgumentException("No first name provided", nameof(voter.FirstName));
             }
 
-            if (voter.LastName.IsBlank())
+            if (string.IsNullOrWhiteSpace(voter.LastName))
             {
                 throw new ArgumentException("No last name provided", nameof(voter.LastName));
             }
@@ -99,7 +99,7 @@ namespace StudentElection.Services
                 throw new ArgumentOutOfRangeException("Year level must be from 1 to 12", nameof(voter.YearLevel));
             }
 
-            if (voter.Section.IsBlank())
+            if (string.IsNullOrWhiteSpace(voter.Section))
             {
                 throw new ArgumentException("No section provided", nameof(voter.Section));
             }

@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PositionForm));
             this.txtPosition = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnDown = new System.Windows.Forms.Button();
@@ -41,34 +40,35 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.label3 = new System.Windows.Forms.Label();
             this.dgPositions = new System.Windows.Forms.DataGridView();
-            this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.titleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.WinnersCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.YearLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.rankDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.positionModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.nudNumberOfWinners = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.cmbWhoCanVote = new System.Windows.Forms.ComboBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.WhoCanVoteWarningLabel = new System.Windows.Forms.Label();
+            this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.titleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.rankDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.positionModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgPositions)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.positionModelBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNumberOfWinners)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.positionModelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // txtPosition
             // 
             this.txtPosition.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtPosition.Location = new System.Drawing.Point(129, 272);
+            this.txtPosition.Location = new System.Drawing.Point(129, 256);
             this.txtPosition.MaxLength = 40;
             this.txtPosition.Name = "txtPosition";
-            this.txtPosition.Size = new System.Drawing.Size(163, 22);
+            this.txtPosition.Size = new System.Drawing.Size(203, 22);
             this.txtPosition.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 274);
+            this.label1.Location = new System.Drawing.Point(12, 258);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 14);
             this.label1.TabIndex = 5;
@@ -81,7 +81,7 @@
             this.btnDown.FlatAppearance.BorderSize = 0;
             this.btnDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDown.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDown.Location = new System.Drawing.Point(232, 220);
+            this.btnDown.Location = new System.Drawing.Point(272, 212);
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size(60, 23);
             this.btnDown.TabIndex = 6;
@@ -96,7 +96,7 @@
             this.btnUp.FlatAppearance.BorderSize = 0;
             this.btnUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUp.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnUp.Location = new System.Drawing.Point(166, 220);
+            this.btnUp.Location = new System.Drawing.Point(206, 212);
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size(60, 23);
             this.btnUp.TabIndex = 5;
@@ -110,7 +110,7 @@
             this.btnAdd.FlatAppearance.BorderSize = 0;
             this.btnAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAdd.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdd.Location = new System.Drawing.Point(154, 366);
+            this.btnAdd.Location = new System.Drawing.Point(194, 366);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(66, 23);
             this.btnAdd.TabIndex = 3;
@@ -124,7 +124,7 @@
             this.btnCancel.FlatAppearance.BorderSize = 0;
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(226, 366);
+            this.btnCancel.Location = new System.Drawing.Point(266, 366);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(66, 23);
             this.btnCancel.TabIndex = 4;
@@ -140,9 +140,9 @@
             this.label2.ForeColor = System.Drawing.Color.DimGray;
             this.label2.Location = new System.Drawing.Point(12, 9);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(172, 14);
+            this.label2.Size = new System.Drawing.Size(168, 14);
             this.label2.TabIndex = 11;
-            this.label2.Text = "Double click a position to edit.";
+            this.label2.Text = "Double click a position to edit";
             // 
             // btnDelete
             // 
@@ -151,7 +151,7 @@
             this.btnDelete.FlatAppearance.BorderSize = 0;
             this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDelete.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.Location = new System.Drawing.Point(12, 220);
+            this.btnDelete.Location = new System.Drawing.Point(12, 212);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(60, 23);
             this.btnDelete.TabIndex = 7;
@@ -162,7 +162,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 302);
+            this.label3.Location = new System.Drawing.Point(12, 286);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(111, 14);
             this.label3.TabIndex = 5;
@@ -192,27 +192,11 @@
             this.dgPositions.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dgPositions.RowHeadersVisible = false;
             this.dgPositions.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgPositions.Size = new System.Drawing.Size(280, 188);
+            this.dgPositions.Size = new System.Drawing.Size(320, 180);
             this.dgPositions.TabIndex = 13;
             this.dgPositions.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgPositions_CellDoubleClick);
             this.dgPositions.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgPositions_CellFormatting);
             this.dgPositions.SelectionChanged += new System.EventHandler(this.dgPositions_SelectionChanged);
-            // 
-            // idDataGridViewTextBoxColumn
-            // 
-            this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
-            this.idDataGridViewTextBoxColumn.HeaderText = "Id";
-            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
-            this.idDataGridViewTextBoxColumn.ReadOnly = true;
-            this.idDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // titleDataGridViewTextBoxColumn
-            // 
-            this.titleDataGridViewTextBoxColumn.DataPropertyName = "Title";
-            this.titleDataGridViewTextBoxColumn.HeaderText = "Position Title";
-            this.titleDataGridViewTextBoxColumn.Name = "titleDataGridViewTextBoxColumn";
-            this.titleDataGridViewTextBoxColumn.ReadOnly = true;
-            this.titleDataGridViewTextBoxColumn.Width = 120;
             // 
             // WinnersCount
             // 
@@ -230,22 +214,10 @@
             this.YearLevel.ReadOnly = true;
             this.YearLevel.Width = 90;
             // 
-            // rankDataGridViewTextBoxColumn
-            // 
-            this.rankDataGridViewTextBoxColumn.DataPropertyName = "Rank";
-            this.rankDataGridViewTextBoxColumn.HeaderText = "Rank";
-            this.rankDataGridViewTextBoxColumn.Name = "rankDataGridViewTextBoxColumn";
-            this.rankDataGridViewTextBoxColumn.ReadOnly = true;
-            this.rankDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // positionModelBindingSource
-            // 
-            this.positionModelBindingSource.DataSource = typeof(StudentElection.Repository.Models.PositionModel);
-            // 
             // nudNumberOfWinners
             // 
             this.nudNumberOfWinners.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.nudNumberOfWinners.Location = new System.Drawing.Point(129, 300);
+            this.nudNumberOfWinners.Location = new System.Drawing.Point(129, 284);
             this.nudNumberOfWinners.Maximum = new decimal(new int[] {
             999,
             0,
@@ -269,7 +241,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 329);
+            this.label4.Location = new System.Drawing.Point(12, 313);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(91, 14);
             this.label4.TabIndex = 5;
@@ -299,23 +271,60 @@
             "Grade 10 only",
             "Grade 11 only",
             "Grade 12 only"});
-            this.cmbWhoCanVote.Location = new System.Drawing.Point(129, 326);
+            this.cmbWhoCanVote.Location = new System.Drawing.Point(129, 310);
             this.cmbWhoCanVote.MaxDropDownItems = 12;
             this.cmbWhoCanVote.Name = "cmbWhoCanVote";
             this.cmbWhoCanVote.Size = new System.Drawing.Size(163, 22);
             this.cmbWhoCanVote.TabIndex = 2;
-            this.toolTip1.SetToolTip(this.cmbWhoCanVote, resources.GetString("cmbWhoCanVote.ToolTip"));
+            this.cmbWhoCanVote.SelectedIndexChanged += new System.EventHandler(this.cmbWhoCanVote_SelectedIndexChanged);
             // 
             // toolTip1
             // 
             this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            // 
+            // WhoCanVoteWarningLabel
+            // 
+            this.WhoCanVoteWarningLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.WhoCanVoteWarningLabel.ForeColor = System.Drawing.Color.Firebrick;
+            this.WhoCanVoteWarningLabel.Location = new System.Drawing.Point(129, 335);
+            this.WhoCanVoteWarningLabel.Name = "WhoCanVoteWarningLabel";
+            this.WhoCanVoteWarningLabel.Size = new System.Drawing.Size(203, 28);
+            this.WhoCanVoteWarningLabel.TabIndex = 5;
+            // 
+            // idDataGridViewTextBoxColumn
+            // 
+            this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
+            this.idDataGridViewTextBoxColumn.HeaderText = "Id";
+            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
+            this.idDataGridViewTextBoxColumn.ReadOnly = true;
+            this.idDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // titleDataGridViewTextBoxColumn
+            // 
+            this.titleDataGridViewTextBoxColumn.DataPropertyName = "Title";
+            this.titleDataGridViewTextBoxColumn.HeaderText = "Position Title";
+            this.titleDataGridViewTextBoxColumn.Name = "titleDataGridViewTextBoxColumn";
+            this.titleDataGridViewTextBoxColumn.ReadOnly = true;
+            this.titleDataGridViewTextBoxColumn.Width = 150;
+            // 
+            // rankDataGridViewTextBoxColumn
+            // 
+            this.rankDataGridViewTextBoxColumn.DataPropertyName = "Rank";
+            this.rankDataGridViewTextBoxColumn.HeaderText = "Rank";
+            this.rankDataGridViewTextBoxColumn.Name = "rankDataGridViewTextBoxColumn";
+            this.rankDataGridViewTextBoxColumn.ReadOnly = true;
+            this.rankDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // positionModelBindingSource
+            // 
+            this.positionModelBindingSource.DataSource = typeof(StudentElection.Repository.Models.PositionModel);
             // 
             // PositionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(304, 401);
+            this.ClientSize = new System.Drawing.Size(344, 401);
             this.Controls.Add(this.cmbWhoCanVote);
             this.Controls.Add(this.nudNumberOfWinners);
             this.Controls.Add(this.dgPositions);
@@ -327,12 +336,12 @@
             this.Controls.Add(this.btnDown);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
+            this.Controls.Add(this.WhoCanVoteWarningLabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtPosition);
             this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(320, 440);
             this.MinimizeBox = false;
             this.Name = "PositionForm";
             this.ShowIcon = false;
@@ -342,8 +351,8 @@
             this.Text = "Position";
             this.Load += new System.EventHandler(this.PositionForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgPositions)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.positionModelBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNumberOfWinners)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.positionModelBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -366,11 +375,12 @@
         private System.Windows.Forms.NumericUpDown nudNumberOfWinners;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox cmbWhoCanVote;
+        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn titleDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn WinnersCount;
         private System.Windows.Forms.DataGridViewTextBoxColumn YearLevel;
         private System.Windows.Forms.DataGridViewTextBoxColumn rankDataGridViewTextBoxColumn;
-        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label WhoCanVoteWarningLabel;
     }
 }

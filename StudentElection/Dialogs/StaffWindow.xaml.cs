@@ -19,6 +19,7 @@ using StudentElection.Repository.Models;
 using StudentElection.Repository;
 using StudentElection.Services;
 using Project.Library.Helpers;
+using Humanizer;
 
 namespace StudentElection.Dialogs
 {
@@ -102,34 +103,34 @@ namespace StudentElection.Dialogs
             {
                 G.WaitLang(this);
 
-                txtLastName.Text = txtLastName.Text.ToProperCase();
-                txtFirstName.Text = txtFirstName.Text.ToProperCase();
-                txtMiddleName.Text = txtMiddleName.Text.ToProperCase();
-                txtSuffix.Text = txtSuffix.Text.ToProperCase();
+                txtLastName.Text = txtLastName.Text.Transform(To.TitleCase);
+                txtFirstName.Text = txtFirstName.Text.Transform(To.TitleCase);
+                txtMiddleName.Text = txtMiddleName.Text.Transform(To.TitleCase);
+                txtSuffix.Text = txtSuffix.Text.Transform(To.TitleCase);
                 txtUsername.Text = txtUsername.Text.Trim();
                 
                 if (await _userService.IsUserNameExistingAsync(txtUsername.Text, User))
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Username is already in use", "User", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Username '{ txtUsername.Text }' already exists", "User", MessageBoxButton.OK, MessageBoxImage.Error);
 
                     return;
                 }
 
-                if (txtFirstName.Text.IsBlank())
+                if (string.IsNullOrWhiteSpace(txtFirstName.Text))
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Please provide a first name", "User", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Enter user's first name", "User", MessageBoxButton.OK, MessageBoxImage.Error);
 
                     txtFirstName.Focus();
 
                     return;
                 }
 
-                if (txtLastName.Text.IsBlank())
+                if (string.IsNullOrWhiteSpace(txtLastName.Text))
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Please provide a last name", "User", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Enter user's last name", "User", MessageBoxButton.OK, MessageBoxImage.Error);
 
                     txtLastName.Focus();
 
@@ -139,17 +140,17 @@ namespace StudentElection.Dialogs
                 if (cmbSex.SelectedIndex < 0)
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Please select a sex", "User", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Select user's sex", "User", MessageBoxButton.OK, MessageBoxImage.Error);
 
                     cmbSex.Focus();
 
                     return;
                 }
 
-                if (txtUsername.Text.IsBlank())
+                if (string.IsNullOrWhiteSpace(txtUsername.Text))
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Please provide a username", "User", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Enter a username", "User", MessageBoxButton.OK, MessageBoxImage.Error);
 
                     txtUsername.Focus();
 
@@ -159,7 +160,7 @@ namespace StudentElection.Dialogs
                 if (pwdStaff.Password.Length == 0)
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Please provide a password", "User", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Enter a password", "User", MessageBoxButton.OK, MessageBoxImage.Error);
 
                     pwdStaff.Focus();
 

@@ -135,7 +135,7 @@
                     </StackPanel>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                    <Button x:Name="btnAdd" Content="ADD" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="3" FontSize="12" Click="btnAdd_Click">
+                    <Button x:Name="btnAdd" Content="ADD" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="3" FontSize="12" IsDefault="True" Click="btnAdd_Click">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}">
                                 <Setter Property="Background" Value="#291B5E20"/>

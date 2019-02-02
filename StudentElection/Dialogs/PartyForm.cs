@@ -83,24 +83,24 @@ namespace StudentElection.Dialogs
         {
             IsCanceled = false;
 
-            if (txtName.Text.IsBlank())
+            if (string.IsNullOrWhiteSpace(txtName.Text))
             {
-                MessageBox.Show("Please provide the name of the party.", "No party name", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Enter the name of the party.", "No party name", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtName.Focus();
 
                 return;
             }
-            if (txtAbbreviation.Text.IsBlank())
+            if (string.IsNullOrWhiteSpace(txtShortName.Text))
             {
-                MessageBox.Show("Please provide the short name of the party.", "No short name", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                txtAbbreviation.Focus();
+                MessageBox.Show("Enter the short name of the party.", "No short name", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtShortName.Focus();
 
                 return;
             }
-            if (txtName.Text.Length <= txtAbbreviation.Text.Length)
+            if (txtName.Text.Length <= txtShortName.Text.Length)
             {
                 MessageBox.Show("The short name of the party must be shorter than its actual name.", "Party", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                txtAbbreviation.Focus();
+                txtShortName.Focus();
 
                 return;
             }
@@ -112,24 +112,29 @@ namespace StudentElection.Dialogs
                 var partyRows = await _partyService.GetPartiesAsync(_currentElection.Id);
 
                 if (Party != null)
+                {
                     partyRows = partyRows.Where(x => x.Id != Party.Id);
+                }
 
-                var rows = partyRows.Where(x => x.Title == txtName.Text.Trim());
-                if (rows.Count() > 0)
+                txtName.Text = txtName.Text.Trim();
+                txtShortName.Text = txtShortName.Text.Trim();
+
+                var rows = partyRows.Where(x => x.Title.ToLower() == txtName.Text.ToLower());
+                if (rows.Any())
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Name of this party has already been used", "Party name in use", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Party name '{ txtName.Text }' already exists", "Party", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txtName.Focus();
 
                     return;
                 }
 
-                rows = partyRows.Where(x => x.ShortName == txtAbbreviation.Text.Trim());
-                if (rows.Count() > 0 && Party == null)
+                rows = partyRows.Where(x => x.ShortName.ToLower() == txtShortName.Text.ToLower());
+                if (rows.Any() && Party == null)
                 {
                     G.EndWait(this);
-                    MessageBox.Show("The short name has already been used", "Short name in use", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txtAbbreviation.Focus();
+                    MessageBox.Show($"Short name '{ txtShortName.Text }' already exists", "Party", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtShortName.Focus();
 
                     return;
                 }
@@ -143,12 +148,11 @@ namespace StudentElection.Dialogs
 
                 //    return;
                 //}
-
-
+                
                 var party = new PartyModel
                 {
                     Title = txtName.Text,
-                    ShortName = txtAbbreviation.Text,
+                    ShortName = txtShortName.Text,
                     Argb = _argb,
                     ElectionId = _currentElection.Id
                 };
@@ -186,7 +190,7 @@ namespace StudentElection.Dialogs
 
         private async void btnDelete_Click(object sender, EventArgs e)
         {
-            var candidates = await _candidateService.GetCandidatesByPartyAsync(Party.Id);
+            var candidates = await _candidateService.GetCandidateDetailsListByPartyAsync(Party.Id);
             if (candidates.Any())
             {
                 MessageBox.Show($"Cannot delete this party\n\nThere's { "candidate".ToQuantity(candidates.Count()) } in this party",
@@ -245,7 +249,7 @@ namespace StudentElection.Dialogs
 
                 txtName.Text = Party.Title;
                 txtName.SelectionStart = txtName.TextLength;
-                txtAbbreviation.Text = Party.ShortName;
+                txtShortName.Text = Party.ShortName;
                 pbColor.BackColor = Party.Color;
 
                 _argb = Party.Argb;

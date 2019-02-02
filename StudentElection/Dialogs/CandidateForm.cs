@@ -21,7 +21,7 @@ namespace StudentElection.Dialogs
 {
     public partial class CandidateForm : Form
     {
-        public CandidateModel Candidate;
+        public CandidateModel EditingCandidate;
 
         public bool IsCanceled = false;
         public bool IsLoadPosition = false;
@@ -165,36 +165,40 @@ namespace StudentElection.Dialogs
 
             dtBirthdate.MaxDate = DateTime.Today;
 
-            if (Candidate == null)
+            if (EditingCandidate == null)
             {
                 lblTitle.Text = "Add Candidate";
                 btnAdd.Text = "ADD";
+
+                await LoadPositionsAsync();
+
+                cmbPosition.SelectedIndex = -1;
             }
             else
             {
-                var party = await _partyService.GetPartyAsync(Candidate.PartyId);
+                var party = await _partyService.GetPartyAsync(EditingCandidate.PartyId);
                 SetParty(party);
                 
                 lblTitle.Text = "Edit Candidate";
 
-                txtFirstName.Text = Candidate.FirstName;
-                txtMiddleName.Text = Candidate.MiddleName;
-                txtLastName.Text = Candidate.LastName;
-                txtSuffix.Text = Candidate.Suffix;
-                dtBirthdate.Checked = Candidate.Birthdate.HasValue;
+                txtFirstName.Text = EditingCandidate.FirstName;
+                txtMiddleName.Text = EditingCandidate.MiddleName;
+                txtLastName.Text = EditingCandidate.LastName;
+                txtSuffix.Text = EditingCandidate.Suffix;
+                dtBirthdate.Checked = EditingCandidate.Birthdate.HasValue;
                 if (dtBirthdate.Checked)
                 {
-                    dtBirthdate.Value = Candidate.Birthdate.Value;
+                    dtBirthdate.Value = EditingCandidate.Birthdate.Value;
                 }
-                cmbSex.SelectedIndex = (int)Candidate.Sex - 1;
-                cmbYearLevel.SelectedItem = Candidate.YearLevel.ToString();
-                txtSection.Text = Candidate.Section;
-                txtAlias.Text = Candidate.Alias;
+                cmbSex.SelectedIndex = (int)EditingCandidate.Sex - 1;
+                cmbYearLevel.SelectedItem = EditingCandidate.YearLevel.ToString();
+                txtSection.Text = EditingCandidate.Section;
+                txtAlias.Text = EditingCandidate.Alias;
 
                 pbImage.Image = Properties.Resources.default_candidate;
-                if (!Candidate.PictureFileName.IsBlank())
+                if (!string.IsNullOrWhiteSpace(EditingCandidate.PictureFileName))
                 {
-                    var filePath = Path.Combine(App.ImageFolderPath, Candidate.PictureFileName);
+                    var filePath = Path.Combine(App.ImageFolderPath, EditingCandidate.PictureFileName);
                     if (File.Exists(filePath))
                     {
                         using (var bmpTemp = new Bitmap(filePath))
@@ -220,7 +224,7 @@ namespace StudentElection.Dialogs
             if (IsCanceled)
                 return null;
 
-            return await _candidateService.GetCandidateAsync(Candidate.Id);
+            return await _candidateService.GetCandidateDetailsAsync(EditingCandidate.Id);
         }
 
         private async Task LoadPositionsAsync()
@@ -241,12 +245,12 @@ namespace StudentElection.Dialogs
                     cmbPosition.DataSource = positionRows.ToList();
                 }
 
-                if (Candidate == null)
+                if (EditingCandidate == null)
                 {
                     return;
                 }
 
-                var candidatePosition = await _positionService.GetPositionAsync(Candidate.PositionId);
+                var candidatePosition = await _positionService.GetPositionAsync(EditingCandidate.PositionId);
                 cmbPosition.Text = candidatePosition.Title;
             }
             catch (Exception ex)
@@ -300,40 +304,45 @@ namespace StudentElection.Dialogs
 
         private async void btnAdd_Click(object sender, EventArgs e)
         {
-            if (txtFirstName.Text.IsBlank())
+            if (string.IsNullOrWhiteSpace(txtFirstName.Text))
             {
                 MessageBox.Show("Enter the candidate's first name.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtFirstName.Focus();
                 return;
             }
-            if (txtLastName.Text.IsBlank())
+            if (string.IsNullOrWhiteSpace(txtLastName.Text))
             {
                 MessageBox.Show("Enter the candidate's last name.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtLastName.Focus();
                 return;
             }
             if (cmbSex.SelectedIndex < 0)
             {
                 MessageBox.Show("Select the candidate's sex.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cmbSex.Focus();
                 return;
             }
             if (cmbYearLevel.SelectedItem == null)
             {
                 MessageBox.Show("Select the candidate's year level.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cmbYearLevel.Focus();
                 return;
             }
-            if (txtSection.Text.IsBlank())
+            if (string.IsNullOrWhiteSpace(txtSection.Text))
             {
-                MessageBox.Show("Enter the candidate's section.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Enter the candidate's class section.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtSection.Focus();
                 return;
             }
-            if (txtAlias.Text.IsBlank())
+            if (string.IsNullOrWhiteSpace(txtAlias.Text))
             {
-                MessageBox.Show("Please provide an alias.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Enter candidate's alias.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtAlias.Focus();
                 return;
             }
             if (cmbPosition.SelectedIndex == -1)
             {
-                MessageBox.Show("Please select a position.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Select a position.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 cmbPosition.Focus();
                 return;
             }
@@ -345,21 +354,22 @@ namespace StudentElection.Dialogs
             {
                 G.WaitLang(this);
 
-                var isAliasExisting = await _candidateService.IsAliasExistingAsync(_currentElection.Id, txtAlias.Text, Candidate);
+                txtAlias.Text = txtAlias.Text.Trim();
+                var isAliasExisting = await _candidateService.IsAliasExistingAsync(_currentElection.Id, txtAlias.Text, EditingCandidate);
                 
                 if (isAliasExisting)
                 {
                     G.EndWait(this);
-                    MessageBox.Show("The alias has been already used.", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Alias '{ txtAlias.Text }' already exists", "Candidate", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txtAlias.Focus();
 
                     return;
                 }
 
-                var candidatesByPosition = await _candidateService.GetCandidatesByPositionAsync(position.Id);
+                var candidatesByPosition = await _candidateService.GetCandidateDetailsListByPositionAsync(position.Id);
 
                 var partyId = (int)lblParty.Tag;
-                if ((Candidate == null && candidatesByPosition.Any(c => c.PartyId == partyId)))
+                if ((EditingCandidate == null && candidatesByPosition.Any(c => c.PartyId == partyId)))
                 {
                     G.EndWait(this);
                     var result = MessageBox.Show($"There's already a candidate for { position.Title }.\n\nContinue adding this candidate?",
@@ -371,13 +381,13 @@ namespace StudentElection.Dialogs
                 }
 
                 string existingImageFile = null;
-                if (Candidate?.PictureFileName != null)
+                if (EditingCandidate?.PictureFileName != null)
                 {
-                    existingImageFile = Path.Combine(App.ImageFolderPath, Candidate.PictureFileName);
+                    existingImageFile = Path.Combine(App.ImageFolderPath, EditingCandidate.PictureFileName);
                 }
 
-                string newFileName = Candidate?.PictureFileName;
-                if (!(ofdImage.FileName == null || ofdImage.FileName.IsBlank()))
+                string newFileName = EditingCandidate?.PictureFileName;
+                if (!string.IsNullOrWhiteSpace(ofdImage.FileName))
                 {
                     if (existingImageFile != null && File.Exists(existingImageFile))
                     {
@@ -407,7 +417,7 @@ namespace StudentElection.Dialogs
                     PictureFileName = newFileName
                 };
 
-                if (Candidate == null)
+                if (EditingCandidate == null)
                 {
                     await _candidateService.SaveCandidateAsync(candidate);
                     
@@ -416,7 +426,7 @@ namespace StudentElection.Dialogs
                 }
                 else
                 {
-                    candidate.Id = Candidate.Id;
+                    candidate.Id = EditingCandidate.Id;
                     await _candidateService.SaveCandidateAsync(candidate);
 
                     G.EndWait(this);
@@ -456,7 +466,7 @@ namespace StudentElection.Dialogs
                 cmbPosition.Enabled = false;
                 cmbPosition.Cursor = Cursors.WaitCursor;
 
-                var previousSelected = cmbPosition.SelectedItem as PositionModel ?? Candidate?.Position;
+                var previousSelected = cmbPosition.SelectedItem as PositionModel ?? EditingCandidate?.Position;
                 var yearLevel = int.Parse(cmbYearLevel.Text);
                 var positionsByYearLevel = await _positionService.GetPositionsByYearLevelAsync(_currentElection.Id, yearLevel);
                 cmbPosition.DataSource = positionsByYearLevel.ToList();

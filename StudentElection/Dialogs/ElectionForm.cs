@@ -28,7 +28,6 @@ namespace StudentElection.Dialogs
             InitializeComponent();
 
             dtpHappensOn.MinDate = DateTime.Today;
-            txtElectionTitle.Focus();
         }
 
         private void ElectionForm_Load(object sender, EventArgs e)
@@ -43,6 +42,8 @@ namespace StudentElection.Dialogs
                 txtDescription.Text = Election.Description;
                 dtpHappensOn.Value = Election.TookPlaceOn;
             }
+
+            txtElectionTitle.Focus();
         }
 
         private async void btnSave_Click(object sender, EventArgs e)
@@ -51,13 +52,13 @@ namespace StudentElection.Dialogs
             {
                 Title = txtElectionTitle.Text,
                 Description = txtDescription.Text,
-                TookPlaceOn = dtpHappensOn.Value,
+                TookPlaceOn = dtpHappensOn.Value.Date,
                 CandidatesFinalizedAt = Election?.CandidatesFinalizedAt,
                 ClosedAt = Election?.ClosedAt,
                 ServerTag = Election?.ServerTag ?? " "
             };
 
-            if (election.Title.IsBlank())
+            if (string.IsNullOrWhiteSpace(election.Title))
             {
                 MessageBox.Show($"Enter the election title.", "Election title required", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtElectionTitle.Focus();

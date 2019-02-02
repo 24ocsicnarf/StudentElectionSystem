@@ -37,7 +37,7 @@
             this.cdgParty = new System.Windows.Forms.ColorDialog();
             this.lblChooseColor = new System.Windows.Forms.Label();
             this.pbColor = new System.Windows.Forms.PictureBox();
-            this.txtAbbreviation = new System.Windows.Forms.TextBox();
+            this.txtShortName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnDelete = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -137,14 +137,14 @@
             this.pbColor.TabStop = false;
             this.pbColor.Click += new System.EventHandler(this.pbColor_Click);
             // 
-            // txtAbbreviation
+            // txtShortName
             // 
-            this.txtAbbreviation.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtAbbreviation.Location = new System.Drawing.Point(93, 100);
-            this.txtAbbreviation.MaxLength = 20;
-            this.txtAbbreviation.Name = "txtAbbreviation";
-            this.txtAbbreviation.Size = new System.Drawing.Size(135, 22);
-            this.txtAbbreviation.TabIndex = 1;
+            this.txtShortName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtShortName.Location = new System.Drawing.Point(93, 100);
+            this.txtShortName.MaxLength = 20;
+            this.txtShortName.Name = "txtShortName";
+            this.txtShortName.Size = new System.Drawing.Size(135, 22);
+            this.txtShortName.TabIndex = 1;
             // 
             // label1
             // 
@@ -184,12 +184,13 @@
             // 
             // PartyForm
             // 
+            this.AcceptButton = this.btnAdd;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(360, 220);
             this.Controls.Add(this.btnDelete);
-            this.Controls.Add(this.txtAbbreviation);
+            this.Controls.Add(this.txtShortName);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pbColor);
             this.Controls.Add(this.btnCancel);
@@ -224,7 +225,7 @@
         private System.Windows.Forms.ColorDialog cdgParty;
         private System.Windows.Forms.PictureBox pbColor;
         private System.Windows.Forms.Label lblChooseColor;
-        private System.Windows.Forms.TextBox txtAbbreviation;
+        private System.Windows.Forms.TextBox txtShortName;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Label label3;

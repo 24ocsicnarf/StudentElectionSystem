@@ -46,9 +46,9 @@
             this.lblUndoFinalize = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnSetupDatabase = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.lblCurrentDatabase = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnSetupDatabase = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -96,11 +96,11 @@
             // 
             // lblDescription
             // 
-            this.lblDescription.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescription.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDescription.ForeColor = System.Drawing.Color.DimGray;
-            this.lblDescription.Location = new System.Drawing.Point(11, 36);
+            this.lblDescription.Location = new System.Drawing.Point(14, 36);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(264, 46);
+            this.lblDescription.Size = new System.Drawing.Size(261, 40);
             this.lblDescription.TabIndex = 7;
             // 
             // lblCurrentElectionTitle
@@ -174,7 +174,7 @@
             // label10
             // 
             this.label10.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(3, 105);
+            this.label10.Location = new System.Drawing.Point(11, 105);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(117, 14);
             this.label10.TabIndex = 6;
@@ -260,6 +260,26 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Database";
             // 
+            // lblCurrentDatabase
+            // 
+            this.lblCurrentDatabase.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCurrentDatabase.Location = new System.Drawing.Point(114, 18);
+            this.lblCurrentDatabase.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCurrentDatabase.Name = "lblCurrentDatabase";
+            this.lblCurrentDatabase.Size = new System.Drawing.Size(150, 14);
+            this.lblCurrentDatabase.TabIndex = 14;
+            this.lblCurrentDatabase.Text = "Current database:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 18);
+            this.label1.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(105, 14);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Current database:";
+            // 
             // btnSetupDatabase
             // 
             this.btnSetupDatabase.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
@@ -273,26 +293,6 @@
             this.btnSetupDatabase.Text = "SET UP DATABASE";
             this.btnSetupDatabase.UseVisualStyleBackColor = false;
             this.btnSetupDatabase.Click += new System.EventHandler(this.btnSetupDatabase_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 18);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(105, 14);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "Current database:";
-            // 
-            // lblCurrentDatabase
-            // 
-            this.lblCurrentDatabase.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCurrentDatabase.Location = new System.Drawing.Point(114, 18);
-            this.lblCurrentDatabase.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCurrentDatabase.Name = "lblCurrentDatabase";
-            this.lblCurrentDatabase.Size = new System.Drawing.Size(150, 14);
-            this.lblCurrentDatabase.TabIndex = 14;
-            this.lblCurrentDatabase.Text = "Current database:";
             // 
             // SettingsForm
             // 
@@ -311,7 +311,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
-            this.Load += new System.EventHandler(this.ElectionSettingsForm_Load);
+            this.Load += new System.EventHandler(this.SettingsForm_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();

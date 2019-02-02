@@ -15,58 +15,45 @@ namespace StudentElection
 {
     public static class G
     {
-        //public enum UserType
-        //{
-        //    Voter,
-        //    Admin,
-        //    SuperAdmin
-        //}
-
-        //public enum SexType
-        //{
-        //    Male,
-        //    Female
-        //}
-
         public static List<double> CandidateHOffsets = new List<double>();
 
-        public static bool IsBlank(this string value)
-        {
-            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
-            {
-                return true;
-            }
-            return false;
-        }
+        //public static bool IsBlank(this string value)
+        //{
+        //    if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
-        public static string ToTitleCase(this string value)
-        {
-            var cultureInfo = Thread.CurrentThread.CurrentCulture;
-            var textInfo = cultureInfo.TextInfo;
+        //public static string ToTitleCase(this string value)
+        //{
+        //    var cultureInfo = Thread.CurrentThread.CurrentCulture;
+        //    var textInfo = cultureInfo.TextInfo;
 
-            return textInfo.ToTitleCase(value).Trim();
-        }
+        //    return textInfo.ToTitleCase(value).Trim();
+        //}
 
-        public static string ToProperCase(this string value)
-        {
-            string text = value.Trim();
-            string[] names = text.Split(' ');
-            StringBuilder newName = new StringBuilder();
+        //public static string ToProperCase(this string value)
+        //{
+        //    string text = value.Trim();
+        //    string[] names = text.Split(' ');
+        //    StringBuilder newName = new StringBuilder();
 
-            if (IsBlank(text)) return "";
+        //    if (IsBlank(text)) return "";
 
-            foreach (string name in names)
-            {
-                newName.AppendFormat("{0}", name[0].ToString().ToUpper());
+        //    foreach (string name in names)
+        //    {
+        //        newName.AppendFormat("{0}", name[0].ToString().ToUpper());
 
-                if (name.Length > 1)
-                    newName.Append(name.Substring(1));
+        //        if (name.Length > 1)
+        //            newName.Append(name.Substring(1));
 
-                newName.Append(" ");
-            }
+        //        newName.Append(" ");
+        //    }
 
-            return newName.ToString().Trim();
-        }
+        //    return newName.ToString().Trim();
+        //}
 
         public static void ChangeWindowSize(Window window)
         {
@@ -80,23 +67,8 @@ namespace StudentElection
             }
             else if (window is BallotWindow)
             {
-                //window.Width = bounds.Width * (0.85 - (0.4 * (bounds.Width - 640) / 1280));
-                //window.Height = window.Width * (1 - (0.25 * (1 - (bounds.Height - 480) / 600)));
-
                 window.WindowState = WindowState.Maximized;
                 window.WindowStyle = WindowStyle.None;
-
-                //if (window.Owner == null)
-                //{
-                //    var blackWindow = new Window();
-                //    blackWindow.Background = new SolidColorBrush(Colors.Black);
-                //    blackWindow.ResizeMode = ResizeMode.NoResize;
-                //    blackWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                //    blackWindow.WindowStyle = WindowStyle.None;
-                //    blackWindow.WindowState = WindowState.Maximized;
-                //    blackWindow.ShowInTaskbar = false;
-                //    window.Owner = blackWindow;
-                //}
             }
 
             PlaceWindowOnCenter(window);

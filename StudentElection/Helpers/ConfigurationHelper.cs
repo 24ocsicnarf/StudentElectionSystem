@@ -11,19 +11,37 @@ namespace StudentElection.Helpers
     public static class ConfigurationHelper
     {
         // Protect the connectionStrings section.
-        public static void ProtectConfiguration(Configuration config)
+        public static void ProtectConfiguration()
         {
             // Get the section to protect.
-            ConfigurationSection connStrings = config.ConnectionStrings;
-            var msAccessSettings = config.GetSection("StudentElection.MSAccess.Properties.Settings");
+            var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+            ConfigurationSection connStrings = configFile.ConnectionStrings;
+            ConfigurationSection appSettings = configFile.AppSettings;
+            var entityFrameworkSection = configFile.Sections["entityFramework"];
 
             ProtectConfigurationSection(connStrings);
-            ProtectConfigurationSection(msAccessSettings);
+            ProtectConfigurationSection(appSettings);
+            ProtectConfigurationSection(entityFrameworkSection);
 
-            config.Save(ConfigurationSaveMode.Full);
+            configFile.Save(ConfigurationSaveMode.Full);
+            ConfigurationManager.RefreshSection(connStrings.SectionInformation.Name);
+            ConfigurationManager.RefreshSection(entityFrameworkSection.SectionInformation.Name);
+
+            var roamingLocalConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+
+            var msAccessUserSettings = roamingLocalConfig.GetSection("userSettings/StudentElection.MSAccess.Properties.Settings");
+            var networkUserSettings = roamingLocalConfig.GetSection("userSettings/StudentElection.Properties.Network");
+
+            ProtectConfigurationSection(msAccessUserSettings);
+            ProtectConfigurationSection(networkUserSettings);
+            
+            roamingLocalConfig.Save(ConfigurationSaveMode.Full);
+            ConfigurationManager.RefreshSection($"userSettings/{ msAccessUserSettings.SectionInformation.Name }");
+            ConfigurationManager.RefreshSection($"userSettings/{ networkUserSettings.SectionInformation.Name }");
         }
 
-        private static void ProtectConfigurationSection(ConfigurationSection section)
+        private static bool ProtectConfigurationSection(ConfigurationSection section)
         {
             // Define the Rsa provider name.
             string provider = "RsaProtectedConfigurationProvider";
@@ -38,6 +56,8 @@ namespace StudentElection.Helpers
                         section.SectionInformation.ProtectSection(provider);
 
                         section.SectionInformation.ForceSave = true;
+
+                        return true;
                     }
                     else
                     {
@@ -45,6 +65,8 @@ namespace StudentElection.Helpers
                     }
                 }
             }
+
+            return false;
         }
     }
 }

@@ -25,6 +25,11 @@ namespace StudentElection.Services
             return await _electionRepository.GetCurrentElectionAsync();
         }
 
+        public async Task<ElectionModel> GetElectionByServerTag(string tag)
+        {
+            return await _electionRepository.GetElectionByServerTagAsync(tag);
+        }
+
         public async Task FinalizeCandidatesAsync(int electionId)
         {
             var dateTime = DateTime.Now;
@@ -46,7 +51,7 @@ namespace StudentElection.Services
 
         public async Task UpdateTagAsync(int electionId, string tag)
         {
-            await _electionRepository.UpdateTagAsync(electionId, tag);
+            await _electionRepository.UpdateServerTagAsync(electionId, tag);
         }
 
         public async Task UpdateElectionAsync(ElectionModel election)

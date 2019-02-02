@@ -28,9 +28,9 @@ namespace StudentElection.Services
             return await _positionRepository.GetPositionAsync(positionId);
         }
 
-        public async Task<int> GetPositionsCountAsync(int electionId)
+        public async Task<int> CountPositionsAsync(int electionId)
         {
-            return await _positionRepository.GetPositionsCountAsync(electionId);
+            return await _positionRepository.CountPositionsAsync(electionId);
         }
 
         public async Task<PositionModel> GetPositionByTitleAsync(int electionId, string positionTitle)
@@ -42,6 +42,9 @@ namespace StudentElection.Services
         {
             if (position.Id == 0)
             {
+                int maxRank = await _positionRepository.GetMaxRankAsync(position.ElectionId);
+                position.Rank = maxRank + 1;
+
                 await _positionRepository.InsertPositionAsync(position);
             }
             else
@@ -57,12 +60,17 @@ namespace StudentElection.Services
         
         public async Task MoveRankAsync(PositionModel selectedPosition, PositionModel closestPosition)
         {
-            await _positionRepository.MoveRankAsync(selectedPosition, closestPosition);
+            await _positionRepository.SwitchRankAsync(selectedPosition, closestPosition);
         }
 
         public async Task<IEnumerable<PositionModel>> GetPositionsByYearLevelAsync(int electionId, int yearLevel)
         {
             return await _positionRepository.GetPositionsByYearLevelAsync(electionId, yearLevel);
+        }
+
+        public async Task<bool> IsPositionTitleExistingAsync(int electionId, string title, PositionModel editingPosition)
+        {
+            return await _positionRepository.IsPositionTitleExistingAsync(electionId, title, editingPosition);
         }
     }
 }

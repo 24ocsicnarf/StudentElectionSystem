@@ -46,7 +46,7 @@
     <Border>
 
         <Grid Grid.Row="1" Grid.Column="1">
-            <Border x:Name="bdrMaintenance" BorderBrush="#808080" BorderThickness="4">
+            <Border x:Name="bdrMaintenance" BorderBrush="#B0B0B0" BorderThickness="4">
                 <Grid x:Name="grdMaintenance" Visibility="Visible">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -104,10 +104,10 @@
                             </Grid>
                             <DockPanel Grid.Row="1">
                                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" >
-                                    <Label x:Name="lblMachineTag" Content="SERVER TAG" FontSize="10.667" Padding="2" Opacity="0.87" ToolTip="A unique name of this voting server (up to 10 letters and numbers only)" Cursor="Arrow" VerticalAlignment="Center" />
+                                    <Label x:Name="lblMachineTag" Content="SERVER TAG" FontSize="10.667" Padding="2" Opacity="0.87" ToolTip="A unique name of the voting server (up to 10 letters and numbers only; can only be used once)" Cursor="Arrow" VerticalAlignment="Center" />
                                     <Grid Margin="2 0">
                                         <TextBox x:Name="txtTag" Visibility="Collapsed" Text="" CharacterCasing="Upper" Width="160" Height="Auto" FontSize="14" VerticalAlignment="Center" MaxLines="1" MaxLength="10" Foreground="#ff000000" FontWeight="Bold" PreviewTextInput="txtTag_PreviewTextInput" PreviewKeyDown="txtTag_PreviewKeyDown" />
-                                        <Label x:Name="lblTag" Visibility="Visible" Cursor="IBeam" Content="(No Tag)" Padding="3,5" FontSize="14"  Foreground="#dd000000" FontWeight="Bold" PreviewMouseLeftButtonDown="lblTag_PreviewMouseLeftButtonDown"/>
+                                        <Label x:Name="lblTag" Visibility="Visible" Cursor="IBeam" Content="(No tag)" Padding="3,5" FontSize="14"  Foreground="#dd000000" FontWeight="Bold" PreviewMouseLeftButtonDown="lblTag_PreviewMouseLeftButtonDown"/>
                                     </Grid>
                                     <StackPanel x:Name="stkTagButtons" Orientation="Horizontal" Margin="4,0,0,0" Visibility="Collapsed">
                                         <Button x:Name="btnUpdateTag" Content="UPDATE"  FontSize="10.667" VerticalAlignment="Center" Margin="4,0" BorderThickness="0" FontWeight="Bold" Width="60" Click="btnUpdateTag_Click" >
@@ -548,7 +548,7 @@
                                                 </Button.Style>
                                             </Button>
                                         </DockPanel>
-                                        <DockPanel DockPanel.Dock="Top" >
+                                        <DockPanel DockPanel.Dock="Top">
                                             <Label HorizontalAlignment="Left"  Content="Voters" FontWeight="Bold" FontSize="18"  />
                                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="Visible">
                                                 <CheckBox x:Name="chkVoted" DockPanel.Dock="Right" Content="Show voted only" HorizontalAlignment="Right"  VerticalAlignment="Center" VerticalContentAlignment="Center" Visibility="Visible" Margin="4,0" Foreground="#dd000000" Click="chkVoted_Click"/>
@@ -556,11 +556,6 @@
                                                 <TextBox x:Name="txtVoterFilter" Width="120" VerticalContentAlignment="Center" Height="24" MaxLines="1" MaxLength="20" TextChanged="txtVoterFilter_TextChanged" />
                                             </StackPanel>
                                         </DockPanel>
-                                        <!--<syncfusion:SfDataPager x:Name="dataPagerVoters"
-                                                                DockPanel.Dock="Bottom"
-                                                                HorizontalAlignment="Right"
-                                                                NumericButtonCount="10"
-                                                                PageSize="40"/>-->
                                         <syncfusion:SfDataGrid x:Name="dgVoters"
                                                                Background="White"
                                                                ColumnSizer="AutoLastColumnFill"

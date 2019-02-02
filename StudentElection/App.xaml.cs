@@ -27,9 +27,9 @@ namespace StudentElection
 {
     public enum DatabaseType
     {
-        Unknown = -1,
-        File = 0,
-        Server = 1
+        Unknown,
+        File,
+        Server
     }
 
     /// <summary>
@@ -37,6 +37,9 @@ namespace StudentElection
     /// </summary>
     public partial class App : Application
     {
+        public const string CopyrightYear = "2016";
+        public const string Version = "2.0.0";
+
         public const string MdbFileName = "StudentElection.mdb";
         public const string ImageFolderName = "Images";
         
@@ -44,12 +47,8 @@ namespace StudentElection
         public static string ImageFolderPath => Path.Combine(ImageFolderDirectory, ImageFolderName);
         public static string ExeDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
-        public UserService _userService = new UserService();
-
-        public static void SetFolderPaths()
+        public static void SetFolderPaths(DatabaseType databaseType)
         {
-            var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            var databaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), configFile.AppSettings.Settings["DatabaseType"].Value);
             if (databaseType == DatabaseType.File)
             {
                 ImageFolderDirectory = ExeDirectory;
@@ -65,13 +64,13 @@ namespace StudentElection
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            SetFolderPaths();
-
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
             var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            var databaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), configFile.AppSettings.Settings["DatabaseType"].Value);
+            Enum.TryParse<DatabaseType>(configFile.AppSettings.Settings["DatabaseType"].Value, out var databaseType);
+
+            SetFolderPaths(databaseType);
 
             switch (databaseType)
             {
@@ -82,21 +81,21 @@ namespace StudentElection
                     var result = ProvideMSAccessPassword();
                     if (result == false)
                     {
-                        Current.Shutdown();
+                        Environment.Exit(0);
                         return;
                     }
-
-                    ConfigurationHelper.ProtectConfiguration(configFile);
                     break;
                 case DatabaseType.Server:
                     result = CheckServerDatabase();
                     if (result == false)
                     {
-                        Current.Shutdown();
+                        Environment.Exit(0);
                         return;
                     }
                     break;
             }
+
+            ConfigurationHelper.ProtectConfiguration();
 
             if (!Directory.Exists(ImageFolderDirectory))
             {
@@ -113,7 +112,7 @@ namespace StudentElection
                     MessageBox.Show("You cannot use this system without a network folder", "No network folder", MessageBoxButton.OK, MessageBoxImage.Stop);
                 }
 
-                Current.Shutdown();
+                Environment.Exit(0);
 
                 return;
             }
@@ -122,8 +121,9 @@ namespace StudentElection
             {
                 Directory.CreateDirectory(ImageFolderPath);
             }
-
-            int usersCount = await _userService.CountUsersAsync();
+            
+            var userService = new UserService();
+            int usersCount = await userService.CountUsersAsync();
             if (usersCount == 0)
             {
                 MessageBox.Show("No users yet. Press OK to add a superuser", "No users", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -139,22 +139,16 @@ namespace StudentElection
 
                 userWindow.ShowDialog();
 
-                usersCount = await _userService.CountUsersAsync();
+                usersCount = await userService.CountUsersAsync();
 
                 if (usersCount == 0)
                 {
                     MessageBox.Show("You cannot use this system without a user", "No users", MessageBoxButton.OK, MessageBoxImage.Stop);
 
-                    Current.Shutdown();
+                    Environment.Exit(0);
 
                     return;
                 }
-
-                //if (Current.MainWindow == null)
-                //{
-                //    var mainWindow = new MainWindow();
-                //    mainWindow.ShowDialog();
-                //}
             }
         }
 
@@ -172,7 +166,9 @@ namespace StudentElection
             {
                 MessageBox.Show("You cannot use this system without a database", "No database", MessageBoxButton.OK, MessageBoxImage.Stop);
 
-                Current.Shutdown();
+                Environment.Exit(0);
+
+                return;
             }
         }
 
@@ -252,7 +248,7 @@ namespace StudentElection
                     if (ex is OleDbException oleDbException && oleDbException.ErrorCode == -2147217843)
                     {
                         MessageBox.Show($"{ ex.GetBaseException().Message }.\n\nPress OK to enter the correct password", "Connection error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                        var form = new PasswordInputForm($"Type the password for '{ MdbFileName }' file:", "The password will be saved until you close the program")
+                        var form = new PasswordInputForm($"Type the password for '{ MdbFileName }' file:")
                         {
                             Text = $"Password for '{ MdbFileName }' file",
                             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

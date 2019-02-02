@@ -80,8 +80,8 @@ namespace StudentElection.Dialogs
 
         private void SetNetworkLocation()
         {
-            if (txtNetworkFolderAddress.Text.IsBlank()
-                || txtNetworkFolderName.Text.IsBlank())
+            if (string.IsNullOrWhiteSpace(txtNetworkFolderAddress.Text)
+                || string.IsNullOrWhiteSpace(txtNetworkFolderName.Text))
             {
                 txtNetworkLocation.Text = "(invalid network location)";
                 return;
@@ -176,8 +176,6 @@ namespace StudentElection.Dialogs
 
                 Properties.Network.Default.Save();
 
-                ConfigurationHelper.ProtectConfiguration(configFile);
-
                 MessageBox.Show("Successfully connected to the MS Access database :D\n\nThe program will now restart.", "Connection success", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 RestartSystem();
@@ -190,14 +188,14 @@ namespace StudentElection.Dialogs
                 string host = string.Empty;
                 string networkFolderName = txtNetworkFolderName.Text;
 
-                if (!txtPort.Text.IsBlank() && !int.TryParse(txtPort.Text, out port))
+                if (!string.IsNullOrWhiteSpace(txtPort.Text) && !int.TryParse(txtPort.Text, out port))
                 {
                     MessageBox.Show("Invalid port number", "Connection error", MessageBoxButton.OK, MessageBoxImage.Error);
                     txtPort.Focus();
                     return;
                 }
 
-                if (!txtIPAddress.Text.IsBlank() && IsLocalIpAddress(txtIPAddress.Text))
+                if (!string.IsNullOrWhiteSpace(txtIPAddress.Text) && IsLocalIpAddress(txtIPAddress.Text))
                 {
                     host = txtIPAddress.Text;
                 }
@@ -212,14 +210,14 @@ namespace StudentElection.Dialogs
                     return;
                 }
                 
-                if (txtNetworkFolderAddress.Text.IsBlank())
+                if (string.IsNullOrWhiteSpace(txtNetworkFolderAddress.Text))
                 {
                     MessageBox.Show("Enter the network folder address", "Connection error", MessageBoxButton.OK, MessageBoxImage.Error);
                     txtNetworkFolderAddress.Focus();
                     return;
                 }
 
-                if (networkFolderName.IsBlank())
+                if (string.IsNullOrWhiteSpace(networkFolderName))
                 {
                     MessageBox.Show("Enter the network folder name", "Connection error", MessageBoxButton.OK, MessageBoxImage.Error);
                     txtNetworkFolderName.Focus();
@@ -287,9 +285,7 @@ namespace StudentElection.Dialogs
                     ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
 
                     Properties.Network.Default.Save();
-
-                    ConfigurationHelper.ProtectConfiguration(configFile);
-
+                    
                     G.EndWait(this);
 
                     MessageBox.Show("Successfully connected to a PostgreSQL database :D\n\nThe program will now restart.", "Connection success", MessageBoxButton.OK, MessageBoxImage.Information);

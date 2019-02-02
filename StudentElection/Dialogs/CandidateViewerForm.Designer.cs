@@ -30,8 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.pbImage = new System.Windows.Forms.PictureBox();
-            this.lblVoterID = new System.Windows.Forms.Label();
-            this.lblStrand = new System.Windows.Forms.Label();
+            this.lblGradeSection = new System.Windows.Forms.Label();
             this.lblName = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -41,7 +40,6 @@
             this.btnEdit = new System.Windows.Forms.Button();
             this.lblSex = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.lblBirthdate = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -74,28 +72,16 @@
             this.pbImage.TabStop = false;
             this.pbImage.WaitOnLoad = true;
             // 
-            // lblVoterID
+            // lblSection
             // 
-            this.lblVoterID.Font = new System.Drawing.Font("Arial Narrow", 9.7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVoterID.Location = new System.Drawing.Point(342, 146);
-            this.lblVoterID.Margin = new System.Windows.Forms.Padding(3);
-            this.lblVoterID.Name = "lblVoterID";
-            this.lblVoterID.Size = new System.Drawing.Size(143, 15);
-            this.lblVoterID.TabIndex = 6;
-            this.lblVoterID.Text = "WWWWWWWWWWWW";
-            this.lblVoterID.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.lblVoterID.Visible = false;
-            // 
-            // lblStrand
-            // 
-            this.lblStrand.AutoSize = true;
-            this.lblStrand.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStrand.Location = new System.Drawing.Point(115, 50);
-            this.lblStrand.Margin = new System.Windows.Forms.Padding(3);
-            this.lblStrand.Name = "lblStrand";
-            this.lblStrand.Size = new System.Drawing.Size(79, 14);
-            this.lblStrand.TabIndex = 7;
-            this.lblStrand.Text = "Grade Strand";
+            this.lblGradeSection.AutoSize = true;
+            this.lblGradeSection.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGradeSection.Location = new System.Drawing.Point(115, 40);
+            this.lblGradeSection.Margin = new System.Windows.Forms.Padding(3);
+            this.lblGradeSection.Name = "lblSection";
+            this.lblGradeSection.Size = new System.Drawing.Size(39, 14);
+            this.lblGradeSection.TabIndex = 7;
+            this.lblGradeSection.Text = "Grade";
             // 
             // lblName
             // 
@@ -190,7 +176,7 @@
             // 
             this.lblSex.AutoSize = true;
             this.lblSex.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSex.Location = new System.Drawing.Point(115, 70);
+            this.lblSex.Location = new System.Drawing.Point(115, 80);
             this.lblSex.Margin = new System.Windows.Forms.Padding(3);
             this.lblSex.Name = "lblSex";
             this.lblSex.Size = new System.Drawing.Size(27, 14);
@@ -208,22 +194,11 @@
             this.label1.TabIndex = 5;
             this.label1.Text = "Full Name";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(18, 50);
-            this.label2.Margin = new System.Windows.Forms.Padding(3);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(95, 14);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Grade/Section";
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(80, 70);
+            this.label3.Location = new System.Drawing.Point(80, 80);
             this.label3.Margin = new System.Windows.Forms.Padding(3);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(29, 14);
@@ -234,7 +209,7 @@
             // 
             this.lblBirthdate.AutoSize = true;
             this.lblBirthdate.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBirthdate.Location = new System.Drawing.Point(115, 90);
+            this.lblBirthdate.Location = new System.Drawing.Point(115, 100);
             this.lblBirthdate.Margin = new System.Windows.Forms.Padding(3);
             this.lblBirthdate.Name = "lblBirthdate";
             this.lblBirthdate.Size = new System.Drawing.Size(57, 14);
@@ -245,7 +220,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(44, 90);
+            this.label8.Location = new System.Drawing.Point(44, 100);
             this.label8.Margin = new System.Windows.Forms.Padding(3);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(65, 14);
@@ -384,7 +359,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pnlInfo);
             this.Controls.Add(this.lblAbbreviation);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.lblParty);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lblBirthdate);
@@ -395,10 +369,9 @@
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.lblPosition);
             this.Controls.Add(this.lblAlias);
-            this.Controls.Add(this.lblStrand);
+            this.Controls.Add(this.lblGradeSection);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.lblCandidatePage);
-            this.Controls.Add(this.lblVoterID);
             this.Controls.Add(this.pbImage);
             this.Controls.Add(this.pbBackImage);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -420,8 +393,7 @@
         #endregion
 
         private System.Windows.Forms.PictureBox pbImage;
-        private System.Windows.Forms.Label lblVoterID;
-        private System.Windows.Forms.Label lblStrand;
+        private System.Windows.Forms.Label lblGradeSection;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
@@ -431,7 +403,6 @@
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Label lblSex;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblBirthdate;
         private System.Windows.Forms.Label label8;

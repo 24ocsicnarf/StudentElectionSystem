@@ -21,7 +21,7 @@ namespace StudentElection.Dialogs
 {
     public partial class CandidateViewerForm : Form
     {
-        public CandidateModel Candidate;
+        public CandidateModel CurrentCandidate;
 
         public bool IsUpdated = false;
         public bool IsDeleted = false;
@@ -57,7 +57,7 @@ namespace StudentElection.Dialogs
             Opacity = 0.5;
 
             var editCandidate = new CandidateForm();
-            editCandidate.Candidate = Candidate;
+            editCandidate.EditingCandidate = CurrentCandidate;
             editCandidate.Owner = this;
             editCandidate.ShowDialog();
 
@@ -67,13 +67,12 @@ namespace StudentElection.Dialogs
             {
                 IsUpdated = true;
 
-                Candidate = candidate;
+                CurrentCandidate = candidate;
                 SetCandidate();
-
-                await _window.LoadVotersAsync();
+                
                 await _window.LoadCandidatesAsync();
 
-                _candidateParty = (await _candidateService.GetCandidatesByPartyAsync(Candidate.PartyId)).ToList();
+                _candidateParty = (await _candidateService.GetCandidateDetailsListByPartyAsync(CurrentCandidate.PartyId)).ToList();
 
                 _index = _candidateParty.FindIndex(c => c.Id == candidate.Id);
                 lblCandidatePage.Text = (_index + 1) + " of " + (_candidateParty.Count);
@@ -94,9 +93,9 @@ namespace StudentElection.Dialogs
             btnEdit.Visible = !_currentElection.CandidatesFinalizedAt.HasValue;
             btnDelete.Visible = !_currentElection.CandidatesFinalizedAt.HasValue;
 
-            _candidateParty = (await _candidateService.GetCandidatesByPartyAsync(Candidate.PartyId)).ToList();
+            _candidateParty = (await _candidateService.GetCandidateDetailsListByPartyAsync(CurrentCandidate.PartyId)).ToList();
 
-            _index = _candidateParty.Select(x => x.Id).ToList().IndexOf(Candidate.Id);
+            _index = _candidateParty.Select(x => x.Id).ToList().IndexOf(CurrentCandidate.Id);
 
             btnNext.Enabled = _index != _candidateParty.Count - 1;
             btnPrev.Enabled = _index != 0;
@@ -113,7 +112,7 @@ namespace StudentElection.Dialogs
             btnNext.Enabled = _index != _candidateParty.Count - 1;
             btnPrev.Enabled = _index != 0;
 
-            Candidate = _candidateParty[_index];
+            CurrentCandidate = _candidateParty[_index];
             SetCandidate();
 
             lblCandidatePage.Text = (_index + 1) + " of " + (_candidateParty.Count);
@@ -126,7 +125,7 @@ namespace StudentElection.Dialogs
             btnNext.Enabled = _index != _candidateParty.Count - 1;
             btnPrev.Enabled = _index != 0;
 
-            Candidate = _candidateParty[_index];
+            CurrentCandidate = _candidateParty[_index];
             SetCandidate();
 
             lblCandidatePage.Text = (_index + 1) + " of " + (_candidateParty.Count);
@@ -134,47 +133,54 @@ namespace StudentElection.Dialogs
 
         private void SetCandidate()
         {
-            lblName.Text = Candidate.FullName;
-            lblStrand.Text = Candidate.Section;
+            lblName.Text = CurrentCandidate.FullName;
+            lblGradeSection.Text = $"Grade {CurrentCandidate.YearLevel} - { CurrentCandidate.Section }";
 
-            lblSex.Text = Candidate.Sex == Sex.Male ? "Male" : "Female";
+            lblSex.Text = CurrentCandidate.Sex == Sex.Male ? "Male" : "Female";
 
-            lblBirthdate.Text = Candidate.Birthdate?.ToString("yyyy-MM-dd");
-            lblAlias.Text = Candidate.Alias;
+            if (CurrentCandidate.Birthdate.HasValue)
+            {
+                lblBirthdate.Text = CurrentCandidate.Birthdate.Value.ToString("yyyy-MM-dd");
+                lblBirthdate.ForeColor = Color.Black;
+            }
+            else
+            {
+                lblBirthdate.Text = "(not provided)";
+                lblBirthdate.ForeColor = Color.DimGray;
+            }
+
+            lblAlias.Text = CurrentCandidate.Alias;
             
-            lblPosition.Text = Candidate.Position.Title;
-            lblParty.Text = Candidate.Party.Title;
-            lblAbbreviation.Text = Candidate.Party.ShortName;
+            lblPosition.Text = CurrentCandidate.Position.Title;
+            lblParty.Text = CurrentCandidate.Party.Title;
+            lblAbbreviation.Text = CurrentCandidate.Party.ShortName;
 
             pbImage.Image = Properties.Resources.default_candidate;
-            if (!Candidate.PictureFileName.IsBlank())
+            if (!string.IsNullOrEmpty(CurrentCandidate.PictureFileName))
             {
-                var filePath = System.IO.Path.Combine(App.ImageFolderPath, Candidate.PictureFileName);
+                var filePath = System.IO.Path.Combine(App.ImageFolderPath, CurrentCandidate.PictureFileName);
                 if (System.IO.File.Exists(filePath))
                 {
-                    using (var bmpTemp = new Bitmap(System.IO.Path.Combine(App.ImageFolderPath, Candidate.PictureFileName)))
+                    using (var bmpTemp = new Bitmap(System.IO.Path.Combine(App.ImageFolderPath, CurrentCandidate.PictureFileName)))
                     {
                         pbImage.Image = new Bitmap(bmpTemp);
                     }
                 }
             }
 
-            //TODO: VOTER ID should it stay or go?????
-            //lblVoterID.Text = Candidate.;
-
             ttpCandidate.AutoPopDelay = int.MaxValue;
             ttpCandidate.BackColor = Color.FromArgb(240, 240, 240);
             ttpCandidate.ForeColor = Color.FromArgb(32, 32, 32);
 
-            CheckLabelWidth(lblName, Candidate.FullName);
-            CheckLabelWidth(lblParty, Candidate.Party.Title);
-            CheckLabelWidth(lblPosition, Candidate.Position.Title);
-            CheckLabelWidth(lblAlias, Candidate.Alias);
+            CheckLabelWidth(lblName, CurrentCandidate.FullName);
+            CheckLabelWidth(lblParty, CurrentCandidate.Party.Title);
+            CheckLabelWidth(lblPosition, CurrentCandidate.Position.Title);
+            CheckLabelWidth(lblAlias, CurrentCandidate.Alias);
             
             lblName.MouseEnter += (s, ev) =>
             {
                 var lbl = s as Label;
-                var text = CheckLabelWidth(lblName, Candidate.FullName);
+                var text = CheckLabelWidth(lblName, CurrentCandidate.FullName);
 
                 ttpCandidate.Show(text, lbl, short.MaxValue);
             };
@@ -187,7 +193,7 @@ namespace StudentElection.Dialogs
             lblParty.MouseEnter += (s, ev) =>
             {
                 var lbl = s as Label;
-                var text = CheckLabelWidth(lblParty, Candidate.Party.Title);
+                var text = CheckLabelWidth(lblParty, CurrentCandidate.Party.Title);
 
                 ttpCandidate.Show(text, lbl, short.MaxValue);
             };
@@ -200,7 +206,7 @@ namespace StudentElection.Dialogs
             lblPosition.MouseEnter += (s, ev) =>
             {
                 var lbl = s as Label;
-                var text = CheckLabelWidth(lblPosition, Candidate.Position.Title);
+                var text = CheckLabelWidth(lblPosition, CurrentCandidate.Position.Title);
 
                 ttpCandidate.Show(text, lbl, short.MaxValue);
             };
@@ -213,7 +219,7 @@ namespace StudentElection.Dialogs
             lblAlias.MouseEnter += (s, ev) =>
             {
                 var lbl = s as Label;
-                var text = CheckLabelWidth(lblAlias, Candidate.Alias);
+                var text = CheckLabelWidth(lblAlias, CurrentCandidate.Alias);
 
                 ttpCandidate.Show(text, lbl, short.MaxValue);
             };
@@ -223,9 +229,9 @@ namespace StudentElection.Dialogs
                 ttpCandidate.Hide(lbl);
             };
 
-            pnlInfo.ForeColor = Candidate.Party.Color;
-            pbBackImage.BackColor = Candidate.Party.Color;
-            lblCandidatePage.ForeColor = Candidate.Party.Color;
+            pnlInfo.ForeColor = CurrentCandidate.Party.Color;
+            pbBackImage.BackColor = CurrentCandidate.Party.Color;
+            lblCandidatePage.ForeColor = CurrentCandidate.Party.Color;
         }
         
         private string CheckLabelWidth(Label label, string text)
@@ -286,16 +292,16 @@ namespace StudentElection.Dialogs
         
         private async void btnDelete_Click(object sender, EventArgs e)
         {
-            var result = System.Windows.MessageBox.Show($"Delete candidate '{ Candidate.FullName }'?", "Delete candidate", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning, System.Windows.MessageBoxResult.No);
+            var result = System.Windows.MessageBox.Show($"Delete candidate '{ CurrentCandidate.FullName }'?", "Delete candidate", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning, System.Windows.MessageBoxResult.No);
 
             if (result == System.Windows.MessageBoxResult.Yes)
             {
                 try
                 {
                     string existingImageFile = null;
-                    if (Candidate.PictureFileName != null)
+                    if (CurrentCandidate.PictureFileName != null)
                     {
-                        existingImageFile = System.IO.Path.Combine(App.ImageFolderPath, Candidate.PictureFileName);
+                        existingImageFile = System.IO.Path.Combine(App.ImageFolderPath, CurrentCandidate.PictureFileName);
                     }
 
                     if (existingImageFile != null && System.IO.File.Exists(existingImageFile))
@@ -303,7 +309,7 @@ namespace StudentElection.Dialogs
                         System.IO.File.Delete(existingImageFile);
                     }
 
-                    await _candidateService.DeleteCandidateAsync(Candidate);
+                    await _candidateService.DeleteCandidateAsync(CurrentCandidate);
 
                     IsDeleted = true;
 
@@ -320,7 +326,7 @@ namespace StudentElection.Dialogs
 
         public async Task<CandidateModel> GetNewDataAsync()
         {
-            return await _candidateService.GetCandidateAsync(Candidate.Id);
+            return await _candidateService.GetCandidateDetailsAsync(CurrentCandidate.Id);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

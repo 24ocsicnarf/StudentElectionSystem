@@ -51,6 +51,25 @@ namespace StudentElection.MSAccess.Repositories
             }
         }
 
+        public async Task<ElectionModel> GetElectionByServerTagAsync(string tag)
+        {
+            await Task.CompletedTask;
+
+            using (var tableAdapter = new ElectionTableAdapter())
+            {
+                var row = tableAdapter.GetElectionsByServerTag(tag).SingleOrDefault();
+                if (row == null)
+                {
+                    return null;
+                }
+
+                var model = new ElectionModel();
+                _mapper.Map(row, model);
+
+                return model;
+            }
+        }
+
         public async Task InsertElectionAsync(ElectionModel model)
         {
             await Task.CompletedTask;
@@ -92,7 +111,7 @@ namespace StudentElection.MSAccess.Repositories
             }
         }
 
-        public async Task UpdateTagAsync(int electionId, string serverTag)
+        public async Task UpdateServerTagAsync(int electionId, string serverTag)
         {
             await Task.CompletedTask;
 

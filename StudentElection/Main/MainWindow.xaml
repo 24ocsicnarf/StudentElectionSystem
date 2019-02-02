@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudentElection"
         mc:Ignorable="d"
-        Title="L" Height="270" Width="400" FontFamily="Tahoma" FontSize="14.667" ResizeMode="NoResize" WindowStyle="ToolWindow" WindowStartupLocation="CenterScreen" SnapsToDevicePixels="True" Closed="Window_Closed" Loaded="Window_Loaded">
+        Title="Loading..." Height="270" Width="400" FontFamily="Tahoma" FontSize="14.667" ResizeMode="NoResize" WindowStyle="ToolWindow" WindowStartupLocation="CenterScreen" SnapsToDevicePixels="True" Closed="Window_Closed" Loaded="Window_Loaded">
     <Window.Resources>
         <local:TabSizeConverter x:Key="tabSizeConverter" />
         <Style TargetType="{x:Type TabItem}">
@@ -68,7 +68,7 @@
                         </Button.Style>
                     </Button>
                     <TextBlock Text=" • " Foreground="DimGray" FontSize="12"/>
-                    <TextBlock DockPanel.Dock="Right" Text="v1.3.0" Foreground="DimGray" FontSize="12"/>
+                    <TextBlock x:Name="txtVersion" DockPanel.Dock="Right" Text="v1.3.0" Foreground="DimGray" FontSize="12"/>
                 </StackPanel>
                
             </DockPanel>
@@ -81,7 +81,7 @@
                                     <Label Content="Voter ID" Padding="4" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                     <TextBox x:Name="txtStudentId" TextWrapping="NoWrap" Width="168" VerticalContentAlignment="Center" Margin="4" CharacterCasing="Upper" MaxLines="1" />
                                 </StackPanel>
-                                <Button x:Name="btnVote" FontWeight="Bold" BorderBrush="{x:Null}" Content="VOTE" Width="75" Height="24" Margin="4" Click="btnVote_Click" HorizontalAlignment="Right">
+                                <Button x:Name="btnVote" FontWeight="Bold" BorderBrush="{x:Null}" Content="VOTE" Width="75" Height="24" Margin="4" Click="btnVote_Click" IsDefault="True" HorizontalAlignment="Right">
                                     <Button.Style>
                                         <Style TargetType="{x:Type Button}">
                                             <Setter Property="Background" Value="#19000000"/>
@@ -111,7 +111,7 @@
                             <Label Content="*** ELECTION CLOSED ***" Foreground="Crimson" Height="Auto" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
                         <Grid x:Name="grdFinalizeCandidates" Visibility="Collapsed">
-                            <Label Content="Finalize the candidates to allow all voters to vote." Height="Auto" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Label Content="Finalize the candidates to allow voters to vote" Height="Auto" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
                     </Grid>
                 </TabItem>
@@ -126,7 +126,7 @@
                                 <Label Content="Password" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                 <PasswordBox x:Name="pwdMaintenance" Width="180" Height="Auto" HorizontalAlignment="Right" Margin="2,2"  MaxLength="255"/>
                             </DockPanel>
-                            <Button x:Name="btnLogin" BorderBrush="{x:Null}" Content="LOG IN" Margin="2,4" Width="75" HorizontalAlignment="Right"  Click="btnLogin_Click" FontWeight="Bold">
+                            <Button x:Name="btnLogin" BorderBrush="{x:Null}" Content="LOG IN" Margin="2,4" Width="75" HorizontalAlignment="Right" IsDefault="True" Click="btnLogin_Click" FontWeight="Bold">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}">
                                         <Setter Property="Background" Value="#19000000"/>

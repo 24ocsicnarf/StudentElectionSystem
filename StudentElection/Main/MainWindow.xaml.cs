@@ -97,7 +97,7 @@ namespace StudentElection.Main
                     }
                 }
 
-                this.Title = $"{ _currentElection.Title } • { (_currentElection.ServerTag.IsBlank() ? "(No tag)" : _currentElection.ServerTag) }";
+                this.Title = $"{ _currentElection.Title } • { (string.IsNullOrWhiteSpace(_currentElection.ServerTag) ? "(No tag)" : _currentElection.ServerTag) }";
             }
             else
             {
@@ -123,7 +123,7 @@ namespace StudentElection.Main
         //private string ValidateLicense(License license, string publicKey, string machineId)
         //{
         //    const string ReturnValue = "License is Valid";
-            
+
         //    var invalidLicenseFileFailure = new GeneralValidationFailure
         //    {
         //        Message = "Invalid License File",
@@ -185,145 +185,49 @@ namespace StudentElection.Main
         //    return !failures.Any() ? ReturnValue : failures.Aggregate(string.Empty, (current, validationFailure) => current + validationFailure.HowToResolve + ": " + "\r\n" + validationFailure.Message + "\r\n");
         //}
 
-        private string GetHash(string s)
-        {
-            var cryptoService = new MD5CryptoServiceProvider();
-            ASCIIEncoding encoding = new ASCIIEncoding();
-            byte[] bt = encoding.GetBytes(s);
+        //private string GetHash(string s)
+        //{
+        //    var cryptoService = new MD5CryptoServiceProvider();
+        //    ASCIIEncoding encoding = new ASCIIEncoding();
+        //    byte[] bt = encoding.GetBytes(s);
 
-            return GetHexString(cryptoService.ComputeHash(bt));
-        }
+        //    return GetHexString(cryptoService.ComputeHash(bt));
+        //}
 
-        private string GetHexString(byte[] bt)
-        {
-            string s = string.Empty;
-            for (int i = 0; i < bt.Length; i++)
-            {
-                byte b = bt[i];
-                int n, n1, n2;
-                n = (int)b;
-                n1 = n & 15;
-                n2 = (n >> 4) & 15;
-                if (n2 > 9)
-                    s += ((char)(n2 - 10 + (int)'A')).ToString();
-                else
-                    s += n2.ToString();
-                if (n1 > 9)
-                    s += ((char)(n1 - 10 + (int)'A')).ToString();
-                else
-                    s += n1.ToString();
-                if ((i + 1) != bt.Length && (i + 1) % 2 == 0) s += "-";
-            }
-            return s;
-        }
-
-
-        private async void btnLogin_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                G.WaitLang(this);
-                
-                var user = await _userService.LogInAsync(txtUsername.Text, pwdMaintenance.SecurePassword);
-
-                if (user != null)
-                {
-                    var winMaintenance = new MaintenanceWindow();
-                    winMaintenance.User = user;
-                    winMaintenance.Show();
-
-                    EndWait(this);
-
-                    Hide();
-
-                    return;
-                }
-
-                G.EndWait(this);
-                MessageBox.Show("Invalid username or password", "Log In".ToTitleCase(), MessageBoxButton.OK, MessageBoxImage.Error);
-
-                txtUsername.Clear();
-                pwdMaintenance.Clear();
-
-                txtUsername.Focus();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-
-                G.EndWait(this);
-
-                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
-            }
-        }
-
-        private async void btnVote_Click(object sender, RoutedEventArgs e)
-        {
-            G.WaitLang(this);
-
-            try
-            {
-                if (_currentElection.TookPlaceOn > DateTime.Today)
-                {
-                    MessageBox.Show("You cannot vote for a future election", "Future election", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    G.EndWait(this);
-                    
-                    return;
-                }
-
-                bool isValid = false;
-                var voter = await _voterService.GetVoterByVinAsync(_currentElection.Id, txtStudentId.Text);
-                if (voter != null)
-                {
-                    bool isVoted = await _ballotService.IsVoterAlreadyVotedAsync(voter);
-                    if (!isVoted)
-                    {
-                        isValid = true;
-                    }
-                }
-
-                if (isValid)
-                {
-                    Hide();
-
-                    var ballotWindow = new BallotWindow(voter);
-
-                    G.EndWait(this);
-
-                    ballotWindow.ShowDialog();
-                }
-                else
-                {
-                    G.EndWait(this);
-                    MessageBox.Show("Invalid Voter ID", _currentElection.Title, MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    txtStudentId.Focus();
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-
-                G.EndWait(this);
-
-                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
-            }
-        }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            Environment.Exit(0);
-        }
+        //private string GetHexString(byte[] bt)
+        //{
+        //    string s = string.Empty;
+        //    for (int i = 0; i < bt.Length; i++)
+        //    {
+        //        byte b = bt[i];
+        //        int n, n1, n2;
+        //        n = (int)b;
+        //        n1 = n & 15;
+        //        n2 = (n >> 4) & 15;
+        //        if (n2 > 9)
+        //            s += ((char)(n2 - 10 + (int)'A')).ToString();
+        //        else
+        //            s += n2.ToString();
+        //        if (n1 > 9)
+        //            s += ((char)(n1 - 10 + (int)'A')).ToString();
+        //        else
+        //            s += n1.ToString();
+        //        if ((i + 1) != bt.Length && (i + 1) % 2 == 0) s += "-";
+        //    }
+        //    return s;
+        //}
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             G.WaitLang(this);
 
+            txtVersion.Text = $"v{ App.Version }";
+            btnCopyright.Content = $"© { App.CopyrightYear }";
+
             try
             {
                 this.Title = "Loading...";
-            
+
                 await SetCurrentElectionAsync();
 
                 G.EndWait(this);
@@ -421,6 +325,105 @@ namespace StudentElection.Main
             //    MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
             //    Environment.Exit(0);
             //}
+        }
+
+
+        private async void btnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                G.WaitLang(this);
+                
+                var user = await _userService.LogInAsync(txtUsername.Text, pwdMaintenance.SecurePassword);
+
+                if (user != null)
+                {
+                    var winMaintenance = new MaintenanceWindow();
+                    winMaintenance.User = user;
+                    winMaintenance.Show();
+
+                    EndWait(this);
+
+                    Hide();
+
+                    return;
+                }
+
+                G.EndWait(this);
+                MessageBox.Show("Invalid username or password", "Log in", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                txtUsername.Clear();
+                pwdMaintenance.Clear();
+
+                txtUsername.Focus();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+
+                G.EndWait(this);
+
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+            }
+        }
+
+        private async void btnVote_Click(object sender, RoutedEventArgs e)
+        {
+            G.WaitLang(this);
+
+            try
+            {
+                if (_currentElection.TookPlaceOn > DateTime.Today)
+                {
+                    MessageBox.Show("You cannot vote for a future election", "Future election", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    G.EndWait(this);
+                    
+                    return;
+                }
+
+                bool isValid = false;
+                var voter = await _voterService.GetVoterByVinAsync(_currentElection.Id, txtStudentId.Text);
+                if (voter != null)
+                {
+                    bool isVoted = await _ballotService.IsVoterAlreadyVotedAsync(voter);
+                    if (!isVoted)
+                    {
+                        isValid = true;
+                    }
+                }
+
+                if (isValid)
+                {
+                    Hide();
+
+                    var ballotWindow = new BallotWindow(voter);
+
+                    G.EndWait(this);
+
+                    ballotWindow.ShowDialog();
+                }
+                else
+                {
+                    G.EndWait(this);
+                    MessageBox.Show("Invalid Voter ID", _currentElection.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    txtStudentId.Focus();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+
+                G.EndWait(this);
+
+                MessageBox.Show(ex.GetBaseException().Message, "PROGRAM ERROR: " + ex.Source, MessageBoxButton.OK, MessageBoxImage.Stop);
+            }
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
         }
 
         private async void btnValidate_Click(object sender, RoutedEventArgs e)
@@ -552,10 +555,10 @@ namespace StudentElection.Main
         {
             var info = new StringBuilder();
             info.AppendLine("STUDENT ELECTION SYSTEM");
-            info.AppendLine("version 1.3.0");
+            info.AppendLine($"version { App.Version }");
             info.AppendLine();
             info.AppendLine();
-            info.AppendLine("© 2019 Albert Francisco");
+            info.AppendLine($"© { App.CopyrightYear } Albert Francisco");
             //info.AppendLine();
             //info.AppendLine();
             //info.AppendLine("THIRD-PARTY SOFTWARE:");

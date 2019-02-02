@@ -73,7 +73,7 @@ namespace StudentElection.UserControls
 
             _hOffset = svrCandidate.HorizontalOffset;
             var candidateForm = new CandidateForm();
-            candidateForm.Candidate = null;
+            candidateForm.EditingCandidate = null;
             candidateForm.SetParty(_party);
 
             WindowInteropHelper helper = new WindowInteropHelper(window);
@@ -102,13 +102,9 @@ namespace StudentElection.UserControls
                 {
                     stkCandidate.Children.Clear();
                     
-                    var candidateParty = await _candidateService.GetCandidatesByPartyAsync(_party.Id);
+                    var candidateParty = await _candidateService.GetCandidateDetailsListByPartyAsync(_party.Id);
 
-                    if (candidateParty.Count() > 0)
-                        stkCandidate.Visibility = Visibility.Visible;
-                    else
-                        stkCandidate.Visibility = Visibility.Hidden;
-                    
+                    stkCandidate.Visibility = candidateParty.Any() ? Visibility.Visible : Visibility.Collapsed;
 
                     foreach (var candidate in candidateParty)
                     {
@@ -117,9 +113,7 @@ namespace StudentElection.UserControls
                         stkCandidate.Children.Add(candidateControl);
                     }
 
-                    await window.LoadVotersAsync();
-
-                    lblCount.Content = stkCandidate.Children.Count + "";
+                    lblCount.Content = candidateParty.Count().ToString("n0");
 
                     if (_hOffset != -1)
                     {
@@ -181,11 +175,9 @@ namespace StudentElection.UserControls
                     candidate.Party = party;
                     control.DataContext = candidate;
                 }
-                await window.LoadVotersAsync();
             }
             else
             {
-                await window.LoadVotersAsync();
                 await window.LoadCandidatesAsync();
             }
             
@@ -215,7 +207,7 @@ namespace StudentElection.UserControls
         {
             if (tbkParty.ActualWidth == 0) return;
 
-            var partyWidth = ActualWidth - 48 - lblCount.ActualWidth - btnAddCandidate.ActualWidth - btnAddCandidate.Margin.Left - btnAddCandidate.Margin.Right - btnAddCandidate.Padding.Left - btnAddCandidate.Padding.Right;
+            var partyWidth = ActualWidth - 48 - btnAddCandidate.ActualWidth - btnAddCandidate.Margin.Left - btnAddCandidate.Margin.Right - btnAddCandidate.Padding.Left - btnAddCandidate.Padding.Right;
 
             if (tbkParty.ActualWidth > partyWidth * 1.5)
             {
@@ -322,8 +314,14 @@ namespace StudentElection.UserControls
             {
                 await _maintenanceWindow.LoadCandidatesAsync();
 
-                var count = Convert.ToInt32(e.Result);
-                MessageBox.Show($"Successfully imported { "candidate".ToQuantity(count) }", "Import successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                var count = e.Result as Tuple<int, int>;
+                var messageBuilder = new StringBuilder($"Successfully imported { "voter".ToQuantity(count.Item1) }");
+                if (count.Item2 > 0)
+                {
+                    messageBuilder.Append($" ({ "blank row".ToQuantity(count.Item2) })");
+                }
+
+                MessageBox.Show(messageBuilder.ToString(), "Import successful", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
             _backgroundWorker.Dispose();
@@ -335,6 +333,7 @@ namespace StudentElection.UserControls
             {
                 var count = Convert.ToInt32(e.UserState);
 
+                _progressWindow.btnCancel.IsEnabled = true;
                 _progressWindow.progressBar.IsIndeterminate = true;
                 _progressWindow.tbkMessage.Text = $"Importing { "candidate".ToQuantity(count, "n0") }...";
             }
@@ -342,6 +341,7 @@ namespace StudentElection.UserControls
             {
                 var tuple = e.UserState as Tuple<int, int, int>;
 
+                _progressWindow.btnCancel.IsEnabled = false;
                 _progressWindow.progressBar.Value = e.ProgressPercentage;
                 _progressWindow.tbkMessage.Text = $"Checking { tuple.Item1.ToString("n0") } of { "candidate".ToQuantity(tuple.Item2, "n0") } ...";
                 _progressWindow.tbkSubMessage.Text = $"{ "blank row".ToQuantity(tuple.Item3, "n0") }";
@@ -374,7 +374,7 @@ namespace StudentElection.UserControls
                             var percentage = count / (reader.RowCount - 1d) * 100;
                             
                             count++;
-                            _backgroundWorker.ReportProgress((int)(Math.Floor(percentage)), new Tuple<int, int, int>(count, reader.RowCount, blankCount));
+                            _backgroundWorker.ReportProgress((int)Math.Floor(percentage), new Tuple<int, int, int>(count, reader.RowCount, blankCount));
 
                             var row = new List<string>();
                             for (int i = 0; i < reader.FieldCount; i++)
@@ -383,7 +383,7 @@ namespace StudentElection.UserControls
                                 row.Add(cellText);
                             }
 
-                            if (row.All(r => r.IsBlank()))
+                            if (row.All(r => string.IsNullOrWhiteSpace(r)))
                             {
                                 blankCount++;
                                 continue;
@@ -456,7 +456,6 @@ namespace StudentElection.UserControls
 
                             importedCandidates.Add(newCandidate);
                         }
-                        _progressWindow.btnCancel.IsEnabled = false;
                     }
                 }
 

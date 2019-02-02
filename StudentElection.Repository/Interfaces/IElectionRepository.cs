@@ -10,9 +10,10 @@ namespace StudentElection.Repository.Interfaces
     public interface IElectionRepository
     {
         Task<ElectionModel> GetCurrentElectionAsync();
+        Task<ElectionModel> GetElectionByServerTagAsync(string tag);
         Task FinalizeCandidatesAsync(int electionId, DateTime dateTime);
         Task CloseElectionAsync(int electionId, DateTime dateTime);
-        Task UpdateTagAsync(int electionId, string tag);
+        Task UpdateServerTagAsync(int electionId, string tag);
         Task InsertElectionAsync(ElectionModel model);
         Task UpdateElectionAsync(ElectionModel election);
     }

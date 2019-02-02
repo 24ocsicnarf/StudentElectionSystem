@@ -130,11 +130,11 @@
                             </Button>
                         </Grid>
                     </Grid>
-                    <Label Visibility="Collapsed" x:Name="lblPasswordInstruction" Content="Create at least 6 characters WITHOUT space" HorizontalAlignment="Right" FontSize="10.667" />
+                    <Label Visibility="Collapsed" x:Name="lblPasswordInstruction" Content="Enter at least 6 characters" HorizontalAlignment="Right" FontSize="10.667" />
                 </StackPanel>
             </StackPanel>
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                <Button x:Name="btnAddStaff" Content="ADD" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="3" FontSize="12" Click="btnAddStaff_Click">
+                <Button x:Name="btnAddStaff" Content="ADD" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="3" FontSize="12" IsDefault="True" Click="btnAddStaff_Click">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Background" Value="#291B205E"/>

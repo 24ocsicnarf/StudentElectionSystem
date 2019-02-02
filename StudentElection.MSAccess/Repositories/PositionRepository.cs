@@ -71,7 +71,7 @@ namespace StudentElection.MSAccess.Repositories
             }
         }
 
-        public async Task MoveRankAsync(PositionModel selectedPosition, PositionModel closestPosition)
+        public async Task SwitchRankAsync(PositionModel selectedPosition, PositionModel closestPosition)
         {
             await Task.CompletedTask;
 
@@ -91,7 +91,7 @@ namespace StudentElection.MSAccess.Repositories
             }
         }
 
-        public async Task<int> GetPositionsCountAsync(int electionId)
+        public async Task<int> CountPositionsAsync(int electionId)
         {
             await Task.CompletedTask;
 
@@ -149,6 +149,30 @@ namespace StudentElection.MSAccess.Repositories
                     .AsQueryable();
 
                 return _mapper.ProjectTo<PositionModel>(positions);
+            }
+        }
+
+        public async Task<bool> IsPositionTitleExistingAsync(int electionId, string positionTitle, PositionModel editingPosition)
+        {
+            var row = await GetPositionByTitleAsync(electionId, positionTitle);
+
+            if (editingPosition == null)
+            {
+                return row != null;
+            }
+            else
+            {
+                return row != null && row.Id != editingPosition.Id;
+            }
+        }
+
+        public async Task<int> GetMaxRankAsync(int electionId)
+        {
+            await Task.CompletedTask;
+
+            using (var tableAdapter = new PositionTableAdapter())
+            {
+                return Convert.ToInt32(tableAdapter.GetMaxRankQuery(electionId));
             }
         }
     }

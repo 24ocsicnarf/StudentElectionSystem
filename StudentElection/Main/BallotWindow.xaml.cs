@@ -94,7 +94,7 @@ namespace StudentElection.Main
             stkCandidates.Children.Clear();
             foreach (var position in positionRows)
             {
-                var candidates = await _candidateService.GetCandidatesByPositionAsync(position.Id);
+                var candidates = await _candidateService.GetCandidateDetailsListByPositionAsync(position.Id);
                 var candidatesPosition = candidates.OrderBy(x => x.LastName)
                     .ThenBy(x => x.FirstName).ThenBy(x => x.MiddleName).ThenBy(x => x.Alias);
 

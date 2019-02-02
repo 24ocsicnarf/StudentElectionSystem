@@ -19,7 +19,6 @@ namespace StudentElection.Dialogs
 {
     public partial class SettingsForm : Form
     {
-
         private readonly ElectionService _electionService = new ElectionService();
         private readonly BallotService _ballotService = new BallotService();
         private readonly VoterService _voterService = new VoterService();
@@ -35,7 +34,7 @@ namespace StudentElection.Dialogs
             InitializeComponent();
         }
 
-        private async void ElectionSettingsForm_Load(object sender, EventArgs e)
+        private async void SettingsForm_Load(object sender, EventArgs e)
         {
             _window = this.Tag as MaintenanceWindow;
 
@@ -76,7 +75,17 @@ namespace StudentElection.Dialogs
             if (_currentElection != null)
             {
                 lblCurrentElectionTitle.Text = _currentElection.Title;
-                lblDescription.Text = _currentElection.Description;
+                if (string.IsNullOrEmpty(_currentElection.Description))
+                {
+                    lblDescription.Text = "(no description)";
+                    lblDescription.Font = new Font(lblDescription.Font, FontStyle.Italic);
+                }
+                else
+                {
+                    lblDescription.Text = _currentElection.Description;
+                    lblDescription.Font = new Font(lblDescription.Font, FontStyle.Regular);
+                }
+
                 if (_currentElection.TookPlaceOn > DateTime.Today)
                 {
                     lblTookPlaceOnLabel.Text = $"Will be conducted on { _currentElection.TookPlaceOn.ToString("MMMM d, yyyy") }";

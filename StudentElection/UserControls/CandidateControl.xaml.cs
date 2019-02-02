@@ -58,40 +58,45 @@ namespace StudentElection.UserControls
         private static extern int SetWindowLong(HandleRef hWnd, int nIndex, int dwNewLong);
         private async void UserControl_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (!_isPressed) return;
+            if (!_isPressed)
+            {
+                return;
+            }
 
-            Window parentWindow = Window.GetWindow(this);
-            MaintenanceWindow window = parentWindow as MaintenanceWindow;
+            var parentWindow = Window.GetWindow(this);
+            var window = parentWindow as MaintenanceWindow;
 
-            Cursor = Cursors.Wait;
+            this.Cursor = Cursors.Wait;
 
             G.WaitLang(window);
 
             window.Opacity = 0.5;
 
             var candidateViewer = new CandidateViewerForm();
-            candidateViewer.Candidate = DataContext as CandidateModel;
+            candidateViewer.CurrentCandidate = DataContext as CandidateModel;
 
-            WindowInteropHelper helper = new WindowInteropHelper(window);
+            var helper = new WindowInteropHelper(window);
             SetWindowLong(new HandleRef(candidateViewer, candidateViewer.Handle), -8, helper.Handle.ToInt32());
 
             candidateViewer.Tag = window;
 
             G.EndWait(window);
 
-            Cursor = Cursors.Hand;
+            this.Cursor = Cursors.Hand;
 
             candidateViewer.ShowDialog();
 
             G.WaitLang(window);
             
             if (candidateViewer.IsUpdated)
+            {
                 DataContext = await candidateViewer.GetNewDataAsync();
+            }
             else if (candidateViewer.IsDeleted)
+            {
                 await window.LoadCandidatesAsync();
-
-            await window.LoadVotersAsync();
-
+            }
+            
             G.EndWait(window);
 
             window.Opacity = 1;
@@ -189,7 +194,7 @@ namespace StudentElection.UserControls
             var candidate = e.NewValue as CandidateModel;
 
             imgCandidate.Source = ImageHelper.ImageToImageSource(Properties.Resources.default_candidate);
-            if (!candidate.PictureFileName.IsBlank())
+            if (!string.IsNullOrWhiteSpace(candidate.PictureFileName))
             {
                 var imagePath = System.IO.Path.Combine(App.ImageFolderPath, candidate.PictureFileName);
                 if (System.IO.File.Exists(imagePath))

@@ -52,7 +52,6 @@
             this.txtPassword.Size = new System.Drawing.Size(280, 22);
             this.txtPassword.TabIndex = 0;
             this.txtPassword.UseSystemPasswordChar = true;
-            this.txtPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPassword_KeyDown);
             // 
             // btnOK
             // 
@@ -86,6 +85,7 @@
             // 
             // PasswordInputForm
             // 
+            this.AcceptButton = this.btnOK;
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.Dialog;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

@@ -25,17 +25,17 @@ namespace StudentElection.Services
             return await _candidateRepository.GetCandidatesCountAsync(electionId);
         }
 
-        public async Task<IEnumerable<CandidateModel>> GetCandidatesByPartyAsync(int partyId)
+        public async Task<IEnumerable<CandidateModel>> GetCandidateDetailsListByPartyAsync(int partyId)
         {
             return await _candidateRepository.GetCandidateDetailsListByPartyAsync(partyId);
         }
 
-        public async Task<IEnumerable<CandidateModel>> GetCandidatesByPositionAsync(int positionId)
+        public async Task<IEnumerable<CandidateModel>> GetCandidateDetailsListByPositionAsync(int positionId)
         {
             return await _candidateRepository.GetCandidateDetailsListByPositionAsync(positionId);
         }
 
-        public async Task<CandidateModel> GetCandidateAsync(int candidateId)
+        public async Task<CandidateModel> GetCandidateDetailsAsync(int candidateId)
         {
             return await _candidateRepository.GetCandidateDetailsAsync(candidateId);
         }
@@ -69,12 +69,12 @@ namespace StudentElection.Services
 
         public async Task ValidateAsync(int electionId, CandidateModel candidate)
         {
-            if (candidate.FirstName.IsBlank())
+            if (string.IsNullOrWhiteSpace(candidate.FirstName))
             {
                 throw new ArgumentException("No first name provided");
             }
 
-            if (candidate.LastName.IsBlank())
+            if (string.IsNullOrWhiteSpace(candidate.LastName))
             {
                 throw new ArgumentException("No last name provided");
             }
@@ -84,12 +84,12 @@ namespace StudentElection.Services
                 throw new ArgumentOutOfRangeException("Year level must be from 1 to 12");
             }
 
-            if (candidate.Section.IsBlank())
+            if (string.IsNullOrWhiteSpace(candidate.Section))
             {
                 throw new ArgumentException("No section provided");
             }
 
-            if (candidate.Alias.IsBlank())
+            if (string.IsNullOrWhiteSpace(candidate.Alias))
             {
                 throw new ArgumentException("No alias provided");
             }

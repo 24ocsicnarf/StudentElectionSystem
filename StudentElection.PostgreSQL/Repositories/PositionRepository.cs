@@ -76,7 +76,7 @@ namespace StudentElection.PostgreSQL.Repositories
             }
         }
 
-        public async Task<int> GetPositionsCountAsync(int electionId)
+        public async Task<int> CountPositionsAsync(int electionId)
         {
             using (var context = new StudentElectionContext())
             {
@@ -86,7 +86,7 @@ namespace StudentElection.PostgreSQL.Repositories
             }
         }
         
-        public async Task MoveRankAsync(PositionModel selectedPosition, PositionModel closestPosition)
+        public async Task SwitchRankAsync(PositionModel selectedPosition, PositionModel closestPosition)
         {
             using (var context = new StudentElectionContext())
             {
@@ -132,6 +132,30 @@ namespace StudentElection.PostgreSQL.Repositories
                 context.Positions.Remove(position);
 
                 await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<bool> IsPositionTitleExistingAsync(int electionId, string title, PositionModel editingPosition)
+        {
+            var position = await GetPositionByTitleAsync(electionId, title);
+
+            if (editingPosition == null)
+            {
+                return position != null;
+            }
+            else
+            {
+                return position != null && position.Id != editingPosition.Id;
+            }
+        }
+
+        public async Task<int> GetMaxRankAsync(int electionId)
+        {
+            using (var context = new StudentElectionContext())
+            {
+                return await context.Positions
+                    .Where(p => p.ElectionId == electionId)
+                    .MaxAsync(p => p.Rank);
             }
         }
     }

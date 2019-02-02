@@ -67,6 +67,25 @@ namespace StudentElection.PostgreSQL.Repositories
             }
         }
 
+        public async Task<ElectionModel> GetElectionByServerTagAsync(string tag)
+        {
+            using (var context = new StudentElectionContext())
+            {
+                var election = await context.Elections
+                    .SingleOrDefaultAsync(e => e.ServerTag.ToLower() == tag.ToLower());
+
+                if (election == null)
+                {
+                    return null;
+                }
+
+                var model = new ElectionModel();
+                _mapper.Map(election, model);
+
+                return model;
+            }
+        }
+
         public async Task InsertElectionAsync(ElectionModel model)
         {
             var election = new Election();
@@ -91,7 +110,7 @@ namespace StudentElection.PostgreSQL.Repositories
             }
         }
 
-        public async Task UpdateTagAsync(int electionId, string tag)
+        public async Task UpdateServerTagAsync(int electionId, string tag)
         {
             using (var context = new StudentElectionContext())
             {

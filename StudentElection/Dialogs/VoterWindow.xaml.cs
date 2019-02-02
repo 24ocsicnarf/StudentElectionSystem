@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using StudentElection.Repository.Models;
 using StudentElection.Services;
 using Project.Library.Helpers;
+using Humanizer;
 
 namespace StudentElection.Dialogs
 {
@@ -53,7 +54,7 @@ namespace StudentElection.Dialogs
 
             if (Voter == null)
             {
-                lblTitle.Content = "Create Voter";
+                lblTitle.Content = "Add Voter";
 
                 btnAdd.Content = "ADD";
             }
@@ -65,7 +66,7 @@ namespace StudentElection.Dialogs
                 txtLastName.Text = Voter.LastName;
                 txtFirstName.Text = Voter.FirstName;
                 txtMiddleName.Text = Voter.MiddleName;
-                cmbGradeLevel.Text = Voter.YearLevel + "";
+                cmbGradeLevel.Text = Voter.YearLevel.ToString();
                 txtStrandSection.Text = Voter.Section;
                 cmbSex.Text = Voter.Sex.ToString();
                 dpBirthdate.SelectedDate = Voter.Birthdate;
@@ -80,14 +81,34 @@ namespace StudentElection.Dialogs
 
             try
             {
-                G.WaitLang(this);
+                int.TryParse(cmbGradeLevel.Text, out int yearLevel);
+                var voter = new VoterModel
+                {
+                    LastName = txtLastName.Text.Trim(),
+                    FirstName = txtFirstName.Text.Trim(),
+                    MiddleName = txtMiddleName.Text.Trim(),
+                    Suffix = txtSuffix.Text.Trim(),
+                    YearLevel = yearLevel,
+                    Section = txtStrandSection.Text.Trim(),
+                    Sex = (Sex)(cmbSex.SelectedIndex + 1),
+                    Birthdate = dpBirthdate.SelectedDate,
+                    Vin = txtVoterID.Text.Trim(),
+                    ElectionId = _currentElection.Id
+                };
 
-                txtLastName.Text = txtLastName.Text.ToProperCase();
-                txtFirstName.Text = txtFirstName.Text.ToProperCase();
-                txtMiddleName.Text = txtMiddleName.Text.ToProperCase();
-                txtStrandSection.Text = txtStrandSection.Text.Trim();
+                G.WaitLang(this);
                 
-                if (await _voterService.IsVinExistingAsync(_currentElection.Id, txtVoterID.Text, Voter))
+                if (string.IsNullOrWhiteSpace(voter.Vin))
+                {
+                    G.EndWait(this);
+                    MessageBox.Show("Enter voter ID", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    txtVoterID.Focus();
+
+                    return;
+                }
+
+                if (await _voterService.IsVinExistingAsync(_currentElection.Id, voter.Vin, Voter))
                 {
                     G.EndWait(this);
                     MessageBox.Show("Voter ID is already in use", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -96,82 +117,58 @@ namespace StudentElection.Dialogs
                     return;
                 }
 
-                if (txtVoterID.Text.IsBlank())
+                if (string.IsNullOrWhiteSpace(voter.FirstName))
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Please provide voter's ID", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    txtVoterID.Focus();
-
-                    return;
-                }
-
-                if (txtLastName.Text.IsBlank())
-                {
-                    G.EndWait(this);
-                    MessageBox.Show("Please provide a last name", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    txtLastName.Focus();
-
-                    return;
-                }
-
-                if (txtFirstName.Text.IsBlank())
-                {
-                    G.EndWait(this);
-                    MessageBox.Show("Please provide a first name", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Enter voter's first name", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
 
                     txtFirstName.Focus();
 
                     return;
                 }
 
-                if (cmbGradeLevel.SelectedIndex == -1)
+                if (string.IsNullOrWhiteSpace(voter.LastName))
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Please provide a grade level", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Enter voter's last name", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    cmbGradeLevel.Focus();
+                    txtLastName.Focus();
 
                     return;
                 }
 
-                if (txtStrandSection.Text.IsBlank())
+                if (voter.Sex == Sex.Unknown)
                 {
                     G.EndWait(this);
-                    MessageBox.Show("Please provide a strand section", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    txtStrandSection.Focus();
-
-                    return;
-                }
-
-                if (cmbSex.SelectedIndex == -1)
-                {
-                    G.EndWait(this);
-                    MessageBox.Show("Please provide the voter's sex", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Select voter's sex", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
 
                     cmbSex.Focus();
 
                     return;
                 }
 
+                if (voter.YearLevel == 0)
+                {
+                    G.EndWait(this);
+                    MessageBox.Show("Enter voter's year level", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    cmbGradeLevel.Focus();
+
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(voter.Section))
+                {
+                    G.EndWait(this);
+                    MessageBox.Show("Enter voter's class section", "Voter", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    txtStrandSection.Focus();
+
+                    return;
+                }
+
 
                 G.EndWait(this);
-
-                var voter = new VoterModel
-                {
-                    LastName = txtLastName.Text,
-                    FirstName = txtFirstName.Text,
-                    MiddleName = txtMiddleName.Text,
-                    Suffix = txtSuffix.Text,
-                    YearLevel = Convert.ToInt32(cmbGradeLevel.Text),
-                    Section = txtStrandSection.Text,
-                    Sex = cmbSex.Text.StartsWith("M") ? Sex.Male : Sex.Female,
-                    Birthdate = dpBirthdate.SelectedDate,
-                    Vin = txtVoterID.Text,
-                    ElectionId = _currentElection.Id
-                };
                 
                 if (Voter == null)
                 {

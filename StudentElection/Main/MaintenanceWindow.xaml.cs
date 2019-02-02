@@ -173,9 +173,10 @@ namespace StudentElection.Main
             tbkElectionTitle.Text = _currentElection.Title;
             this.Title = _currentElection.Title;
 
-            if (_currentElection.ServerTag.IsBlank())
+            //TODO: GAWING IS NULL OR EMPTY AFTER THE ELECTION
+            if (string.IsNullOrWhiteSpace(_currentElection.ServerTag))
             {
-                lblTag.Content = "(No Tag)";
+                lblTag.Content = "(No tag)";
                 txtTag.Text = "";
             }
             else
@@ -547,7 +548,7 @@ namespace StudentElection.Main
 
         private void txtVoterFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (txtVoterFilter.Text.IsBlank())
+            if (string.IsNullOrWhiteSpace(txtVoterFilter.Text))
             {
                 dgVoters.SearchHelper.ClearSearch();
             }
@@ -746,8 +747,7 @@ namespace StudentElection.Main
             if (!form.IsCanceled)
             {
                 G.WaitLang(this);
-
-                await LoadVotersAsync();
+                
                 await LoadCandidatesAsync();
 
                 svrCandidates.ScrollToEnd();
@@ -759,7 +759,7 @@ namespace StudentElection.Main
 
         public async Task LoadCandidatesAsync()
         {
-            lblPosition.Text = string.Format("Positions ({0})", await _positionService.GetPositionsCountAsync(_currentElection.Id));
+            lblPosition.Text = string.Format("Positions ({0})", await _positionService.CountPositionsAsync(_currentElection.Id));
 
             var currScroll = svrCandidates.VerticalOffset;
             foreach (PartyItemControl control in stkCandidates.Children)
@@ -783,7 +783,7 @@ namespace StudentElection.Main
                     
                     stkCandidates.Children.Add(item);
 
-                    var candidateParty = await _candidateService.GetCandidatesByPartyAsync(party.Id);
+                    var candidateParty = await _candidateService.GetCandidateDetailsListByPartyAsync(party.Id);
 
                     item.stkCandidate.Visibility = candidateParty.Any() ? Visibility.Visible : Visibility.Collapsed;
 
@@ -795,7 +795,7 @@ namespace StudentElection.Main
                         item.stkCandidate.Children.Add(candidateControl);
                     }
 
-                    item.lblCount.Content = item.stkCandidate.Children.Count + "";
+                    item.lblCount.Content = candidateParty.Count().ToString("n0");
 
                     if (CandidateHOffsets.Count > partyIndex)
                     {
@@ -820,7 +820,8 @@ namespace StudentElection.Main
         
         private async void btnFinalize_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentElection.ServerTag.IsBlank())
+            //TODO: GAWING IsNullOrEmpty after the election
+            if (string.IsNullOrWhiteSpace(_currentElection.ServerTag))
             {
                 MessageBox.Show("Please provide a tag for this machine's server. Make sure that the tag is unique among other servers.", "Provide a tag", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -857,7 +858,6 @@ namespace StudentElection.Main
                     G.WaitLang(this);
 
                     await LoadElectionAsync();
-                    await LoadVotersAsync();
                     await LoadCandidatesAsync();
 
                     G.EndWait(this);
@@ -1253,12 +1253,12 @@ namespace StudentElection.Main
 
         private void txtTag_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (e.Text.IsBlank())
+            if (string.IsNullOrWhiteSpace(e.Text))
             {
                 return;
             }
 
-            if (!char.IsLetterOrDigit(e.Text.Last()) || (e.Text.Last().ToString().IsBlank()))
+            if (!char.IsLetterOrDigit(e.Text.Last()) || string.IsNullOrWhiteSpace(e.Text.Last().ToString()))
             {
                 e.Handled = true;
             }
@@ -1266,7 +1266,7 @@ namespace StudentElection.Main
 
         private async void btnUpdateTag_Click(object sender, RoutedEventArgs e)
         {
-            if (txtTag.Text.IsBlank())
+            if (string.IsNullOrWhiteSpace(txtTag.Text))
             {
                 MessageBox.Show("Please provide a tag for this machine's server.", "No tag", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtTag.Focus();
@@ -1279,6 +1279,15 @@ namespace StudentElection.Main
                 G.WaitLang(this);
 
                 var newTag = txtTag.Text.Trim();
+                var existingElection = await _electionService.GetElectionByServerTag(newTag);
+                if (existingElection != null)
+                {
+                    MessageBox.Show($"Tag '{ newTag }' was already used in { existingElection.Title } which took place on { existingElection.TookPlaceOn.ToString("MMMM d, yyyy") }", "Tag already exists", MessageBoxButton.OK, MessageBoxImage.Error);
+                    txtTag.Focus();
+
+                    return;
+                }
+
                 await _electionService.UpdateTagAsync(_currentElection.Id, newTag);
 
                 lblTag.Content = newTag;
@@ -1521,11 +1530,11 @@ namespace StudentElection.Main
                 await LoadVotersAsync();
                 await LoadResultsAsync();
 
-                var tuple = e.Result as Tuple<int, int>;
-                var messageBuilder = new StringBuilder($"Successfully imported { "voter".ToQuantity(tuple.Item1) }");
-                if (tuple.Item2 > 0)
+                var count = e.Result as Tuple<int, int>;
+                var messageBuilder = new StringBuilder($"Successfully imported { "voter".ToQuantity(count.Item1) }");
+                if (count.Item2 > 0)
                 {
-                    messageBuilder.Append($" ({ "blank row".ToQuantity(tuple.Item2) })");
+                    messageBuilder.Append($" ({ "blank row".ToQuantity(count.Item2) })");
                 }
 
                 MessageBox.Show(messageBuilder.ToString(), "Import successful", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -1551,12 +1560,12 @@ namespace StudentElection.Main
             }
             else
             {
-                var tuple = e.UserState as Tuple<int, int, int>;
+                var count = e.UserState as Tuple<int, int, int>;
 
                 _progressWindow.btnCancel.IsEnabled = true;
                 _progressWindow.progressBar.Value = e.ProgressPercentage;
-                _progressWindow.tbkMessage.Text = $"Checking { tuple.Item1.ToString("n0") } of { "voter".ToQuantity(tuple.Item2, "n0") } ...";
-                _progressWindow.tbkSubMessage.Text = $"{ "blank row".ToQuantity(tuple.Item3, "n0") }";
+                _progressWindow.tbkMessage.Text = $"Checking { count.Item1.ToString("n0") } of { "voter".ToQuantity(count.Item2, "n0") } ...";
+                _progressWindow.tbkSubMessage.Text = $"{ "blank row".ToQuantity(count.Item3, "n0") }";
             }
         }
 
@@ -1598,7 +1607,7 @@ namespace StudentElection.Main
                                 row.Add(cellText);
                             }
 
-                            if (row.All(r => r.IsBlank()))
+                            if (row.All(r => string.IsNullOrWhiteSpace(r)))
                             {
                                 blankCount++;
                                 continue;

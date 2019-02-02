@@ -77,45 +77,39 @@ namespace StudentElection.Dialogs
 
         private async void btnAdd_Click(object sender, EventArgs e)
         {
-            if (txtPosition.Text.IsBlank())
-            {
-                MessageBox.Show("Please provide a position title.", "No position", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                txtPosition.Focus();
-
-                return;
-            }
-
-            txtPosition.Text = txtPosition.Text.ToTitleCase();
-
-            G.WaitLang(this);
-
-            var positionRows = await _positionService.GetPositionsAsync(_currentElection.Id);
-
-            if (btnCancel.Visible)
-                positionRows = positionRows.Where(x => x.Id != (dgPositions.SelectedRows[0].DataBoundItem as PositionModel).Id);
-
-
-            var rows = positionRows.Where(x => x.Title == txtPosition.Text.Trim());
-            if (rows.Count() > 0)
-            {
-                G.EndWait(this);
-                MessageBox.Show("Position title has already been added.", "Position", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             var whoCanVote = cmbWhoCanVote.SelectedIndex;
             var position = new PositionModel
             {
-                Title = txtPosition.Text,
+                Title = txtPosition.Text.Transform(To.TitleCase),
                 WinnersCount = (int)nudNumberOfWinners.Value,
                 YearLevel = whoCanVote == 0 ? default(int?) : whoCanVote,
                 ElectionId = _currentElection.Id
             };
 
+            if (string.IsNullOrWhiteSpace(position.Title))
+            {
+                MessageBox.Show("Enter a position title", "Position", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtPosition.Focus();
+
+                return;
+            }
+            
+            G.WaitLang(this);
+
+            var editingPosition = btnCancel.Visible ? dgPositions.CurrentCell?.OwningRow.DataBoundItem as PositionModel : null;
+
+            var isExisting = await _positionService.IsPositionTitleExistingAsync(_currentElection.Id, position.Title, editingPosition);
+            if (isExisting)
+            {
+                G.EndWait(this);
+
+                MessageBox.Show($"Position title '{ position.Title }' already exists", "Position", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
             if (!btnCancel.Visible)
             {
-                position.Rank = positionRows.Count() == 0 ? 1 : positionRows.OrderByDescending(x => x.Rank).Select(x => x.Rank).First() + 1;
-
                 await _positionService.SavePositionAsync(position);
 
                 await LoadPositionsAsync();
@@ -129,9 +123,31 @@ namespace StudentElection.Dialogs
             }
             else
             {
-                var model = dgPositions.SelectedRows[0].DataBoundItem as PositionModel;
-                position.Id = model.Id;
-                position.Rank = model.Rank;
+                position.Id = editingPosition.Id;
+                position.Rank = editingPosition.Rank;
+
+                var candidatesByPosition = await _candidateService.GetCandidateDetailsListByPositionAsync(position.Id);
+                var unqualifiedCandidates = candidatesByPosition.Where(c => position.YearLevel.HasValue && c.YearLevel != position.YearLevel);
+
+                if (unqualifiedCandidates.Any())
+                {
+                    var count = unqualifiedCandidates.Count();
+
+                    var candidateNamesBuilder = new StringBuilder();
+                    foreach (var candidate in unqualifiedCandidates)
+                    {
+                        candidateNamesBuilder.AppendFormat("- {0} (Grade {1})\n", candidate.FullName, candidate.YearLevel);
+                    }
+
+                    G.EndWait(this);
+
+                    MessageBox.Show($"Cannot update position.\n\n" +
+                        $"There's a conflict with the year levels of the following { "candidate".ToQuantity(count, ShowQuantityAs.None) }:\n" +
+                        $"{ candidateNamesBuilder.ToString() }",
+                        "Candidate conflict", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    return;
+                }
 
                 var sIndex = dgPositions.SelectedRows[0].Index;
 
@@ -142,9 +158,7 @@ namespace StudentElection.Dialogs
                 await _window.LoadCandidatesAsync();
 
                 G.EndWait(this);
-
-                //MessageBox.Show("Successfully updated!", "Position", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                
                 dgPositions.ClearSelection();
                 dgPositions.Rows[sIndex].Selected = true;
                 dgPositions.FirstDisplayedScrollingRowIndex = sIndex;
@@ -255,7 +269,7 @@ namespace StudentElection.Dialogs
             btnDown.Enabled = dgPositions.SelectedRows.Count > 0 && dgPositions.SelectedRows[0].Index >= 0 && dgPositions.SelectedRows[0].Index + 1 < dgPositions.Rows.Count;
             dgPositions.Enabled = true;
             
-            btnAdd.Location = new Point(226, 366);
+            btnAdd.Location = new Point(266, 366);
         }
 
         private void SetToUpdateSettings()
@@ -274,8 +288,8 @@ namespace StudentElection.Dialogs
 
             dgPositions.Enabled = false;
 
-            btnAdd.Location = new Point(154, 366);
-            btnCancel.Location = new Point(226, 366);
+            btnAdd.Location = new Point(194, 366);
+            btnCancel.Location = new Point(266, 366);
 
             txtPosition.Focus();
         }
@@ -284,11 +298,12 @@ namespace StudentElection.Dialogs
         {
             var position = dgPositions.SelectedRows[0].DataBoundItem as PositionModel;
 
-            var candidates = await _candidateService.GetCandidatesByPositionAsync(position.Id);
+            var candidates = await _candidateService.GetCandidateDetailsListByPositionAsync(position.Id);
             if (candidates.Any())
             {
                 MessageBox.Show($"Cannot delete this position\n\nThere's { "candidate".ToQuantity(candidates.Count()) } in this position",
                     "Position", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
+
                 return;
             }
 
@@ -305,8 +320,7 @@ namespace StudentElection.Dialogs
 
                 G.WaitLang(this);
                 await LoadPositionsAsync();
-
-                await _window.LoadVotersAsync();
+                
                 await _window.LoadCandidatesAsync();
 
                 MessageBox.Show("Position deleted!", "Position", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -385,6 +399,18 @@ namespace StudentElection.Dialogs
                     e.Value = $"Grade { yearLevel } only";
                     e.FormattingApplied = true;
                 }
+            }
+        }
+
+        private void cmbWhoCanVote_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbWhoCanVote.SelectedIndex == 0)
+            {
+                WhoCanVoteWarningLabel.Text = string.Empty;
+            }
+            else
+            {
+                WhoCanVoteWarningLabel.Text = $"Only Grade { cmbWhoCanVote.SelectedIndex } candidates are qualified in this position";
             }
         }
     }
