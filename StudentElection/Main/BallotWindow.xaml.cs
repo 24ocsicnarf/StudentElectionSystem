@@ -91,164 +91,167 @@ namespace StudentElection.Main
             var positions = await _positionService.GetPositionsByYearLevelAsync(_currentElection.Id, _voter.YearLevel);
             var positionRows = positions.OrderBy(p => p.Rank);
 
-            stkCandidates.Children.Clear();
-            foreach (var position in positionRows)
+            await this.Dispatcher.BeginInvoke(new Action(async () =>
             {
-                var candidates = await _candidateService.GetCandidateDetailsListByPositionAsync(position.Id);
-                var candidatesPosition = candidates.OrderBy(x => x.LastName)
-                    .ThenBy(x => x.FirstName).ThenBy(x => x.MiddleName).ThenBy(x => x.Alias);
-
-                if (candidatesPosition.Count() == 0)
+                stkCandidates.Children.Clear();
+                foreach (var position in positionRows)
                 {
-                    continue;
-                }
+                    var candidates = await _candidateService.GetCandidateDetailsListByPositionAsync(position.Id);
+                    var candidatesPosition = candidates.OrderBy(x => x.LastName)
+                        .ThenBy(x => x.FirstName).ThenBy(x => x.MiddleName).ThenBy(x => x.Alias);
 
-                listPosition.Add(position);
-
-                var item = new PositionItemControl();
-                item.tbkName.Text = $"0 selected";
-                item.DataContext = position;
-                item.stkVotes.Children.Clear();
-                for (int i = 0; i < position.WinnersCount; i++)
-                {
-                    item.stkVotes.Children.Add(new Rectangle
+                    if (candidatesPosition.Count() == 0)
                     {
-                        Width = 24,
-                        Height = 24,
-                        RadiusX = 12,
-                        RadiusY = 12,
-                        Fill = new SolidColorBrush(Color.FromArgb(255, 224, 224, 224)),
-                        StrokeThickness = 2,
-                        Stroke = new SolidColorBrush(Color.FromArgb(255, 176, 176, 176)),
-                        Margin = new Thickness(2, 0, 2, 0)
-                    });
-                }
-                stkCandidates.Children.Add(item);
+                        continue;
+                    }
 
-                item.wrpCandidate.Children.Clear();
-                foreach (var candidate in candidatesPosition)
-                {
-                    item.wrpCandidate.Visibility = Visibility.Visible;
+                    listPosition.Add(position);
 
-                    var control = new CandidateBallotControl();
-                    control.DataContext = candidate;
-                    control.IsPressed = false;
-
-                    item.Tag = new CandidateModel
+                    var item = new PositionItemControl();
+                    item.tbkName.Text = $"0 selected";
+                    item.DataContext = position;
+                    item.stkVotes.Children.Clear();
+                    for (int i = 0; i < position.WinnersCount; i++)
                     {
-                        Position = candidate.Position
-                    };
-
-                    control.PreviewMouseLeftButtonDown += (s, ev) =>
-                    {
-                        control.IsPressed = true;
-                    };
-
-                    control.PreviewMouseLeftButtonUp += (s, ev) =>
-                    {
-                        control.IsReleased = true;
-                        if (!(control.IsPressed && control.IsReleased))
+                        item.stkVotes.Children.Add(new Rectangle
                         {
-                            return;
-                        }
+                            Width = 24,
+                            Height = 24,
+                            RadiusX = 12,
+                            RadiusY = 12,
+                            Fill = new SolidColorBrush(Color.FromArgb(255, 224, 224, 224)),
+                            StrokeThickness = 2,
+                            Stroke = new SolidColorBrush(Color.FromArgb(255, 176, 176, 176)),
+                            Margin = new Thickness(2, 0, 2, 0)
+                        });
+                    }
+                    stkCandidates.Children.Add(item);
 
-                        var selectedCandidate = (s as CandidateBallotControl).DataContext as CandidateModel;
-                        var winnersCount = selectedCandidate.Position.WinnersCount;
+                    item.wrpCandidate.Children.Clear();
+                    foreach (var candidate in candidatesPosition)
+                    {
+                        item.wrpCandidate.Visibility = Visibility.Visible;
 
-                        if (!control.IsSelected)
+                        var control = new CandidateBallotControl();
+                        control.DataContext = candidate;
+                        control.IsPressed = false;
+
+                        item.Tag = new CandidateModel
                         {
-                            var selectedCandidates = item.wrpCandidate.Children.Cast<CandidateBallotControl>()
-                                .Where(cbc => cbc.IsSelected).Select(cbc => cbc.DataContext as CandidateModel);
-                            var selectedCount = selectedCandidates.Count();
+                            Position = candidate.Position
+                        };
 
-                            if (selectedCount == winnersCount)
+                        control.PreviewMouseLeftButtonDown += (s, ev) =>
+                        {
+                            control.IsPressed = true;
+                        };
+
+                        control.PreviewMouseLeftButtonUp += (s, ev) =>
+                        {
+                            control.IsReleased = true;
+                            if (!(control.IsPressed && control.IsReleased))
                             {
                                 return;
                             }
 
-                            control.Select();
-                            selectedCount++;
+                            var selectedCandidate = (s as CandidateBallotControl).DataContext as CandidateModel;
+                            var winnersCount = selectedCandidate.Position.WinnersCount;
 
-                            //var c = (byte)(224 - (88 * ((double)selectedCount / winnersCount)));
-                            //var selectedPartyBrush = new SolidColorBrush(Color.FromRgb(c, c, c));
-
-                            var circle = item.stkVotes.Children.Cast<Rectangle>()
-                                .FirstOrDefault(r => r.Tag == null);
-                            if (circle != null)
+                            if (!control.IsSelected)
                             {
-                                circle.Fill = candidate.Party.ColorBrush;
-                                circle.Tag = candidate.Id;
-                                circle.ToolTip = candidate.FullName;
-                            }
+                                var selectedCandidates = item.wrpCandidate.Children.Cast<CandidateBallotControl>()
+                                    .Where(cbc => cbc.IsSelected).Select(cbc => cbc.DataContext as CandidateModel);
+                                var selectedCount = selectedCandidates.Count();
 
-                            if (selectedCount > 1)
-                            {
-                                item.tbkName.Text = $"{ selectedCount } selected";
-                                item.Tag = selectedCandidates;
-                            }
-                            else
-                            {
-                                item.tbkName.Text = $"1 selected";
-                                item.Tag = candidate;
-                            }
-
-                            //item.bdrPartyVoted.BorderBrush = selectedPartyBrush;
-                        }
-                        else
-                        {
-                            control.Deselect();
-
-                            var circle = item.stkVotes.Children.Cast<Rectangle>()
-                                .FirstOrDefault(r => Convert.ToInt32(r.Tag ?? 0) == candidate.Id);
-                            if (circle != null)
-                            {
-                                circle.Fill = new SolidColorBrush(Color.FromArgb(255, 224, 224, 224));
-                                circle.Tag = null;
-                                circle.ToolTip = null;
-                            }
-
-                            var selectedCandidates = item.wrpCandidate.Children.Cast<CandidateBallotControl>()
-                                .Where(cbc => cbc.IsSelected).Select(cbc => cbc.DataContext as CandidateModel);
-                            var selectedCount = selectedCandidates.Count();
-
-                            //var c = (byte)(224 - (88 * ((double)selectedCount / winnersCount)));
-                            //var selectedPartyBrush = new SolidColorBrush(Color.FromRgb(c, c, c));
-
-                            if (selectedCount > 1)
-                            {
-                                item.tbkName.Text = $"{ selectedCount } selected";
-
-                                item.Tag = selectedCandidates;
-
-                                //item.bdrPartyVoted.BorderBrush = selectedPartyBrush;
-                            }
-                            else if (selectedCount == 1)
-                            {
-                                var sc = selectedCandidates.First();
-                                item.tbkName.Text = $"1 selected";
-
-                                item.Tag = sc;
-
-                                //item.bdrPartyVoted.BorderBrush = selectedPartyBrush;
-                            }
-                            else
-                            {
-                                item.tbkName.Text = $"0 selected";
-                                item.Tag = new CandidateModel
+                                if (selectedCount == winnersCount)
                                 {
-                                    Position = (item.Tag as CandidateModel).Position
-                                };
+                                    return;
+                                }
+
+                                control.Select();
+                                selectedCount++;
+
+                                //var c = (byte)(224 - (88 * ((double)selectedCount / winnersCount)));
+                                //var selectedPartyBrush = new SolidColorBrush(Color.FromRgb(c, c, c));
+
+                                var circle = item.stkVotes.Children.Cast<Rectangle>()
+                                    .FirstOrDefault(r => r.Tag == null);
+                                if (circle != null)
+                                {
+                                    circle.Fill = candidate.Party.ColorBrush;
+                                    circle.Tag = candidate.Id;
+                                    circle.ToolTip = candidate.FullName;
+                                }
+
+                                if (selectedCount > 1)
+                                {
+                                    item.tbkName.Text = $"{ selectedCount } selected";
+                                    item.Tag = selectedCandidates;
+                                }
+                                else
+                                {
+                                    item.tbkName.Text = $"1 selected";
+                                    item.Tag = candidate;
+                                }
+
+                                //item.bdrPartyVoted.BorderBrush = selectedPartyBrush;
                             }
-                        }
+                            else
+                            {
+                                control.Deselect();
 
-                    };
+                                var circle = item.stkVotes.Children.Cast<Rectangle>()
+                                    .FirstOrDefault(r => Convert.ToInt32(r.Tag ?? 0) == candidate.Id);
+                                if (circle != null)
+                                {
+                                    circle.Fill = new SolidColorBrush(Color.FromArgb(255, 224, 224, 224));
+                                    circle.Tag = null;
+                                    circle.ToolTip = null;
+                                }
 
-                    item.wrpCandidate.Children.Add(control);
+                                var selectedCandidates = item.wrpCandidate.Children.Cast<CandidateBallotControl>()
+                                    .Where(cbc => cbc.IsSelected).Select(cbc => cbc.DataContext as CandidateModel);
+                                var selectedCount = selectedCandidates.Count();
+
+                                //var c = (byte)(224 - (88 * ((double)selectedCount / winnersCount)));
+                                //var selectedPartyBrush = new SolidColorBrush(Color.FromRgb(c, c, c));
+
+                                if (selectedCount > 1)
+                                {
+                                    item.tbkName.Text = $"{ selectedCount } selected";
+
+                                    item.Tag = selectedCandidates;
+
+                                    //item.bdrPartyVoted.BorderBrush = selectedPartyBrush;
+                                }
+                                else if (selectedCount == 1)
+                                {
+                                    var sc = selectedCandidates.First();
+                                    item.tbkName.Text = $"1 selected";
+
+                                    item.Tag = sc;
+
+                                    //item.bdrPartyVoted.BorderBrush = selectedPartyBrush;
+                                }
+                                else
+                                {
+                                    item.tbkName.Text = $"0 selected";
+                                    item.Tag = new CandidateModel
+                                    {
+                                        Position = (item.Tag as CandidateModel).Position
+                                    };
+                                }
+                            }
+
+                        };
+
+                        item.wrpCandidate.Children.Add(control);
+                    }
                 }
-            }
+            }));
         }
 
-        private void btnSubmit_Click(object sender, RoutedEventArgs e)
+        private void btnNext_Click(object sender, RoutedEventArgs e)
         {
 
             G.WaitLang(this);
@@ -282,15 +285,16 @@ namespace StudentElection.Main
 
             if (window.IsCasted)
             {
-                var mainWindow = new MainWindow();
-                mainWindow.Show();
+                //var mainWindow = new MainWindow();
+                //mainWindow.Show();
                 
                 G.EndWait(this);
-
-
-                _isExitClicked = true;
                 
-                Close();
+                _isExitClicked = true;
+
+                System.Windows.Forms.Application.Restart();
+                Application.Current.Shutdown();
+                //Close();
             }
 
             G.EndWait(this);
@@ -322,8 +326,12 @@ namespace StudentElection.Main
         {
             _isExitClicked = true;
 
-            var window = new MainWindow();
-            window.Show();
+            //var window = new MainWindow();
+            //window.Show();
+
+
+            System.Windows.Forms.Application.Restart();
+            Application.Current.Shutdown();
 
             Close();
         }
@@ -331,6 +339,7 @@ namespace StudentElection.Main
         private void btnReset_Click(object sender, RoutedEventArgs e)
         {
             G.WaitLang(this);
+
             foreach (PositionItemControl item in stkCandidates.Children)
             {
                 foreach (CandidateBallotControl control in item.wrpCandidate.Children)
@@ -360,6 +369,7 @@ namespace StudentElection.Main
             }
 
             scvCandidates.ScrollToTop();
+
             G.EndWait(this);
         }
 
@@ -472,14 +482,18 @@ namespace StudentElection.Main
         {
             try
             {
-                bdrBallot.Visibility = Visibility.Hidden;
+                grdBallot.Visibility = Visibility.Hidden;
+                btnReset.Visibility = Visibility.Collapsed;
+                btnNext.Visibility = Visibility.Collapsed;
                 bdrLoadingMaintenance.Visibility = Visibility.Visible;
 
                 _currentElection = await _electionService.GetCurrentElectionAsync();
 
                 await SetBallotAsync(_voter);
 
-                bdrBallot.Visibility = Visibility.Visible;
+                grdBallot.Visibility = Visibility.Visible;
+                btnReset.Visibility = Visibility.Visible;
+                btnNext.Visibility = Visibility.Visible;
                 bdrLoadingMaintenance.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)

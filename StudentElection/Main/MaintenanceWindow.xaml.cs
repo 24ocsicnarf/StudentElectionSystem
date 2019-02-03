@@ -81,7 +81,7 @@ namespace StudentElection.Main
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             grdMaintenance.Visibility = Visibility.Hidden;
-            bdrLoadingMaintenance.Visibility = Visibility.Hidden;
+            bdrLoadingMaintenance.Visibility = Visibility.Visible;
         }
 
         private async void Window_ContentRendered(object sender, EventArgs e)
@@ -90,8 +90,6 @@ namespace StudentElection.Main
             {
                 if (await CheckElectionAsync())
                 {
-                    bdrLoadingMaintenance.Visibility = Visibility.Visible;
-
                     prgMaintenance.Text = "Loading current election...";
                     await LoadElectionAsync();
 
@@ -249,16 +247,16 @@ namespace StudentElection.Main
 
         private async Task CheckResultsAsync()
         {
-            var ballotsCount = await _ballotService.CountBallotsAsync(_currentElection.Id);
+            var votedCount = await _voterService.CountVotedVotersAsync(_currentElection.Id);
             var votersCount = await _voterService.CountVotersAsync(_currentElection.Id);
 
             if (!_currentElection.ClosedAt.HasValue)
             {
                 btnVoterButtons.Visibility = Visibility.Visible;
 
-                if (ballotsCount > 0)
+                if (votedCount > 0)
                 {
-                    lblResultsAvailable.Content = string.Format("Results are available ({0:n0} of {1:n0} voted)", ballotsCount, votersCount);
+                    lblResultsAvailable.Content = string.Format("Results are available ({0:n0} of {1:n0} voted)", votedCount, votersCount);
                     grdViewResult.Visibility = Visibility.Visible;
                     lblNoResults.Visibility = Visibility.Collapsed;
                     btnExportPrint.Visibility = Visibility.Collapsed;
@@ -272,7 +270,7 @@ namespace StudentElection.Main
             }
             else
             {
-                txtVoteTurnout.Text = $"{ ballotsCount } out of { votersCount } ({ ((double)ballotsCount / votersCount).ToString("p2") })";
+                txtVoteTurnout.Text = $"{ votedCount } out of { votersCount } ({ ((double)votedCount / votersCount).ToString("p2") })";
 
                 btnVoterButtons.Visibility = Visibility.Collapsed;
 
@@ -710,8 +708,11 @@ namespace StudentElection.Main
                 }
             }
 
-            var window = new MainWindow();
-            window.Show();
+            //var window = new MainWindow();
+            //window.Show();
+            
+            System.Windows.Forms.Application.Restart();
+            Application.Current.Shutdown();
         }
 
         private void lblLogOut_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -776,34 +777,38 @@ namespace StudentElection.Main
 
                 var partyIndex = 0;
                 var parties = await _partyService.GetPartiesAsync(_currentElection.Id);
-                foreach (var party in parties)
+
+                await this.Dispatcher.BeginInvoke(new Action(async () =>
                 {
-                    var item = new PartyItemControl();
-                    item.DataContext = party;
-                    
-                    stkCandidates.Children.Add(item);
-
-                    var candidateParty = await _candidateService.GetCandidateDetailsListByPartyAsync(party.Id);
-
-                    item.stkCandidate.Visibility = candidateParty.Any() ? Visibility.Visible : Visibility.Collapsed;
-
-                    item.stkCandidate.Children.Clear();
-                    foreach (var candidate in candidateParty)
+                    foreach (var party in parties)
                     {
-                        var candidateControl = new CandidateControl();
-                        candidateControl.DataContext = candidate;
-                        item.stkCandidate.Children.Add(candidateControl);
+                        var item = new PartyItemControl();
+                        item.DataContext = party;
+
+                        stkCandidates.Children.Add(item);
+
+                        var candidateParty = await _candidateService.GetCandidateDetailsListByPartyAsync(party.Id);
+
+                        item.stkCandidate.Visibility = candidateParty.Any() ? Visibility.Visible : Visibility.Collapsed;
+
+                        item.stkCandidate.Children.Clear();
+                        foreach (var candidate in candidateParty)
+                        {
+                            var candidateControl = new CandidateControl();
+                            candidateControl.DataContext = candidate;
+                            item.stkCandidate.Children.Add(candidateControl);
+                        }
+
+                        item.lblCount.Content = candidateParty.Count().ToString("n0");
+
+                        if (CandidateHOffsets.Count > partyIndex)
+                        {
+                            item.svrCandidate.ScrollToHorizontalOffset(CandidateHOffsets[partyIndex]);
+                        }
+
+                        partyIndex++;
                     }
-
-                    item.lblCount.Content = candidateParty.Count().ToString("n0");
-
-                    if (CandidateHOffsets.Count > partyIndex)
-                    {
-                        item.svrCandidate.ScrollToHorizontalOffset(CandidateHOffsets[partyIndex]);
-                    }
-
-                    partyIndex++;
-                }
+                }));
 
                 await CheckCandidatesAsync();
 
@@ -1531,13 +1536,20 @@ namespace StudentElection.Main
                 await LoadResultsAsync();
 
                 var count = e.Result as Tuple<int, int>;
-                var messageBuilder = new StringBuilder($"Successfully imported { "voter".ToQuantity(count.Item1) }");
-                if (count.Item2 > 0)
+                if (count.Item1 > 0)
                 {
-                    messageBuilder.Append($" ({ "blank row".ToQuantity(count.Item2) })");
-                }
+                    var messageBuilder = new StringBuilder($"Successfully imported { "voter".ToQuantity(count.Item1) }");
+                    if (count.Item2 > 0)
+                    {
+                        messageBuilder.Append($" ({ "blank row".ToQuantity(count.Item2) })");
+                    }
 
-                MessageBox.Show(messageBuilder.ToString(), "Import successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(messageBuilder.ToString(), "Import successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("No voters imported", "No data", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
             }
 
             _progressWindow.Close();
@@ -1595,10 +1607,11 @@ namespace StudentElection.Main
                                 return;
                             }
 
-                            var percentage = count / (reader.RowCount - 1d) * 100;
+                            var rowCount = reader.RowCount - 1;
+                            var percentage = count / (double)rowCount * 100;
 
                             count++;
-                            _backgroundWorker.ReportProgress((int)(Math.Floor(percentage)), new Tuple<int, int, int>(count, reader.RowCount, blankCount));
+                            _backgroundWorker.ReportProgress((int)(Math.Floor(percentage)), new Tuple<int, int, int>(count, rowCount, blankCount));
 
                             var row = new List<string>();
                             for (int i = 0; i < reader.FieldCount; i++)
@@ -1622,9 +1635,9 @@ namespace StudentElection.Main
                             newVoter.Suffix = Convert.ToString(reader.GetValue(4) ?? string.Empty);
                             if (!reader.IsDBNull(5))
                             {
-                                if (DateTime.TryParse(reader.GetString(5), result: out var dateTime))
+                                if (DateTime.TryParse(reader.GetValue(5)?.ToString(), result: out var dateTime))
                                 {
-                                    newVoter.Birthdate = dateTime;
+                                    newVoter.Birthdate = dateTime.Date;
                                 }
                             }
 

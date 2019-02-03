@@ -188,7 +188,8 @@ namespace StudentElection.MSAccess.Repositories
 
             using (var tableAdapter = new VoterTableAdapter())
             {
-                return tableAdapter.CountVotersQuery(electionId) ?? 0;
+                var result = tableAdapter.CountVotersQuery(electionId);
+                return Convert.ToInt32(result ?? 0);
             }
         }
 
@@ -198,7 +199,8 @@ namespace StudentElection.MSAccess.Repositories
 
             using (var tableAdapter = new VoterTableAdapter())
             {
-                return tableAdapter.CountVotedVotersQuery(electionId) ?? 0;
+                var result = tableAdapter.CountVotedVotersQuery(electionId);
+                return Convert.ToInt32(result ?? 0);
             }
         }
     }

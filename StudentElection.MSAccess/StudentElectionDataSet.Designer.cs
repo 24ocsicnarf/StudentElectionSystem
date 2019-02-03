@@ -9114,8 +9114,9 @@ WHERE         (Party.ElectionId = ?) AND (Candidate.Alias = ?)";
             this._commandCollection[1] = new global::System.Data.OleDb.OleDbCommand();
             this._commandCollection[1].Connection = this.Connection;
             this._commandCollection[1].CommandText = "SELECT        COUNT(*) AS [Count]\r\nFROM            (Voter RIGHT OUTER JOIN\r\n     " +
-                "                    Ballot ON Voter.ID = Ballot.VoterId)\r\nGROUP BY Voter.Electio" +
-                "nId\r\nHAVING        (Voter.ElectionId = ?)";
+                "                    Ballot ON Voter.ID = Ballot.VoterId)\r\nWHERE        (Ballot.C" +
+                "astedAt IS NOT NULL)\r\nGROUP BY Voter.ElectionId\r\nHAVING        (Voter.ElectionId" +
+                " = ?)";
             this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1].Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ElectionId", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ElectionId", global::System.Data.DataRowVersion.Current, false, null));
             this._commandCollection[2] = new global::System.Data.OleDb.OleDbCommand();
@@ -9461,14 +9462,9 @@ WHERE        (Voter.ElectionId = ?)";
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        public virtual global::System.Nullable<int> CountVotedVotersQuery(global::System.Nullable<int> ElectionId) {
+        public virtual object CountVotedVotersQuery(int ElectionId) {
             global::System.Data.OleDb.OleDbCommand command = this.CommandCollection[1];
-            if ((ElectionId.HasValue == true)) {
-                command.Parameters[0].Value = ((int)(ElectionId.Value));
-            }
-            else {
-                command.Parameters[0].Value = global::System.DBNull.Value;
-            }
+            command.Parameters[0].Value = ((int)(ElectionId));
             global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
             if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -9485,24 +9481,19 @@ WHERE        (Voter.ElectionId = ?)";
             }
             if (((returnValue == null) 
                         || (returnValue.GetType() == typeof(global::System.DBNull)))) {
-                return new global::System.Nullable<int>();
+                return null;
             }
             else {
-                return new global::System.Nullable<int>(((int)(returnValue)));
+                return ((object)(returnValue));
             }
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        public virtual global::System.Nullable<int> CountVotersQuery(global::System.Nullable<int> ElectionId) {
+        public virtual object CountVotersQuery(int ElectionId) {
             global::System.Data.OleDb.OleDbCommand command = this.CommandCollection[2];
-            if ((ElectionId.HasValue == true)) {
-                command.Parameters[0].Value = ((int)(ElectionId.Value));
-            }
-            else {
-                command.Parameters[0].Value = global::System.DBNull.Value;
-            }
+            command.Parameters[0].Value = ((int)(ElectionId));
             global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
             if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -9519,10 +9510,10 @@ WHERE        (Voter.ElectionId = ?)";
             }
             if (((returnValue == null) 
                         || (returnValue.GetType() == typeof(global::System.DBNull)))) {
-                return new global::System.Nullable<int>();
+                return null;
             }
             else {
-                return new global::System.Nullable<int>(((int)(returnValue)));
+                return ((object)(returnValue));
             }
         }
     }

@@ -40,11 +40,12 @@ namespace StudentElection.Dialogs
             InitializeComponent();
 
             ttpCandidate.AutoPopDelay = int.MaxValue;
-            ttpCandidate.BackColor = Color.FromArgb(240, 240, 240);
-            ttpCandidate.ForeColor = Color.FromArgb(32, 32, 32);
 
             dtBirthdate.MaxDate = DateTime.Today;
 
+            //TODO: OTHER IMAGE FORMATS
+            var imageFilterBuilder = new StringBuilder();
+            ofdImage.Filter = "";
             ofdImage.HelpRequest += (s, ev) =>
             {
                 MessageBox.Show("Choose an image with a minumum dimension of 120x120 and a maximum of 1920x1920.", "Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -369,7 +370,8 @@ namespace StudentElection.Dialogs
                 var candidatesByPosition = await _candidateService.GetCandidateDetailsListByPositionAsync(position.Id);
 
                 var partyId = (int)lblParty.Tag;
-                if ((EditingCandidate == null && candidatesByPosition.Any(c => c.PartyId == partyId)))
+                if ((EditingCandidate == null && candidatesByPosition.Any(c => c.PartyId == partyId))
+                    || (EditingCandidate != null && candidatesByPosition.Any(c => c.PartyId == partyId && c.Id != EditingCandidate.Id)))
                 {
                     G.EndWait(this);
                     var result = MessageBox.Show($"There's already a candidate for { position.Title }.\n\nContinue adding this candidate?",

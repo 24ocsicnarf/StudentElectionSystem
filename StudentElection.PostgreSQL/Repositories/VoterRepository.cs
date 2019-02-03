@@ -16,7 +16,9 @@ namespace StudentElection.PostgreSQL.Repositories
         {
             using (var context = new StudentElectionContext())
             {
-                return await context.Voters.Where(v => v.ElectionId == electionId).CountAsync(v => v.Ballots.Any());
+                return await context.Voters
+                    .Where(v => v.ElectionId == electionId)
+                    .CountAsync(v => v.Ballots.Any(b => b.CastedAt != null));
             }
         }
 

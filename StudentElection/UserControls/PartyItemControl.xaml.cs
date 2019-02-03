@@ -54,6 +54,8 @@ namespace StudentElection.UserControls
 
             tbkParty.DataContextChanged += (s, ev) =>
             {
+                _party = this.DataContext as PartyModel;
+
                 tbkParty.Width = double.NaN;
             };
         }
@@ -64,8 +66,8 @@ namespace StudentElection.UserControls
         {
             btnAddCandidate.Cursor = Cursors.Wait;
 
-            Window parentWindow = Window.GetWindow(this);
-            MaintenanceWindow window = parentWindow as MaintenanceWindow;
+            var parentWindow = Window.GetWindow(this);
+            var window = parentWindow as MaintenanceWindow;
 
             G.WaitLang(window);
 
@@ -76,7 +78,7 @@ namespace StudentElection.UserControls
             candidateForm.EditingCandidate = null;
             candidateForm.SetParty(_party);
 
-            WindowInteropHelper helper = new WindowInteropHelper(window);
+            var helper = new WindowInteropHelper(window);
             SetWindowLong(new HandleRef(candidateForm, candidateForm.Handle), -8, helper.Handle.ToInt32());
 
             G.EndWait(window);
@@ -143,8 +145,8 @@ namespace StudentElection.UserControls
 
             var tbk = sender as TextBlock;
 
-            Window parentWindow = Window.GetWindow(this);
-            MaintenanceWindow window = parentWindow as MaintenanceWindow;
+            var parentWindow = Window.GetWindow(this);
+            var window = parentWindow as MaintenanceWindow;
 
             G.WaitLang(window);
             Cursor = Cursors.Wait;
@@ -152,9 +154,10 @@ namespace StudentElection.UserControls
             window.Opacity = 0.5;
             
             var form = new PartyForm();
+            _party = this.DataContext as PartyModel;
             form.Party = _party;
 
-            WindowInteropHelper helper = new WindowInteropHelper(window);
+            var helper = new WindowInteropHelper(window);
             SetWindowLong(new HandleRef(form, form.Handle), -8, helper.Handle.ToInt32());
 
             G.EndWait(window);
@@ -207,7 +210,20 @@ namespace StudentElection.UserControls
         {
             if (tbkParty.ActualWidth == 0) return;
 
-            var partyWidth = ActualWidth - 48 - btnAddCandidate.ActualWidth - btnAddCandidate.Margin.Left - btnAddCandidate.Margin.Right - btnAddCandidate.Padding.Left - btnAddCandidate.Padding.Right;
+            var partyWidth = ActualWidth
+
+                - btnAddCandidate.ActualWidth
+                - btnAddCandidate.Margin.Left - btnAddCandidate.Margin.Right
+                - btnAddCandidate.Padding.Left - btnAddCandidate.Padding.Right
+                - btnImportCandidates.ActualWidth
+                - btnImportCandidates.Margin.Left - btnImportCandidates.Margin.Right
+                - btnImportCandidates.Padding.Left - btnImportCandidates.Padding.Right
+                - vbParty.Margin.Left - vbParty.Margin.Right
+                - lblCount.ActualWidth
+                - lblCount.Margin.Left - lblCount.Margin.Right
+                - lblCount.Padding.Left - lblCount.Padding.Right
+                - recColor.ActualWidth
+                - recColor.Margin.Left - recColor.Margin.Right;
 
             if (tbkParty.ActualWidth > partyWidth * 1.5)
             {
@@ -237,8 +253,6 @@ namespace StudentElection.UserControls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            _party = DataContext as PartyModel;
-
             ResizePartyTextBlock();
         }
 
@@ -315,13 +329,20 @@ namespace StudentElection.UserControls
                 await _maintenanceWindow.LoadCandidatesAsync();
 
                 var count = e.Result as Tuple<int, int>;
-                var messageBuilder = new StringBuilder($"Successfully imported { "voter".ToQuantity(count.Item1) }");
-                if (count.Item2 > 0)
+                if (count.Item1 > 0)
                 {
-                    messageBuilder.Append($" ({ "blank row".ToQuantity(count.Item2) })");
-                }
+                    var messageBuilder = new StringBuilder($"Successfully imported { "candidate".ToQuantity(count.Item1) }");
+                    if (count.Item2 > 0)
+                    {
+                        messageBuilder.Append($" ({ "blank row".ToQuantity(count.Item2) })");
+                    }
 
-                MessageBox.Show(messageBuilder.ToString(), "Import successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(messageBuilder.ToString(), "Import successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("No candidates imported", "No data", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
             }
 
             _backgroundWorker.Dispose();
@@ -371,10 +392,11 @@ namespace StudentElection.UserControls
                                 return;
                             }
 
-                            var percentage = count / (reader.RowCount - 1d) * 100;
+                            var rowCount = reader.RowCount - 1;
+                            var percentage = count / (double)rowCount * 100;
                             
                             count++;
-                            _backgroundWorker.ReportProgress((int)Math.Floor(percentage), new Tuple<int, int, int>(count, reader.RowCount, blankCount));
+                            _backgroundWorker.ReportProgress((int)Math.Floor(percentage), new Tuple<int, int, int>(count, rowCount, blankCount));
 
                             var row = new List<string>();
                             for (int i = 0; i < reader.FieldCount; i++)
@@ -397,13 +419,13 @@ namespace StudentElection.UserControls
                             newCandidate.Suffix = Convert.ToString(reader.GetValue(3) ?? string.Empty);
                             if (!reader.IsDBNull(4))
                             {
-                                if (DateTime.TryParse(reader.GetString(4), result: out var dateTime))
+                                if (DateTime.TryParse(reader.GetValue(4).ToString(), result: out var dateTime))
                                 {
-                                    newCandidate.Birthdate = dateTime;
+                                    newCandidate.Birthdate = dateTime.Date;
                                 }
                             }
 
-                            var sexText = Convert.ToString(reader.GetString(5) ?? string.Empty);
+                            var sexText = Convert.ToString(reader.GetValue(5) ?? string.Empty);
                             if (sexText.Equals("male", StringComparison.OrdinalIgnoreCase))
                             {
                                 newCandidate.Sex = Sex.Male;

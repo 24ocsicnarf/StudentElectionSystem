@@ -13,7 +13,7 @@
                         <Rectangle Height="120" Width="5" VerticalAlignment="Bottom" HorizontalAlignment="Left" Fill="White"   />
                         <Rectangle x:Name="recCandidate" Height="120" Width="5" VerticalAlignment="Bottom" HorizontalAlignment="Left" Fill="{Binding Path=PartyColorBrush}" />
                         <Border x:Name="bdrImage" Width="92" Height="122" HorizontalAlignment="Right" VerticalAlignment="Top" Background="White" BorderBrush="{Binding Path=PartyColorBrush}" BorderThickness="1" Margin="-1,-1" >
-                            <Image x:Name="imgCandidate"  RenderOptions.BitmapScalingMode="Fant" />
+                            <Image x:Name="imgCandidate"  RenderOptions.BitmapScalingMode="Fant" Source="/StudentElection;component/Resources/default_candidate.png" />
                         </Border>
                         <Border Background="#BB000000" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="28">
                             <TextBlock x:Name="tbkRank" Text="2" Padding="4 0" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Foreground="White" FontSize="18" TextAlignment="Center" LineHeight="20" LineStackingStrategy="BlockLineHeight"/>

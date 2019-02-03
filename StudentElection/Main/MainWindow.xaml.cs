@@ -398,7 +398,6 @@ namespace StudentElection.Main
                     Hide();
 
                     var ballotWindow = new BallotWindow(voter);
-
                     G.EndWait(this);
 
                     ballotWindow.ShowDialog();

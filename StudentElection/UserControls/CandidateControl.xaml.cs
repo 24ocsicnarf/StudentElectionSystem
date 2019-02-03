@@ -193,16 +193,12 @@ namespace StudentElection.UserControls
         {
             var candidate = e.NewValue as CandidateModel;
 
-            imgCandidate.Source = ImageHelper.ImageToImageSource(Properties.Resources.default_candidate);
             if (!string.IsNullOrWhiteSpace(candidate.PictureFileName))
             {
                 var imagePath = System.IO.Path.Combine(App.ImageFolderPath, candidate.PictureFileName);
                 if (System.IO.File.Exists(imagePath))
                 {
-                    using (var bmpTemp = new System.Drawing.Bitmap(imagePath))
-                    {
-                        imgCandidate.Source = ImageHelper.ImageToImageSource(new System.Drawing.Bitmap(bmpTemp));
-                    }
+                    imgCandidate.Source = ImageHelper.ImageToImageSource(imagePath);
                 }
             }
         }

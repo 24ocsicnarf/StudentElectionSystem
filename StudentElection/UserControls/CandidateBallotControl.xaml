@@ -4,13 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StudentElection"
-             mc:Ignorable="d" FontFamily="Tahoma" FontSize="14.667" Cursor="Hand" DataContextChanged="UserControl_DataContextChanged" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave" SizeChanged="UserControl_SizeChanged">
+             mc:Ignorable="d" FontFamily="Tahoma" FontSize="14.667" Cursor="Hand" Unloaded="UserControl_Unloaded" DataContextChanged="UserControl_DataContextChanged" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave" SizeChanged="UserControl_SizeChanged">
     <Grid x:Name="grdBackground" Background="#FFE0E0E0" Margin="2">
         <Border x:Name="bdrChosen" BorderBrush="#00404040" BorderThickness="4">
             <StackPanel Orientation="Horizontal" Margin="2">
                 <Rectangle x:Name="recEgg" Height="24" Width="36" RadiusX="24" RadiusY="24" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Left" Margin="4" Fill="#00F0F0F0" />
                 <Border x:Name="bdrImage" Width="64" Height="84" HorizontalAlignment="Left" BorderThickness="2" BorderBrush="{Binding Path=Party.ColorBrush}" VerticalAlignment="Center" Background="White" Margin="4 0">
-                    <Image x:Name="imgCandidate" RenderOptions.BitmapScalingMode="Fant" />
+                    <Image x:Name="imgCandidate" RenderOptions.BitmapScalingMode="Fant" Source="/StudentElection;component/Resources/default_candidate.png" />
                 </Border>
                 <StackPanel x:Name="stkInfo" Margin="4 0">
                     <Grid>

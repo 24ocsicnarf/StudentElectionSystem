@@ -91,7 +91,7 @@ namespace StudentElection.Dialogs
                     YearLevel = yearLevel,
                     Section = txtStrandSection.Text.Trim(),
                     Sex = (Sex)(cmbSex.SelectedIndex + 1),
-                    Birthdate = dpBirthdate.SelectedDate,
+                    Birthdate = dpBirthdate.SelectedDate.HasValue ? dpBirthdate.SelectedDate.Value.Date : default(DateTime?),
                     Vin = txtVoterID.Text.Trim(),
                     ElectionId = _currentElection.Id
                 };

@@ -7,7 +7,7 @@
              xmlns:prop="clr-namespace:StudentElection.Properties" 
              mc:Ignorable="d" FontFamily="Tahoma" FontSize="14.667" DataContextChanged="UserControl_DataContextChanged" Cursor="Hand" Margin="1,0" Loaded="UserControl_Loaded" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave" PreviewMouseLeftButtonUp="UserControl_PreviewMouseLeftButtonUp" >
     <Grid Height="164" Width="106" >
-        <Border x:Name="bdrCandidate" BorderBrush="#00404040" BorderThickness="4" Margin="0" >
+        <Border x:Name="bdrCandidate" BorderBrush="#00404040" BorderThickness="4" Margin="0">
             <Grid Background="White">
                 <Rectangle Height="122" Width="6" VerticalAlignment="Bottom" HorizontalAlignment="Left" Fill="Black" Margin="0,0,0,34" />
                 <Rectangle  x:Name="recCandidate" Height="122" Width="6" VerticalAlignment="Bottom" HorizontalAlignment="Left" Fill="{Binding Path=Party.ColorBrush}" Margin="0,0,0,34" />

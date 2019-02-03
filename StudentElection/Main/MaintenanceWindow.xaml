@@ -43,10 +43,9 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Border>
-
-        <Grid Grid.Row="1" Grid.Column="1">
-            <Border x:Name="bdrMaintenance" BorderBrush="#B0B0B0" BorderThickness="4">
+    <Grid>
+        <Border x:Name="bdrMaintenance" Grid.Row="1" Grid.Column="1" BorderBrush="#B0B0B0" BorderThickness="4">
+            <Grid>
                 <Grid x:Name="grdMaintenance" Visibility="Visible">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -610,10 +609,10 @@
                         </TabItem>
                     </TabControl>
                 </Grid>
-            </Border>
-            <Border x:Name="bdrLoadingMaintenance" Background="White" Visibility="Hidden">
-                <syncfusion:ProgressRing x:Name="prgMaintenance" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Loading..." FontSize="20"/>
-            </Border>
-        </Grid>
-    </Border>
+                <Border x:Name="bdrLoadingMaintenance" Background="White" Visibility="Hidden">
+                    <syncfusion:ProgressRing x:Name="prgMaintenance" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Please wait..." FontSize="20"/>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>

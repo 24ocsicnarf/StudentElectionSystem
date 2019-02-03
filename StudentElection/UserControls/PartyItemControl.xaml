@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:Converters="clr-namespace:StudentElection.Converters"
+             xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              mc:Ignorable="d" FontFamily="Tahoma" SizeChanged="UserControl_SizeChanged" Loaded="UserControl_Loaded" Padding="2">
     <UserControl.Resources>
         <Converters:ToUpperValueConverter x:Key="toUpperValueConverter" />
@@ -11,9 +12,9 @@
     <Grid Background="{Binding Path=ColorBrush}" >
         <Border Background="#EEEEEEEE" BorderThickness="4" BorderBrush="{Binding Path=ColorBrush}">
             <StackPanel>
-                <DockPanel x:Name="dckParty"  VerticalAlignment="Top" Height="28" Margin="4" >
+                <DockPanel x:Name="dckParty"  VerticalAlignment="Top" Height="28" Margin="4">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" >
-                        <Label x:Name="lblCount" FontSize="22" Opacity="0.85" Width="24" Foreground="{Binding Path=ColorBrush}" Padding="0" Margin="4,0" HorizontalContentAlignment="Center" />
+                        <Label x:Name="lblCount" FontSize="22" Opacity="0.85" Width="24" Foreground="{Binding Path=ColorBrush}" Padding="0" Margin="4 0" HorizontalContentAlignment="Center" />
                         <Rectangle x:Name="recColor" HorizontalAlignment="Left" Width="8" Fill="{Binding Path=ColorBrush}" />
                         <Grid Margin="0,2,0,0">
                             <Viewbox x:Name="vbParty" Stretch="Uniform" HorizontalAlignment="Left"  Margin="8,0" Height="22">
@@ -22,7 +23,7 @@
                             </Viewbox>
                         </Grid>
                     </StackPanel>
-                    <Button x:Name="btnAddCandidate" DockPanel.Dock="Right" Background="#00000000" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" Cursor="Hand" VerticalAlignment="Center" Padding="4" FontSize="14" Click="btnAddCandidate_Click" Height="24" Width="24">
+                    <Button x:Name="btnAddCandidate" DockPanel.Dock="Right" Background="#00000000" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" Cursor="Hand" VerticalAlignment="Center" Margin="4" Padding="4" FontSize="14" Click="btnAddCandidate_Click" Height="24" Width="24">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}">
                                 <Setter Property="Opacity" Value="1" />
@@ -30,7 +31,7 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type Button}">
                                             <Border Background="{TemplateBinding Background}">
-                                                <Viewbox Stretch="Fill" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="36" Width="24" Margin="0,-4,0,0" >
+                                                <Viewbox Stretch="Fill" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="36" Width="24" Margin="0 -4" >
                                                     <TextBlock Text="+" LineHeight="24" LineStackingStrategy="BlockLineHeight" FontSize="24" FontFamily="Arial Black" FontWeight="Bold" Foreground="{Binding Path=ColorBrush}" />
                                                 </Viewbox>
                                             </Border>
@@ -49,7 +50,7 @@
                             <TextBlock Text="Add candidate" TextWrapping="Wrap" />
                         </Button.ToolTip>
                     </Button>
-                    <Button x:Name="btnImportCandidates" DockPanel.Dock="Right" Background="#00000000" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" Cursor="Hand" VerticalAlignment="Center" Margin="6 0" Padding="4" FontSize="14" Height="24" Width="24" Click="btnImportCandidates_Click">
+                    <Button x:Name="btnImportCandidates" DockPanel.Dock="Right" Background="#00000000" FontWeight="Bold" BorderBrush="{x:Null}" HorizontalAlignment="Right" Cursor="Hand" VerticalAlignment="Center" Margin="4" Padding="4" FontSize="14" Height="18" Width="18" Click="btnImportCandidates_Click">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}">
                                 <Setter Property="Opacity" Value="1" />
@@ -57,9 +58,8 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type Button}">
                                             <Border Background="{TemplateBinding Background}">
-                                                <Viewbox Stretch="Uniform" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="20" Width="20" Margin="0,0,0,0" >
-                                                    <!--<TextBlock Text="" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontSize="28" FontFamily="Arial Black" FontWeight="Bold" Foreground="{Binding Path=ColorBrush}" />-->
-                                                    <Border Background="{Binding Path=ColorBrush}"  Height="20" Width="20">
+                                                <Viewbox Stretch="Uniform" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                                    <Border Background="{Binding Path=ColorBrush}"  Height="18" Width="18">
                                                         <Border.OpacityMask>
                                                             <ImageBrush ImageSource="/StudentElection;component/Resources/import.png"/>
                                                         </Border.OpacityMask>
@@ -85,6 +85,37 @@
                 <ScrollViewer x:Name="svrCandidate" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" UseLayoutRounding="True" PreviewMouseWheel="svrCandidate_PreviewMouseWheel">
                     <StackPanel x:Name="stkCandidate" Orientation="Horizontal" HorizontalAlignment="Left" Margin="4" Visibility="Collapsed" />
                 </ScrollViewer>
+                <!--<syncfusion:SfDataGrid x:Name="dgPartyCandidates"
+                                    ColumnSizer="AutoWithLastColumnFill"
+                                    AllowFiltering="False"
+                                    AllowTriStateSorting="True"
+                                    AllowGrouping="False"
+                                    AutoGenerateColumns="False"
+                                    EnableDataVirtualization="True"
+                                    Visibility="Visible">
+                    <syncfusion:SfDataGrid.SortColumnDescriptions>
+                        <syncfusion:SortColumnDescription ColumnName="Position.Rank"/>
+                        <syncfusion:SortColumnDescription ColumnName="LastName"/>
+                        <syncfusion:SortColumnDescription ColumnName="FirstName"/>
+                        <syncfusion:SortColumnDescription ColumnName="Suffix"/>
+                        <syncfusion:SortColumnDescription ColumnName="MiddleName"/>
+                        <syncfusion:SortColumnDescription ColumnName="Alias"/>
+                    </syncfusion:SfDataGrid.SortColumnDescriptions>
+                    <syncfusion:SfDataGrid.Columns>
+                        <syncfusion:GridTextColumn HeaderText="First Name*" MappingName="FirstName" MinimumWidth="100"/>
+                        <syncfusion:GridTextColumn HeaderText="Middle Name" MappingName="MiddleName" MinimumWidth="100"/>
+                        <syncfusion:GridTextColumn HeaderText="Last Name*" MappingName="LastName" MinimumWidth="50"/>
+                        <syncfusion:GridTextColumn HeaderText="Suffix" MappingName="Suffix" TextAlignment="Center" MinimumWidth="20"/>
+                        <syncfusion:GridTextColumn HeaderText="Birthdate" MappingName="Birthdate" TextAlignment="Center"  MinimumWidth="40"/>
+                        <syncfusion:GridTextColumn HeaderText="Sex*" MappingName="Sex" MinimumWidth="50"/>
+                        <syncfusion:GridTextColumn HeaderText="Year Level*" MappingName="YearLevel" MinimumWidth="50"/>
+                        <syncfusion:GridTextColumn HeaderText="Section*" MappingName="Section" MinimumWidth="50"/>
+                        <syncfusion:GridTextColumn HeaderText="Alias*" MappingName="Alias" MinimumWidth="50"/>
+                        <syncfusion:GridTextColumn HeaderText="Picture File Name" MappingName="PictureFileName" MinimumWidth="50"/>
+                        <syncfusion:GridTextColumn HeaderText="Position Title*" MappingName="Position.Title" MinimumWidth="50"/>
+                        <syncfusion:GridTextColumn HeaderText="Position Rank" MappingName="Position.Rank" IsHidden="True" MinimumWidth="50"/>
+                    </syncfusion:SfDataGrid.Columns>
+                </syncfusion:SfDataGrid>-->
             </StackPanel>
         </Border>
     </Grid>

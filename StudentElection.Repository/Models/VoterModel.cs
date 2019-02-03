@@ -1,10 +1,12 @@
 namespace StudentElection.Repository.Models
 {
+    using Project.Library.Helpers;
+    using Project.Library.Interfaces;
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    public partial class VoterModel
+    public partial class VoterModel : IPersonName
     {
         public VoterModel()
         {
@@ -26,7 +28,7 @@ namespace StudentElection.Repository.Models
         public ICollection<BallotModel> Ballots { get; set; }
         public ElectionModel Election { get; set; }
         
-        public string FullName => $"{ this.LastName }, { this.FirstName } { this.Suffix } { this.MiddleName }".Trim();
+        public string FullName => DataHelper.GetPersonFullName(this);
         public bool IsVoted => this.Ballots.SingleOrDefault(b => b.Id > 0 && b.CastedAt != null) != null;
 
     }
